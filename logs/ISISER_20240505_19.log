@@ -1,0 +1,9 @@
+2024-05-05 19:49:22	Autoreload is disabled because the development mode is off.
+2024-05-05 19:49:22	Application started in 0.737 seconds.
+2024-05-05 19:49:23	Responding at http://127.0.0.1:1234
+2024-05-05 19:49:23	----------------- NEW EXECUTION-------------------
+2024-05-05 19:49:23	ActionGesture	CloseEyes
+2024-05-05 19:49:31	GUIEvent	GUI STARTED
+2024-05-05 19:49:33	ActionGesture	BrowFrown
+2024-05-05 19:49:33	MonitorSpeechStart	Sorry, I didn't hear you	1536
+2024-05-05 19:49:34	ActionGesture	BrowRaise

@@ -1,0 +1,71 @@
+2024-05-05 22:05:31	Autoreload is disabled because the development mode is off.
+2024-05-05 22:05:31	Application started in 0.593 seconds.
+2024-05-05 22:05:32	Responding at http://127.0.0.1:1234
+2024-05-05 22:05:32	----------------- NEW EXECUTION-------------------
+2024-05-05 22:05:32	ActionGesture	CloseEyes
+2024-05-05 22:06:03	GUIEvent	GUI STARTED
+2024-05-05 22:06:41	ActionGesture	Smile
+2024-05-05 22:06:42	SenseSpeech	hello	1147
+2024-05-05 22:06:42	ActionGesture	OpenEyes
+2024-05-05 22:06:42	ActionGesture	Smile
+2024-05-05 22:06:44	MonitorSpeechStart	Hi therekotlin.Unit	1307
+2024-05-05 22:06:44	ActionGesture	BrowRaise
+2024-05-05 22:06:45	MonitorSpeechStart	Quessstion 1	859
+2024-05-05 22:06:46	ActionGesture	BrowRaise
+2024-05-05 22:06:47	MonitorSpeechStart	Right <mark name="action"/>	393
+2024-05-05 22:06:48	ActionGesture	BrowRaise
+2024-05-05 22:06:48	ActionGesture	GazeAway
+2024-05-05 22:06:49	MonitorSpeechStart	Let's think	665
+2024-05-05 22:06:49	ActionGesture	BrowRaise
+2024-05-05 22:24:16	Autoreload is disabled because the development mode is off.
+2024-05-05 22:24:17	Application started in 0.508 seconds.-
+2024-05-05 22:24:17	Responding at http://127.0.0.1:1234
+2024-05-05 22:24:17	----------------- NEW EXECUTION-------------------
+2024-05-05 22:24:17	ActionGesture	CloseEyes
+2024-05-05 22:24:24	GUIEvent	GUI STARTED
+2024-05-05 22:24:24	GUIEvent	REQUESTING STAGE [undefined] [ACCEPTED]
+2024-05-05 22:25:05	GUIEvent	REQUESTING STAGE [0.1] [ACCEPTED]
+2024-05-05 22:28:05	Autoreload is disabled because the development mode is off.
+2024-05-05 22:28:06	Application started in 0.531 seconds.
+2024-05-05 22:28:06	Responding at http://127.0.0.1:1234
+2024-05-05 22:28:06	----------------- NEW EXECUTION-------------------
+2024-05-05 22:28:06	ActionGesture	CloseEyes
+2024-05-05 22:28:11	GUIEvent	GUI STARTED
+2024-05-05 22:28:11	GUIEvent	REQUESTING STAGE [undefined] [ACCEPTED]
+2024-05-05 22:29:31	GUIEvent	REQUESTING STAGE [0.1] [ACCEPTED]
+2024-05-05 22:32:46	Autoreload is disabled because the development mode is off.
+2024-05-05 22:32:46	Application started in 0.529 seconds.
+2024-05-05 22:32:47	Responding at http://127.0.0.1:1234
+2024-05-05 22:32:47	----------------- NEW EXECUTION-------------------
+2024-05-05 22:32:47	ActionGesture	CloseEyes
+2024-05-05 22:32:51	GUIEvent	GUI STARTED
+2024-05-05 22:32:52	GUIEvent	REQUESTING STAGE [undefined] [ACCEPTED]
+2024-05-05 22:32:54	GUIEvent	REQUESTING STAGE [0.1] [ACCEPTED]
+2024-05-05 22:33:01	GUIEvent	REQUESTING STAGE [0.2] [ACCEPTED]
+2024-05-05 22:36:26	Autoreload is disabled because the development mode is off.
+2024-05-05 22:36:26	Application started in 0.561 seconds.
+2024-05-05 22:36:27	Responding at http://127.0.0.1:1234
+2024-05-05 22:36:27	----------------- NEW EXECUTION-------------------
+2024-05-05 22:36:27	ActionGesture	CloseEyes
+2024-05-05 22:36:32	GUIEvent	GUI STARTED
+2024-05-05 22:37:12	GUIEvent	GUI RELOADED
+2024-05-05 22:37:22	GUIEvent	GUI RELOADED
+2024-05-05 22:38:11	GUIEvent	GUI RELOADED
+2024-05-05 22:38:20	GUIEvent	GUI RELOADED
+2024-05-05 22:38:43	GUIEvent	GUI RELOADED
+2024-05-05 22:40:44	Autoreload is disabled because the development mode is off.
+2024-05-05 22:40:44	Application started in 0.535 seconds.
+2024-05-05 22:40:45	Responding at http://127.0.0.1:1234
+2024-05-05 22:40:45	----------------- NEW EXECUTION-------------------
+2024-05-05 22:40:45	ActionGesture	CloseEyes
+2024-05-05 22:40:51	GUIEvent	GUI STARTED
+2024-05-05 22:40:52	GUIEvent	REQUESTING STAGE [0] [ACCEPTED]
+2024-05-05 22:40:59	GUIEvent	REQUESTING STAGE [0.1] [ACCEPTED]
+2024-05-05 22:41:01	GUIEvent	REQUESTING STAGE [0.2] [ACCEPTED]
+2024-05-05 22:41:06	GUIEvent	GUI RELOADED
+2024-05-05 22:41:06	GUIEvent	REQUESTING STAGE [0] [ACCEPTED]
+2024-05-05 22:41:15	GUIEvent	REQUESTING STAGE [1] [ACCEPTED]
+2024-05-05 22:41:19	GUIEvent	REQUESTING STAGE [2] [ACCEPTED]
+2024-05-05 22:41:21	GUIEvent	REQUESTING STAGE [3] [ACCEPTED]
+2024-05-05 22:41:24	GUIEvent	GUI RELOADED
+2024-05-05 22:41:24	GUIEvent	REQUESTING STAGE [0] [ACCEPTED]

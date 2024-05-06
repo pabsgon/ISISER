@@ -1,0 +1,35 @@
+2024-05-03 18:00:58	Autoreload is disabled because the development mode is off.
+2024-05-03 18:00:59	Application started in 0.516 seconds.
+2024-05-03 18:00:59	Responding at http://127.0.0.1:1234
+2024-05-03 18:01:00	ActionGesture	CloseEyes
+2024-05-03 18:01:06	GUIEvent	GUI STARTED
+2024-05-03 18:01:28	ActionGesture	Smile
+2024-05-03 18:01:30	SenseSpeech	hello	1337
+2024-05-03 18:01:30	User said:[hello]
+2024-05-03 18:01:30	ActionGesture	OpenEyes
+2024-05-03 18:01:30	ActionGesture	Smile
+2024-05-03 18:01:31	MonitorSpeechStart	Oh, hello therekotlin.Unit	1985
+2024-05-03 18:01:32	ActionGesture	BrowRaise
+2024-05-03 18:01:33	MonitorSpeechStart	Quessstion 1	859
+2024-05-03 18:01:34	ActionGesture	BrowRaise
+2024-05-03 18:01:35	MonitorSpeechStart	Right <mark name="action"/>	393
+2024-05-03 18:01:36	ActionGesture	BrowRaise
+2024-05-03 18:01:36	ActionGesture	GazeAway
+2024-05-03 18:01:37	MonitorSpeechStart	Let's think	665
+2024-05-03 18:01:37	ActionGesture	BrowRaise
+2024-05-03 18:01:41	GUIEvent	Hello from the client! [ACCEPTED]
+2024-05-03 18:36:18	Autoreload is disabled because the development mode is off.
+2024-05-03 18:36:18	Application started in 0.502 seconds.
+2024-05-03 18:36:18	Responding at http://127.0.0.1:1234
+2024-05-03 18:36:19	ActionGesture	CloseEyes
+2024-05-03 18:37:04	GUIEvent	GUI STARTED
+2024-05-03 18:37:19	MonitorSpeechStart	No start signal received, terminating the program.	2929
+2024-05-03 18:37:22	ActionGesture	BrowRaise
+2024-05-03 18:42:57	Autoreload is disabled because the development mode is off.
+2024-05-03 18:42:58	Application started in 0.501 seconds.
+2024-05-03 18:42:58	Responding at http://127.0.0.1:1234
+2024-05-03 18:42:59	ActionGesture	CloseEyes
+2024-05-03 18:43:04	GUIEvent	GUI STARTED
+2024-05-03 18:43:06	ActionGesture	BrowFrown
+2024-05-03 18:43:06	MonitorSpeechStart	Sorry, I didn't hear you	1536
+2024-05-03 18:43:07	ActionGesture	BrowRaise
