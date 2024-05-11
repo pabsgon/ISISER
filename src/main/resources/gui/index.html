@@ -8,6 +8,7 @@
 </head>
 <body onunload=""><!-- This is important. JQuery overwrites the unload event in a way such that the load event is not triggered after the back button is hit. So, the unload event must be overwritten back to nothing. -->
 <div id="devmode" style="position: absolute;background: red;display: none;">DEV_MODE</div>
+<div id="userNum" style="position: absolute;display: block;right: 0px;bottom: 0px;font-family: sans-serif;"></div>
 <div class="outerheader">
     <div class="innerheader">
         <span id="sessionUserId"></span>
@@ -29,9 +30,9 @@
 				</div>
 		<!-- ------------------------------ INITIAL PAGE ---------------------------------------- -->
 		
-			<div class="slide" id="slide_0" style="display:none">
+<div class="slide" id="slide_0" style="display: flex;">
 				<div class="headerWrapper">
-					<div class="header" data-id="project"></div>
+					<div class="header" data-id="project">ISISER-SOLNA Project [SE]</div>
 					<div class="headerImage"><img src="resources/presentation.png" class="width200"></div>
 					<div class="headerLogo"><img src="resources/KTH_Blue_Trans.png" class="width100"></div>
 				</div>
@@ -40,47 +41,19 @@
 				<div class="contentWrapper">
 					<div style="background: black;width: 100%;"></div>
 					<div style="background: black;width: 100%;"></div>
-					<div class="title" data-id="title"></div>
+					<div class="title" data-id="title">Class competition in Electronics</div>
 
 					<div style="background: black;width: 100%;"></div>
-
-					<div id="okBut0" class="but" onclick="tryNextStage()">
-						<div>>></div>
+					<div class="subtitle" style="padding-left: 0px;">
+						<div class="instruction" data-id="instruction0" style="font-weight: 600;margin-top: 0px;"></div>
 					</div>
-					<div style="background: black;width: 100%;"></div>
-				</div>
-				
-				<div class="footerWrapper">
-					<a href="mailto:pablool@kth.se">P.G.O.</a>
-				</div>
-
-			</div>
-			
-<!-- ------------------------------ INSTRUCTIONS PAGE ---------------------------------------- -->
-			
-			<div class="slide" id="slide_0.1" style="display:none">
-				<div class="headerWrapper">
-					<div class="header" data-id="project"></div>
-					<div class="headerLogo"><img src="resources/KTH_Blue_Trans.png" class="width100"></div>
-				</div>
-				
-				<div class="contentWrapper" >
-					<div style="background: black;width: 100%;"></div>
-					<div class="title" data-id="instructions"></div>
-					<div class="subtitle">
-						<ul>
-							<li class="instruction" data-id="instruction1"></li>
-							<li class="instruction" data-id="instruction2"></li>
-							<li class="instruction" data-id="instruction3"></li>
-							<li class="instruction" data-id="instruction4"></li>
-						</ul>
-					</div>
-					<div id="okBut0.1" class="but" onclick="tryNextStage()">
-						<div>>></div>
-					</div>
+					<div class="numberButtonsWrapper"></div>
+					<button id="subject" class="button subjectButton" data-num=""></button>
+					
 					<div style="background: black;width: 100%;"></div>
 				</div>
 			</div>
+
 			
 <!-- ------------------------------ TALKING W FURHAT PAGE ---------------------------------------- -->
 			
@@ -176,6 +149,7 @@
 <div class="version"></div>
 <div class="filler"></div>
 <div class="filler"></div>
+<div id="admin" style="position: absolute;background: #bcc0b2;display: none;right: 0px;top: 50px;font-family: sans-serif;height: 500px;width: 100px;border: 1px solid #898981;"></div>
 
 <script type="text/javascript" src="resources/app.js"></script>
 

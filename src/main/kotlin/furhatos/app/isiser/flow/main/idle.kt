@@ -34,25 +34,15 @@ val Idle: State = state {
         */
         context = Context(furhat, users)
     }
-    onEvent<GUIEvent> {
-        //val loggerEventListener = EventListener { event ->
-            //if(event is GUIEvent && event.message== GUI_STARTED){
-              //  raise()
-           // }
-        //}
-        /*
-        if(it.message == GUI_STARTED){
-            furhat.say("Ok, well, let's start the party!")
-        }*/
-    }
+
     onEntry {
-        println("Idle>onEntry.Users:" + users.count)
+        Session.printState(thisState)
         //furhat.attendNobody()
         //furhat.gesture(CloseEyes, priority=10)
         handleListen()
     }
     onReentry {
-        println("Idle>onReentry.Users:" + users.count)
+        Session.printState(thisState,"R")
         furhat.attendNobody()
         furhat.gesture(CloseEyes, priority=10)
         handleListen()
@@ -73,16 +63,6 @@ val Idle: State = state {
 
          */
         //goto(Greeting)
-    }
-    onResponse<Greetings> {
-        if(Session.isGUILoaded() && users.count>0 ) {
-            furhat.gesture(OpenEyes, priority = 10)
-            furhat.gesture(Gestures.Smile(duration = 2.0))
-
-            goto(Welcome)
-        }else{
-            println("Hearing, but not listening: The GUI must initialised and there must be a user present. ")
-        }
     }
 
     onUserLeave(instant=true) {
@@ -105,12 +85,8 @@ val Idle: State = state {
         }
         furhat.stopListening()
     }
-    onResponse<Greetings> {
-        furhat.gesture(OpenEyes, priority=10)
-        furhat.gesture(Gestures.Smile(duration=2.0))
 
-        goto(Welcome)
-    }
+
     onResponseFailed {
         handleListen()
     }

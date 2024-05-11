@@ -1,23 +1,19 @@
 // File: Session.kt
 package furhatos.app.isiser
-import furhatos.app.isiser.setting.GUIEvent
-import furhatos.app.isiser.setting.logAllEvents
+import furhatos.app.isiser.setting.*
 import furhatos.event.EventListener
 import furhatos.event.EventSystem
 import furhatos.event.actions.ActionGesture
 import furhatos.event.monitors.MonitorSpeechStart
 import furhatos.event.senses.SenseSpeech
+import furhatos.flow.kotlin.State
 import furhatos.records.Record
 import io.ktor.websocket.*
 import org.slf4j.LoggerFactory
 import java.util.logging.*
 
 object Session {
-    var currentSession: WebSocketSession? = null
-
-    suspend fun sendToCurrentSession(message: String) {
-        currentSession?.send(message)
-    }
+    /* ------------------------- PRIVATE INMUTABLE VARS ------------------------------ */
     private val loggerEventListener = EventListener { event ->
         if(logAllEvents) {
             println("Event received: ${event.javaClass.simpleName}\t${event.eventParams}")
@@ -28,7 +24,7 @@ object Session {
         }
         var logEntry = ""
         when (event) {
-            is GUIEvent -> logEntry = "\t${event.message}"
+            is GUIEvent -> logEntry = "\t${event.type}\t${event.message}\t${this.getStageName()}\t${this.getSubject()}"
             is SenseSpeech -> {
                 if(event.text != "") logEntry = "\t${event.text}\t${event.length}"
             }
@@ -45,19 +41,57 @@ object Session {
         }
 
     }
-    init{
-        EventSystem.addEventListener(Session.loggerEventListener)
-    }
-    private var appStage = "0"
-    private var curAnswer = ""
-    private var guiLoaded = false
-        get() = field
-        set(value) {
-            field = value
-        }
-    private lateinit var fileHandler: FileHandler
     private val logger = LoggerFactory.getLogger(Session::class.java)
 
+    /* ------------------------- PRIVATE MUTABLE VARS ------------------------------ */
+    private var appStage: StagesEnum = StagesEnum.STAGE_0
+    private var subject: String = UNDEFINED
+    private var curAnswer = ""
+    private var guiLoaded = false
+    private lateinit var fileHandler: FileHandler
+
+    /* ------------------------- PUBLIC VARS ------------------------------ */
+    var currentSession: WebSocketSession? = null
+    suspend fun sendToCurrentSession(message: String) {
+        currentSession?.send(message)
+    }
+
+    /* ------------------------- SETTERS AND GETTERS ------------------------------ */
+    fun isGUILoaded(): Boolean{
+        return guiLoaded
+    }
+    fun setGUILoaded(){
+        guiLoaded = true
+    }
+    fun getStage(): StagesEnum = appStage
+    fun getStageName(): String = appStage.toString()
+
+    // Method to set the stage
+    fun setStage(value: String) {
+        println("Setting stage from ${appStage} to ${value}")
+        appStage = StagesEnum.fromString(value)
+    }
+    fun isQuestionStage(): Boolean = appStage.isQuestionStage()
+
+
+    fun getAnswer(): String = curAnswer
+
+    // Method to set the stage
+    fun setAnswer(value: String) {
+        if(value != "" || value != curAnswer )curAnswer = value
+    }
+    fun getSubject(): String = subject
+
+    // Method to set the stage
+    fun setSubject(value: String) {
+        if(value != "" && value != subject )subject = value
+    }
+    fun isSubjectUndefined(): Boolean = subject == UNDEFINED
+
+    fun resetAnswer(){
+        curAnswer = ""
+    }
+    /* ------------------------- METHODS ------------------------------ */
     fun startLogger(){
         log("----------------- NEW EXECUTION-------------------")
     }
@@ -65,26 +99,24 @@ object Session {
         //println("[***]:" + message)
         logger.info(message)
     }
-    fun isGUILoaded(): Boolean{
-        return guiLoaded
-    }
-    fun setGUILoaded(){
-        guiLoaded = true
-    }
-    fun getStage(): String = appStage
+    fun userAnswered(): Boolean = curAnswer != ""
 
-    // Method to set the stage
-    fun setStage(value: String) {
-        appStage = value
+    fun printState(st: State, entry: String ){
+        println("-------------------${st.name}[${entry}]--------------------")
     }
-    fun getAnswer(): String = curAnswer
+    fun printState(st: State){printState(st,"E")}
+    /* ------------------------- INIT ------------------------------ */
+    init{
+        EventSystem.addEventListener(Session.loggerEventListener)
+        val spreadsheetId = "1--UZgR4W01c7Z5yml06KCWw4xm8hRBJLVv-bT63iyzg" // Your spreadsheet ID
+        val range = "QuestionDefinition!A1:W24"
 
-    // Method to set the stage
-    fun setAnswer(value: String) {
-        if(value != "" || value != curAnswer )curAnswer = value
+        val data = loadSheetData(spreadsheetId, range)
+        println("----------------- DATA-------------------")
+
+        println(data)
+        println("----------------- END DATA-------------------")
+
     }
+
 }
-
-
-
-//class DEBUGGING(val message: String) : Event()

@@ -63,6 +63,11 @@ dependencies {
     //Logging via logback library:
     implementation 'ch.qos.logback:logback-classic:1.2.11'
     implementation 'org.slf4j:slf4j-api:1.7.36'
+    //This is for accessing Google Sheets:
+    implementation 'com.google.api-client:google-api-client:1.30.10'
+    implementation 'com.google.oauth-client:google-oauth-client-jetty:1.31.0'
+    implementation 'com.google.apis:google-api-services-sheets:v4-rev581-1.25.0'
+
 }
 
 //These new blocks are needed to package your project into a working skill file.

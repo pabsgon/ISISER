@@ -27,6 +27,5 @@ fun main(args: Array<String>) {
     embeddedServer(Netty, port = 1234, module = Application::module).start()
     println("Starting skill...")
 
-
     Skill.main(args)
 }
