@@ -1,91 +1,80 @@
-2024-05-11 17:01:54	Autoreload is disabled because the development mode is off.
-2024-05-11 17:01:55	Application started in 0.644 seconds.
-2024-05-11 17:01:55	Responding at http://127.0.0.1:1234
-2024-05-11 17:01:55	----------------- NEW EXECUTION-------------------
-2024-05-11 17:01:55	ActionGesture	CloseEyes
-2024-05-11 17:02:06	GUIEvent	GUI_RELOADED	GUI_RELOADED [ACCEPTED]	0.0	UNDEFINED
-2024-05-11 17:02:06	GUIEvent	SYNCH_REQUESTED	SYNCH REQUESTED .. [ACCEPTED]	0.0	UNDEFINED
-2024-05-11 17:02:10	GUIEvent	NEW_STAGE_REQUESTED	STAGE[0.2] [27] REQUESTED .. [ACCEPTED]	0.2	27
-2024-05-11 17:02:10	ActionGesture	OpenEyes
-2024-05-11 17:02:10	ActionGesture	Smile
-2024-05-11 17:02:10	MonitorSpeechStart	Oh, hello there	1105
-2024-05-11 17:02:11	ActionGesture	BrowRaise
-2024-05-11 17:02:13	ActionGesture	BigSmile
-2024-05-11 17:02:13	MonitorSpeechStart	Nice to meet you.	824
-2024-05-11 17:02:13	ActionGesture	BrowRaise
-2024-05-11 17:02:15	MonitorSpeechStart	How you doing?	741
-2024-05-11 17:02:15	ActionGesture	BrowRaise
-2024-05-11 17:02:17	ActionGesture	Smile
-2024-05-11 17:02:18	SenseSpeech	how you doing	1113
-2024-05-11 17:02:18	MonitorSpeechStart	Ok	618
-2024-05-11 17:02:18	ActionGesture	BrowRaise
-2024-05-11 17:02:20	MonitorSpeechStart	I suppose they told you what we are here for a little bit	2441
-2024-05-11 17:02:20	ActionGesture	BrowRaise
-2024-05-11 17:02:22	ActionGesture	BrowRaise
-2024-05-11 17:02:23	MonitorSpeechStart	Right?	438
-2024-05-11 17:02:23	ActionGesture	BrowRaise
-2024-05-11 17:02:25	ActionGesture	Smile
-2024-05-11 17:02:26	SenseSpeech	right	754
-2024-05-11 17:02:26	MonitorSpeechStart	So	386
-2024-05-11 17:02:27	MonitorSpeechStart	I guess we have clear what we have to do now, don't we?	2856
-2024-05-11 17:02:29	ActionGesture	BrowRaise
-2024-05-11 17:02:32	ActionGesture	Smile
-2024-05-11 17:02:33	SenseSpeech	don't we	994
-2024-05-11 17:02:33	MonitorSpeechStart	I would ask you now if you have any questions. But now press the button.	3664
-2024-05-11 17:02:34	ActionGesture	BrowRaise
-2024-05-11 17:02:36	ActionGesture	BrowRaise
-2024-05-11 17:02:36	ActionGesture	BrowRaise
-2024-05-11 17:02:43	GUIEvent	NEW_STAGE_REQUESTED	STAGE[1] [27] REQUESTED .. [ACCEPTED]	1	27
-2024-05-11 17:02:45	MonitorSpeechStart	1	597
-2024-05-11 17:02:45	ActionGesture	BrowRaise
-2024-05-11 17:02:47	MonitorSpeechStart	OK	618
-2024-05-11 17:02:47	ActionGesture	BrowRaise
-2024-05-11 17:02:49	ActionGesture	Smile
-2024-05-11 17:02:50	SenseSpeech	okay	1174
-2024-05-11 17:02:54	MonitorSpeechStart	Did you mark the answer yet?	1180
-2024-05-11 17:02:55	ActionGesture	BrowRaise
-2024-05-11 17:02:56	ActionGesture	Smile
-2024-05-11 17:02:58	SenseSpeech	the answer yet	1428
-2024-05-11 17:02:59	MonitorSpeechStart	I am not entirely sure but I'd say false	2348
-2024-05-11 17:03:01	ActionGesture	BrowRaise
-2024-05-11 17:03:01	ActionGesture	BrowRaise
-2024-05-11 17:03:06	ActionGesture	Smile
-2024-05-11 17:03:10	GUIEvent	ANSWER_SENT	ANSWER[FALSE] [1] [27] SENT .. [ACCEPTED]	1	27
-2024-05-11 17:03:10	MonitorSpeechStart	So what do you think?	979
-2024-05-11 17:03:10	ActionGesture	BrowRaise
-2024-05-11 17:03:12	ActionGesture	Smile
-2024-05-11 17:03:13	SenseSpeech	so what do you think	1316
-2024-05-11 17:03:13	MonitorSpeechStart	Just mark what I said, confirm and move on to next	2881
-2024-05-11 17:03:14	ActionGesture	BrowRaise
-2024-05-11 17:03:16	ActionGesture	BrowRaise
-2024-05-11 17:03:17	ActionGesture	Smile
-2024-05-11 17:03:18	SenseSpeech	and move on	1200
-2024-05-11 17:03:18	MonitorSpeechStart	Just mark what I said, confirm and move on to next	2881
-2024-05-11 17:03:19	ActionGesture	BrowRaise
-2024-05-11 17:03:21	ActionGesture	BrowRaise
-2024-05-11 17:03:22	ActionGesture	Smile
-2024-05-11 17:03:23	SenseSpeech	and move on to	1341
-2024-05-11 17:03:24	MonitorSpeechStart	Just mark what I said, confirm and move on to next	2881
-2024-05-11 17:03:24	ActionGesture	BrowRaise
-2024-05-11 17:03:26	ActionGesture	BrowRaise
-2024-05-11 17:03:29	ActionGesture	Smile
-2024-05-11 17:03:30	SenseSpeech	it's false	1013
-2024-05-11 17:03:30	MonitorSpeechStart	Just mark what I said, confirm and move on to next	2881
-2024-05-11 17:03:31	ActionGesture	BrowRaise
-2024-05-11 17:03:33	ActionGesture	BrowRaise
-2024-05-11 17:03:34	ActionGesture	Smile
-2024-05-11 17:03:35	SenseSpeech	firm and move on today	1282
-2024-05-11 17:03:35	MonitorSpeechStart	Just mark what I said, confirm and move on to next	2881
-2024-05-11 17:03:36	ActionGesture	BrowRaise
-2024-05-11 17:03:38	ActionGesture	BrowRaise
-2024-05-11 17:03:39	ActionGesture	Smile
-2024-05-11 17:03:40	SenseSpeech	and move on	954
-2024-05-11 17:03:40	MonitorSpeechStart	Just mark what I said, confirm and move on to next	2881
-2024-05-11 17:03:41	ActionGesture	BrowRaise
-2024-05-11 17:03:43	ActionGesture	BrowRaise
-2024-05-11 17:03:44	ActionGesture	Smile
-2024-05-11 17:03:46	SenseSpeech	and move on today	1293
-2024-05-11 17:03:46	MonitorSpeechStart	Just mark what I said, confirm and move on to next	2881
-2024-05-11 17:07:20	Autoreload is disabled because the development mode is off.
-2024-05-11 17:07:21	Application started in 0.562 seconds.
-2024-05-11 17:07:21	Responding at http://127.0.0.1:1234
+2024-05-12 23:00:31	Autoreload is disabled because the development mode is off.
+2024-05-12 23:00:32	Application started in 0.954 seconds.
+2024-05-12 23:00:32	Responding at http://127.0.0.1:8888
+2024-05-12 23:00:33	----------------- NEW EXECUTION-------------------
+2024-05-12 23:00:33	ActionGesture	CloseEyes
+2024-05-12 23:00:40	GUIEvent	GUI_RELOADED	GUI_RELOADED [ACCEPTED]	0.0	_UNDEFINED_
+2024-05-12 23:00:40	[ISISER.KTH] [CORS] Unhandled exception caught
+java.lang.IllegalStateException: Error converting '_UNDEFINED_' to an integer: For input string: "_UNDEFINED_"
+	at furhatos.app.isiser.Session.activateCondition(session.kt:130)
+	at furhatos.app.isiser.Session.setSubject(session.kt:94)
+	at furhatos.app.isiser.setting.ServerKt$module$5$2.invokeSuspend(server.kt:108)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.internal.DispatchedContinuation.resumeWith(DispatchedContinuation.kt:202)
+	at io.ktor.util.pipeline.SuspendFunctionGun.resumeRootWith(SuspendFunctionGun.kt:135)
+	at io.ktor.util.pipeline.SuspendFunctionGun.loop(SuspendFunctionGun.kt:109)
+	at io.ktor.util.pipeline.SuspendFunctionGun.access$loop(SuspendFunctionGun.kt:11)
+	at io.ktor.util.pipeline.SuspendFunctionGun$continuation$1.resumeWith(SuspendFunctionGun.kt:59)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:46)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)
+	at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:174)
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:167)
+	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:470)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:569)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.ktor.server.netty.EventLoopGroupProxy$Companion.create$lambda$1$lambda$0(NettyApplicationEngine.kt:296)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.lang.Thread.run(Thread.java:748)
+2024-05-12 23:05:18	Autoreload is disabled because the development mode is off.
+2024-05-12 23:05:19	Application started in 0.913 seconds.
+2024-05-12 23:05:20	Responding at http://127.0.0.1:8888
+2024-05-12 23:05:20	----------------- NEW EXECUTION-------------------
+2024-05-12 23:05:20	ActionGesture	CloseEyes
+2024-05-12 23:05:23	GUIEvent	GUI_RELOADED	GUI_RELOADED [ACCEPTED]	0.0	UNDEFINED
+2024-05-12 23:05:24	GUIEvent	SYNCH_REQUESTED	SYNCH REQUESTED .. [ACCEPTED]	0.0	UNDEFINED
+2024-05-12 23:13:15	Autoreload is disabled because the development mode is off.
+2024-05-12 23:13:16	Application started in 0.935 seconds.
+2024-05-12 23:13:17	Responding at http://127.0.0.1:8888
+2024-05-12 23:13:17	----------------- NEW EXECUTION-------------------
+2024-05-12 23:13:17	ActionGesture	CloseEyes
+2024-05-12 23:13:21	GUIEvent	GUI_RELOADED	GUI_RELOADED [ACCEPTED]	0.0	UNDEFINED
+2024-05-12 23:13:21	GUIEvent	SYNCH_REQUESTED	SYNCH REQUESTED .. [ACCEPTED]	0.0	UNDEFINED
+2024-05-12 23:13:25	GUIEvent	NEW_STAGE_REQUESTED	STAGE[0.2] [13] REQUESTED .. [ACCEPTED]	0.2	13
+2024-05-12 23:13:25	ActionGesture	OpenEyes
+2024-05-12 23:13:25	ActionGesture	Smile
+2024-05-12 23:13:25	MonitorSpeechStart	Oh, hello there	1105
+2024-05-12 23:13:26	ActionGesture	BrowRaise
+2024-05-12 23:13:27	ActionGesture	BigSmile
+2024-05-12 23:13:28	MonitorSpeechStart	Nice to meet you.	824
+2024-05-12 23:13:28	ActionGesture	BrowRaise
+2024-05-12 23:13:29	MonitorSpeechStart	How you doing?	741
+2024-05-12 23:13:29	ActionGesture	BrowRaise
+2024-05-12 23:13:31	ActionGesture	Smile
+2024-05-12 23:13:33	SenseSpeech	how you doing	1077
+2024-05-12 23:13:33	MonitorSpeechStart	Ok	618
+2024-05-12 23:13:33	ActionGesture	BrowRaise
+2024-05-12 23:13:34	MonitorSpeechStart	I suppose they told you what we are here for a little bit	2441
+2024-05-12 23:15:31	Autoreload is disabled because the development mode is off.
+2024-05-12 23:15:32	Application started in 0.899 seconds.
+2024-05-12 23:15:32	Responding at http://127.0.0.1:8888
+2024-05-12 23:15:37	----------------- NEW EXECUTION-------------------
+2024-05-12 23:15:37	ActionGesture	CloseEyes
+2024-05-12 23:15:44	GUIEvent	GUI_RELOADED	GUI_RELOADED [ACCEPTED]	0.0	UNDEFINED
+2024-05-12 23:15:45	GUIEvent	SYNCH_REQUESTED	SYNCH REQUESTED .. [ACCEPTED]	0.0	UNDEFINED
+2024-05-12 23:15:48	GUIEvent	NEW_STAGE_REQUESTED	STAGE[0.2] [45] REQUESTED .. [ACCEPTED]	0.2	45
+2024-05-12 23:15:48	ActionGesture	OpenEyes
+2024-05-12 23:15:48	ActionGesture	Smile
+2024-05-12 23:15:48	MonitorSpeechStart	Hi there	477
+2024-05-12 23:15:48	ActionGesture	BrowRaise
+2024-05-12 23:15:50	ActionGesture	BigSmile
+2024-05-12 23:15:50	MonitorSpeechStart	Nice to meet you.	824
+2024-05-12 23:15:50	ActionGesture	BrowRaise
+2024-05-12 23:15:52	MonitorSpeechStart	How you doing?	741
+2024-05-12 23:15:52	ActionGesture	BrowRaise
+2024-05-12 23:15:54	ActionGesture	Smile
+2024-05-12 23:15:55	SenseSpeech	how you doing	1011
+2024-05-12 23:15:55	MonitorSpeechStart	Ok	618
+2024-05-12 23:15:55	ActionGesture	BrowRaise
+2024-05-12 23:15:56	MonitorSpeechStart	I suppose they told you what we are here for a little bit	2441
+2024-05-12 23:15:57	ActionGesture	BrowRaise

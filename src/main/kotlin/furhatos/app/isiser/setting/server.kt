@@ -26,8 +26,10 @@ fun Application.module() {
     }
     println("Installing Status pages...")
     install(StatusPages) {
-        exception<Throwable> { call, cause ->
-            call.respondText(text = "500: $cause", status = HttpStatusCode.InternalServerError)
+        exception<Throwable> {call, cause ->
+            println("Unhandled exception caught ($cause)")
+            call.application.log.error("[ISISER.KTH] [CORS] Unhandled exception caught", cause)
+            call.respond(HttpStatusCode.InternalServerError, "Internal server error")
         }
     }
     install(ContentNegotiation) {
@@ -43,7 +45,6 @@ fun Application.module() {
         println("Routing...")
         static("/") {
             defaultResource("index.html", "gui")
-            println("Routing indeed...")
             resources("gui")
             intercept(ApplicationCallPipeline.Call) {
                 if (call.request.uri == "/") {
@@ -107,6 +108,8 @@ fun Application.module() {
                 Session.setSubject(event.getResponseValue("subject"))
                 Session.setAnswer(event.getResponseValue("answer"))
             }
+
+            println("XXXX isGuiloaded $event.responseStatusCode")
             call.respond(event.responseStatusCode, event.responseData)  // Ensure this is a proper JSON response
 
             /*call.respond(statusCode, mapOf("status" to status,
@@ -155,7 +158,15 @@ fun Application.module() {
     }
 }
 
-class GUIEvent2(val message: String) : Event()
+class ISISEREvent(val msg: String, val typ: EventType? = EventType.GENERIC) : Event(){
+    var message: String = msg ?: "No message"
+    val type: EventType = typ!!
+}
+class InteractionEvent(val msg: String, val typ: EventType? = EventType.GENERIC) : Event(){
+    var message: String = msg ?: "No message"
+    val type: EventType = typ!!
+}
+
 class GUIEvent(initialData: Map<String, String>, val appStage: StagesEnum, val appSubject: String, val isGUIloaded: Boolean ) : Event() {
     val isQuestionStage: Boolean = false
     var requestData: Map<String, String> = initialData.toMap() // Create a defensive copy

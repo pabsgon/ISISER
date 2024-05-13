@@ -1,6 +1,5 @@
 package furhatos.app.isiser.setting
 
-import furhatos.app.isiser.flow.main.QuestionPersuasion
 import furhatos.app.isiser.flow.main.QuestionReview
 import furhatos.app.isiser.questions.Question
 import furhatos.flow.kotlin.State
@@ -28,7 +27,7 @@ open class Statement(
     val id: String,
     val type: EnumStatementTypes, // CLAIM, ASSERTION, PROBE, ASIDE, CHECKPOINT, CLARIFICATION_REQUEST, DISCLOSURE, ULTIMATUM
     val texts: MutableList<TextTriplet>,  // List to easily manipulate elements
-    val isIndexical: Boolean
+    val subType: Boolean //If assertion, it means Indexical. If checkpoint or ultimatum, it means friendly.
 ) {
     var usedInQuestion: Question? = null
 
@@ -44,8 +43,15 @@ open class Statement(
         usedInQuestion = question
 
         // Return the text for the given question's robot mode
-        return triplet.getText(question.robotMode)
+        return triplet.getText(question.robotMode!!)
     }
+
+    override fun toString(): String {
+        val textDescriptions = texts.joinToString(separator = ", ") { it.toString() }
+        return "ID: $id, Type: $type, Texts: [$textDescriptions]"
+    }
+    fun isIndexical(): Boolean{ return subType}
+    fun isFriendly(): Boolean{ return subType}
 }
 class Aside(
     id: String,
@@ -83,27 +89,30 @@ class Statements : ArrayList<Statement>() {
 }
 
 class Claim(
-    val id: Int,
-    val persuasionStatement: Statement,
-    val reviewStatement: Statement,
-    val assertions: MutableList<Statement>,
+    val id: String,
+    val unfriendlyStatement: Statement,
+    val friendlyStatement: Statement,
+    val assertions: MutableList<Statement> = mutableListOf(),
     var pendingAssertions: Int = ASSERTIONS_PER_CLAIM
 ) {
+    fun setAssertion(st: Statement){
+        assertions.add(st)
+    }
     fun getText(question: Question): String {
         // Will return the text of the claim depending on the state the question is in
         // If the interaction is in QuestionReview, the reviewStatement will be provided.
         // By default, persuasionStatement will be returned.
         if(question.currentState?.name == QuestionReview.name )
-            return reviewStatement.getText(question)
+            return friendlyStatement.getText(question)
         else
-            return persuasionStatement.getText(question)
+            return unfriendlyStatement.getText(question)
     }
 
     fun getAssertion(question: Question): String? {
         if (pendingAssertions == 0) return null
 
         // Get the first assertion and move it to the end of the list
-        val assertion = assertions.removeAt(0)
+        val assertion = assertions!!.removeAt(0)
         assertions.add(assertion)
 
         // Decrement the number of pending assertions

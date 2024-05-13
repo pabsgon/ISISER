@@ -1,19 +1,51 @@
 package furhatos.app.isiser.setting
+val GUI = "GUI"
+val GUI_PORT = 8888
+val GUI_HOSTNAME = "http://localhost:" + GUI_PORT
 val UNDEFINED = "UNDEFINED"
+val UNFRIENDLY_SUFFIX = "_U"
+val FRIENDLY_SUFFIX = "_F"
 val ASSERTIONS_PER_CLAIM = 2
+val MAX_QUESTIONS=8
+val SOURCEDATA_SPREADSHEETID = "1--UZgR4W01c7Z5yml06KCWw4xm8hRBJLVv-bT63iyzg" // Your spreadsheet ID
+val SOURCEDATA_RANGE = "RAWDATA_FOR_LOADING!A3:AS150"
+val SOURCEDATA_CREDENTIAL_FILE_PATH= "C:\\Development\\ISISER\\Isiser\\src\\main\\resources\\json\\isiser00-4078fd895f22.json" // Adjust this path
+val SOURCEDATA_SETTINGS_SIZE = 9 // the first N elements of each row are settings, the rest texts.
+val SOURCEDATA_CLAIM_SIZE = 6 // the first N elements of each row are settings, the rest texts.
+val SOURCEDATA_TRUE = "TRUE"
+val SOURCEDATA_FALSE = "FALSE"
+val SOURCEDATA_FRIENDLY = "FRIENDLY"
+val SOURCEDATA_QUESTION = 0
+val SOURCEDATA_TYPE = 4
+val SOURCEDATA_STATEMENT_INDEX = 5
+val SOURCEDATA_PERTRIPLET = 6
+val SOURCEDATA_SUBTYPE = 7
+val SOURCEDATA_ID = 8
+
 
 enum class EnumQuestionPhase {
     REFLECTION, DISCLOSURE, PERSUASION, REVIEW, CHECKPOINT, ULTIMATUM, CONFIRMATION
+}
+enum class EnumConditions {
+    CONDITION1, CONDITION2, CONDITION3;
+    companion object {
+        fun fromString(ans: String): EnumConditions {
+            return try {
+                enumValueOf<EnumConditions>(ans.toUpperCase())
+            } catch (e: IllegalArgumentException) {
+                error("Error loading data: CONDITION value '$ans' unknown")
+            }
+        }
+    }
 }
 enum class EnumStatePhase { ENTRY, BODY, ANY;
 
     companion object {
         fun fromString(ans: String): EnumStatePhase {
-            return when (ans.toUpperCase()) {
-                "ENTRY" -> EnumStatePhase.ENTRY
-                "BODY" -> EnumStatePhase.BODY
-                "ANY" -> EnumStatePhase.ANY
-                else -> error("Source data error: STATE_PHASE value '$ans' unknown")
+            return try {
+                enumValueOf<EnumStatePhase>(ans.toUpperCase())
+            } catch (e: IllegalArgumentException) {
+                error("Error loading data: STATE_PHASE value '$ans' unknown")
             }
         }
     }
@@ -104,10 +136,9 @@ enum class EnumSubjectRejoinders {
     ELABORATION_REQUEST,
     NON_COMMITTAL,
     BACKCHANNEL,
-    CLARIFICATION,
     OFF_TOPIC,
     ASSENT,
-    REPEAT,
+    REPEAT_REQUEST,
     SILENCE
 }
 
@@ -117,9 +148,18 @@ enum class EnumStatementTypes {
     PROBE,
     ASIDE,
     CHECKPOINT,
-    CLARIFICATION_REQUEST,
+    ELABORATION_REQUEST,
     DISCLOSURE,
-    ULTIMATUM
+    ULTIMATUM;
+    companion object {
+        fun fromString(ans: String): EnumStatementTypes {
+            return try {
+                enumValueOf<EnumStatementTypes>(ans.toUpperCase())
+            } catch (e: IllegalArgumentException) {
+                error("Source data error: EnumStatementTypes value '$ans' unknown")
+            }
+        }
+    }
 }
 
 

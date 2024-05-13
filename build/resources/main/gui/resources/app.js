@@ -76,8 +76,8 @@ function synch(){
 	contactServer(req)
 }
 function contactServer(req) {
+	console.log("Contactig server with req=[" + JSON.stringify(req) + "]")
 	if(DEV_MODE){
-		console.log("Contactig server with req=[" + JSON.stringify(req) + "]")
 		return
 	}
 	
@@ -95,12 +95,16 @@ function contactServer(req) {
     })
     .then(data => {
 		console.log("Receiving from server data=" + JSON.stringify(data))
-		if(!data || data.status!="0"){
-			console.error('[ISISER] Server did not allow the request.')
-			return
+		if(data.error){
+			console.error('Server error:', data.error);
 		}else{
-			changeSubject(data.subject)
-			changeStage(data.stage)
+			if(!data || data.status!="0"){
+				console.error('[ISISER] Server did not allow the request.')
+				return
+			}else{
+				changeSubject(data.subject)
+				changeStage(data.stage)
+			}
 		}
 		return data
 	})

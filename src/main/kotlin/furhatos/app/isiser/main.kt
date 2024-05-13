@@ -1,8 +1,7 @@
 package furhatos.app.isiser
 
 import furhatos.app.isiser.flow.*
-import furhatos.app.isiser.setting.GUIEvent
-import furhatos.app.isiser.setting.module
+import furhatos.app.isiser.setting.*
 import furhatos.skills.Skill
 import furhatos.flow.kotlin.*
 import furhatos.skills.RemoteGUI
@@ -17,15 +16,14 @@ class IsiserSkill : Skill() {
     }
 }
 fun main(args: Array<String>) {
-
     RemoteGUI(
-        "GUI",
-        hostname = "http://localhost:1234",
-        port = 1234
+        GUI,
+        hostname = GUI_HOSTNAME,
+        port = GUI_PORT
     )
     //hostname = "http://${Skill.getFurhatWebAddress()}:1234",
-    embeddedServer(Netty, port = 1234, module = Application::module).start()
-    println("Starting skill...")
+    embeddedServer(Netty, port = GUI_PORT, module = Application::module).start()
+    println("[ISISER] Starting skill...")
 
     Skill.main(args)
 }
