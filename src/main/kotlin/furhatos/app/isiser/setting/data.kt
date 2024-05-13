@@ -8,6 +8,11 @@ import com.google.api.services.sheets.v4.SheetsScopes
 import furhatos.app.isiser.Session
 import java.io.FileInputStream
 
+data class Data(
+    val statements: MutableList<Statement> = mutableListOf(),
+    val conditions: MutableMap<EnumConditions, List<EnumRobotMode>> = mutableMapOf(),
+    val users: MutableMap<Int, EnumConditions> = mutableMapOf()
+)
 fun getSheetsService(): Sheets {
     val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
     val jsonFactory = JacksonFactory.getDefaultInstance()

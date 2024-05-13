@@ -50,6 +50,8 @@ object Session {
     private val logger = LoggerFactory.getLogger(Session::class.java)
 
     /* ------------------------- PRIVATE MUTABLE VARS ------------------------------ */
+    var data: Data = Data()
+
     private var appStage: StagesEnum = StagesEnum.STAGE_0
     private var subject: String = UNDEFINED
     private var curAnswer = ""
