@@ -9,8 +9,15 @@ data class Question(
     private var _robotMode: EnumRobotMode?, // Set when user is set
     private var _robotAnswer: EnumAnswer?, // Set in construction
     private var _userVerbalAnswer: EnumAnswer?, // Set in construction to Undefined
+    private var _userMarkedAnswer: EnumAnswer?, // Set in construction to Undefined
+    private var _confirmed: Boolean = false,
+
+    // Statements/Utterances
+    private var _reflection: Statement?, // Set in data loading per statement
+    private var _markingRequest: Statement?, // Set in data loading per statement
+
     private var _disclosure: Statement?, // Set in data loading per statement
-    private var _disclosureHasQuestion: Boolean?, //Unused at the moment
+        private var _disclosureHasQuestion: Boolean?, //Unused at the moment
     private var _probe: Statement?, // Set in data loading per statement
     private var _friendlyUltimatum: Statement?,
     private var _unfriendlyUltimatum: Statement?,
@@ -20,6 +27,7 @@ data class Question(
     private var claims: MutableList<Claim> = mutableListOf(),
     private var pastClaims: MutableList<Claim> = mutableListOf(),
     private var _currentClaim: Claim?,
+
     private var _lastRejoinder: EnumSubjectRejoinders?,
     private var _currentState: State?,
     private var _previousState: State?,
@@ -32,6 +40,10 @@ data class Question(
         _robotMode = null,
         _robotAnswer = rAns,
         _userVerbalAnswer = EnumAnswer.UNDEFINED,
+        _userMarkedAnswer = EnumAnswer.UNDEFINED,
+        _confirmed = false,
+        _reflection = null,
+        _markingRequest = null,
         _disclosure = null,
         _disclosureHasQuestion = null,
         _probe = null,
@@ -48,6 +60,9 @@ data class Question(
         _previousState = null,
         _lastUtterance = null
     )
+    fun reset(){
+
+    }
 
     var robotMode: EnumRobotMode?
         get() = _robotMode
@@ -71,11 +86,32 @@ data class Question(
         set(value) {
             _userVerbalAnswer = value
         }
+    var userMarkedAnswer: EnumAnswer?
+        get() = _userMarkedAnswer
+        set(value) {
+            _userMarkedAnswer = value
+        }
 
+    var isConfirmed: Boolean
+        get() = _confirmed
+        set(value) {
+            _confirmed = value
+        }
+
+    var markingRequest: Statement?
+        get() = _markingRequest
+        set(value) {
+            _markingRequest = value
+        }
     var probe: Statement?
         get() = _probe
         set(value) {
             _probe = value
+        }
+    var reflection: Statement?
+        get() = _reflection
+        set(value) {
+            _reflection = value
         }
     var disclosure: Statement?
         get() = _disclosure
@@ -148,6 +184,12 @@ data class Question(
         }
     fun setStatement(st: Statement, index: Int = 0){
         when (st.type) {
+            EnumStatementTypes.REFLECTION -> {
+                reflection = st
+            }
+            EnumStatementTypes.MARKING_REQUEST -> {
+                markingRequest = st
+            }
             EnumStatementTypes.CLAIM -> {//Performed via add Claim
             }
             EnumStatementTypes.ASSERTION -> {
@@ -179,13 +221,38 @@ data class Question(
                     unfriendlyUltimatum = st
                 }
             }
+
         }
     }
     fun addClaim(claim: Claim) {
         claims.add(claim)
     }
 
-    fun inAgreement(): Boolean = userVerbalAnswer != EnumAnswer.UNDEFINED && userVerbalAnswer == robotAnswer
+    fun inOfficialAgreement(): Boolean = robotAnswer != EnumAnswer.UNDEFINED && userMarkedAnswer == robotAnswer
+    fun inUnofficialAgreement(): Boolean = robotAnswer != EnumAnswer.UNDEFINED && userVerbalAnswer == robotAnswer
+    fun inAgreement(): Boolean{
+        /*
+        * The robot will always have an answer defined, except at the onset of the program, during dataloading.
+        *
+        * The priority to check if they are in agreement is if the verbal answer. If this has been determined and
+        * set, then that becomes the reference over the marked answer.
+        *
+        * */
+
+        if(robotAnswer == EnumAnswer.UNDEFINED ){
+            return false
+        }else{
+            if(userVerbalAnswer == EnumAnswer.UNDEFINED ){
+                if(userMarkedAnswer == EnumAnswer.UNDEFINED ){
+                    return false
+                }else{
+                   return userMarkedAnswer == robotAnswer
+                }
+            }else{
+                return userVerbalAnswer == robotAnswer
+            }
+        }
+    }
 
     fun getClaim(forReview: Boolean?): String {
         return currentClaim?.getText(this) ?: ""
@@ -204,7 +271,7 @@ data class Question(
 
     fun getCheckpoint(rechecking: Boolean): String {
         return if (!rechecking) {
-            val checkpoint = if (inAgreement()) friendlyCheckpoint else unfriendlyCheckpoint
+            val checkpoint = if (inUnofficialAgreement()) friendlyCheckpoint else unfriendlyCheckpoint
             checkpoint?.getText(this) ?: ""
         } else {
             // Rechecking logic
@@ -223,7 +290,10 @@ data class Question(
         |Correct Answer: ${correctAnswer ?: "Not Set"}
         |Robot Mode: ${robotMode ?: "Not Set"}
         |Robot Answer: ${robotAnswer ?: "Not Set"}
+        |User Marked Answer: ${userMarkedAnswer ?: "Not Set"}
         |User Verbal Answer: ${userVerbalAnswer ?: "Not Set"}
+        |Reflection: ${reflection ?: "Not Set"}
+        |Reflection: ${markingRequest ?: "Not Set"}
         |Disclosure: ${disclosure ?: "Not Set"}
         |Disclosure Has Question: ${disclosureHasQuestion ?: "Not Set"}
         |Friendly Ultimatum: ${friendlyUltimatum ?: "Not Set"}
@@ -235,7 +305,7 @@ data class Question(
         |Current State: ${currentState ?: "Not Set"}
         |Previous State: ${previousState ?: "Not Set"}
         |Last Utterance: ${lastUtterance ?: "Not Set"}
-        |Claims Count: ${claims?.size ?: "No claims"}
+        |Claims Count: ${claims.size ?: "No claims"}
         |Past Claims Count: ${pastClaims.size}
         """.trimMargin()
     }

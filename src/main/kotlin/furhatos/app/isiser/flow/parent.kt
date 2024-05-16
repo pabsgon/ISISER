@@ -1,14 +1,19 @@
 package furhatos.app.isiser.flow
 
-import furhatos.app.isiser.Session
+import furhatos.app.isiser.App
 import furhatos.app.isiser.flow.main.QuestionReflection
 import furhatos.app.isiser.flow.main.Sleep
 import furhatos.app.isiser.flow.main.Welcome
+import furhatos.app.isiser.handlers.SessionEvent
+import furhatos.app.isiser.nlu.Backchannel
 import furhatos.app.isiser.setting.*
 import furhatos.flow.kotlin.*
+import furhatos.nlu.common.Goodbye
+import furhatos.nlu.common.RequestRepeat
+import furhatos.nlu.common.Wait
 
 val Parent: State = state {
-
+    var session = App.getSession()
     onUserLeave(instant = true) {
         println("Parent>onUserLeave")
         when {
@@ -16,15 +21,9 @@ val Parent: State = state {
             it == users.current -> furhat.attend(users.other)
         }
     }
-
     onUserEnter(instant = true) {
         println("Parent>onUserEnter")
         furhat.glance(it)
-    }
-    onResponse {
-        println("Parent>onResponseElse")
-        furhat.say("Oops, I didn't get that.")
-        reentry()
     }
     onNoResponse {
         println("Parent>onNoResponse")
@@ -34,22 +33,35 @@ val Parent: State = state {
     onResponseFailed {
         furhat.say("I think my connection broke. Did you say something?")
     }
-    //onEvent<GUIEvent> {
-        //val loggerEventListener = EventListener { event ->
-        //if(event is GUIEvent && event.message== GUI_STARTED){
-        //  raise()
-        // }
-        //}
-        /*
-        if(it.message == GUI_STARTED){
-            furhat.say("Ok, well, let's start the party!")
-        }*/
-    //}
+    onEvent<SessionEvent> {
+        when(it.type){
+            EventType.USER_SET -> App.goto(Welcome)
+            EventType.QUESTION_SET -> App.goto(QuestionReflection)
+            else -> {}
+        }
+    }
+    onResponse<RequestRepeat>{
+        furhat.ask("Yes I would repeat it but I have not been programmed for this yet")
+    }
+    onResponse<Wait>{
+        furhat.ask("Yes I would give you more time but I have not been programmed for this yet")
+    }
+    onResponse<Goodbye>{
+        goto(QuestionReflection)
+    }
+    onResponse {
+        if(seemsLikeBackchannel(it.text, it.speech.length)){
+            raise(Backchannel())
+        }else{
+            furhat.ask(session.getElaborationRequest())
+        }
+    }
+    /*
     onEvent<GUIEvent> {
         println("Parent:GUIEvent")
         if(it.isAcceptable) {
             println("Parent:GUIEvent [Acceptable]")
-            if (Session.isQuestionStage()) {
+            if (App.isQuestionStage()) {
                 println("Parent:GUIEvent [IsQuestionStage]:[${it.type.toString()}]")
                 when (it.type) {
                     EventType.ANSWER_SENT -> {
@@ -69,12 +81,14 @@ val Parent: State = state {
                     }
                 }
             } else {
-                if (Session.getStage() == StagesEnum.STAGE_0_2) {
+                if (App.getStage() == EnumStages.STAGE_0_2) {
                     println("Parent:GUIEvent [Stage 0.2]")
                     goto(Welcome)
                 }else
-                    println("Parent:GUIEvent [Stage ${Session.getStageName()}]")
+                    println("Parent:GUIEvent [Stage ${App.getStageName()}]")
             }
         }
     }
+
+     */
 }

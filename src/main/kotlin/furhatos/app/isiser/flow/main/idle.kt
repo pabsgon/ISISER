@@ -1,10 +1,7 @@
 package furhatos.app.isiser.flow.main
 
-import furhatos.app.isiser.Session
-import furhatos.app.isiser.nlu.Greetings
-import furhatos.app.isiser.setting.GUIEvent
+import furhatos.app.isiser.App
 import furhatos.flow.kotlin.*
-import furhatos.gestures.Gestures
 import furhatos.skills.UserManager
 
 
@@ -36,20 +33,20 @@ val Idle: State = state {
     }
 
     onEntry {
-        Session.printState(thisState)
+        App.printState(thisState)
         //furhat.attendNobody()
         //furhat.gesture(CloseEyes, priority=10)
         handleListen()
     }
     onReentry {
-        Session.printState(thisState,"R")
+        App.printState(thisState,"R")
         furhat.attendNobody()
         furhat.gesture(CloseEyes, priority=10)
         handleListen()
     }
 
     onUserEnter {
-        Session.log("User enters")
+        println("User enters")
         println("Idle>onUserEnter")
         //furhat.gesture(Gestures.Smile(duration=2.0))
         furhat.attend(it)
@@ -66,7 +63,7 @@ val Idle: State = state {
     }
 
     onUserLeave(instant=true) {
-        Session.log("User leaves")
+        println("User leaves")
         /*
 
         TODO("We need to control that a user for some reason leaves momentarily.

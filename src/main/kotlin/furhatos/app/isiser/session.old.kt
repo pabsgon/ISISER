@@ -1,7 +1,7 @@
 // File: Session.kt
 package furhatos.app.isiser
-import furhatos.app.isiser.setting.GUIEvent
-import furhatos.app.isiser.setting.logAllEvents
+import furhatos.app.isiser.handlers.GUIEvent
+import furhatos.app.isiser.setting.LOG_ALL_EVENTS
 import furhatos.event.EventListener
 import furhatos.event.EventSystem
 import furhatos.event.actions.ActionGesture
@@ -16,7 +16,7 @@ import java.util.logging.*
 
 object SessionOld {
     private val loggerEventListener = EventListener { event ->
-        if(logAllEvents) {
+        if(LOG_ALL_EVENTS) {
             println("Event received: ${event.javaClass.simpleName}\t${event.eventParams}")
             /*
             TODO("At the moment I am only logging to the console. We may want in the future to log everything." +

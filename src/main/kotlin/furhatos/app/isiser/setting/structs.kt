@@ -67,26 +67,6 @@ class Aside(
     // Optionally, you can add additional methods or override existing ones here
 }
 
-class Statements : ArrayList<Statement>() {
-    fun addStatement(id: String, type: EnumStatementTypes, isIndexical: Boolean, vararg texts: String) {
-        val textTriplets = mutableListOf<TextTriplet>()
-
-        // Process every three items as a triplet
-        for (i in texts.indices step 3) {
-            val neutral = texts.getOrNull(i) ?: break // If there's no neutral text, skip creating a triplet
-            val uncertain = texts.getOrNull(i + 1) ?: neutral // Use neutral if uncertain text is missing
-            val certain = texts.getOrNull(i + 2) ?: uncertain // Use uncertain (or neutral) if certain text is missing
-
-            textTriplets.add(TextTriplet(neutral, uncertain, certain))
-        }
-
-        this.add(Statement(id, type, textTriplets, isIndexical))
-    }
-    fun addStatementNeutral(id: String, type: EnumStatementTypes, isIndexical: Boolean, vararg texts: String) {
-        val textTriplets = texts.map { TextTriplet(it) }.toMutableList()
-        this.add(Statement(id,  type, textTriplets, isIndexical))
-    }
-}
 
 class Claim(
     val id: String,
@@ -100,12 +80,12 @@ class Claim(
     }
     fun getText(question: Question): String {
         // Will return the text of the claim depending on the state the question is in
-        // If the interaction is in QuestionReview, the reviewStatement will be provided.
+        // If both are in agreement, the friendlyStatement will be provided.
         // By default, persuasionStatement will be returned.
-        if(question.currentState?.name == QuestionReview.name )
-            return friendlyStatement.getText(question)
+        return if(question.inAgreement())
+            friendlyStatement.getText(question)
         else
-            return unfriendlyStatement.getText(question)
+            unfriendlyStatement.getText(question)
     }
 
     fun getAssertion(question: Question): String? {

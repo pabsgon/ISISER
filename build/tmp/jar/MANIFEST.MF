@@ -10,22 +10,31 @@ Class-Path: furhat-commons-2.7.0.jar ktor-serialization-jackson-jvm-2.
  .jar ktor-websockets-jvm-2.3.1.jar ktor-http-cio-jvm-2.3.1.jar ktor-h
  ttp-jvm-2.3.1.jar ktor-network-jvm-2.3.1.jar ktor-utils-jvm-2.3.1.jar
   ktor-io-jvm-2.3.1.jar kotlin-stdlib-jdk8-1.8.21.jar logback-classic-
- 1.2.11.jar slf4j-api-1.7.36.jar kotlin-stdlib-jdk7-1.8.21.jar jackson
- -databind-2.15.1.jar jackson-annotations-2.15.1.jar jackson-core-2.15
- .1.jar jackson-module-kotlin-2.15.1.jar kotlin-reflect-1.8.21.jar kot
- linx-serialization-core-jvm-1.5.1.jar kotlinx-serialization-json-jvm-
- 1.5.1.jar kotlin-stdlib-1.8.21.jar kotlinx-coroutines-jdk8-1.7.1.jar 
- kotlinx-coroutines-core-jvm-1.7.1.jar liblinear-2.30.jar commons-csv-
- 1.5.jar log4j-core-2.17.1.jar log4j-api-2.17.1.jar logback-core-1.2.1
- 1.jar kotlin-stdlib-common-1.8.21.jar annotations-23.0.0.jar config-1
- .4.2.jar netty-codec-http2-4.1.92.Final.jar alpn-api-1.1.3.v20160715.
- jar netty-transport-native-kqueue-4.1.92.Final.jar netty-transport-na
- tive-epoll-4.1.92.Final.jar freemarker-2.3.32.jar netty-codec-http-4.
- 1.92.Final.jar netty-handler-4.1.92.Final.jar netty-codec-4.1.92.Fina
- l.jar netty-transport-classes-kqueue-4.1.92.Final.jar netty-transport
- -classes-epoll-4.1.92.Final.jar netty-transport-native-unix-common-4.
- 1.92.Final.jar netty-transport-4.1.92.Final.jar netty-buffer-4.1.92.F
- inal.jar netty-resolver-4.1.92.Final.jar netty-common-4.1.92.Final.ja
- r
+ 1.2.11.jar slf4j-api-1.7.36.jar google-api-services-sheets-v4-rev581-
+ 1.25.0.jar google-api-client-1.30.10.jar google-oauth-client-jetty-1.
+ 31.0.jar kotlin-stdlib-jdk7-1.8.21.jar jackson-databind-2.15.1.jar go
+ ogle-http-client-jackson2-1.36.0.jar jackson-core-2.15.1.jar jackson-
+ annotations-2.15.1.jar jackson-module-kotlin-2.15.1.jar kotlin-reflec
+ t-1.8.21.jar kotlinx-serialization-core-jvm-1.5.1.jar kotlinx-seriali
+ zation-json-jvm-1.5.1.jar kotlin-stdlib-1.8.21.jar kotlinx-coroutines
+ -jdk8-1.7.1.jar kotlinx-coroutines-core-jvm-1.7.1.jar liblinear-2.30.
+ jar commons-csv-1.5.jar log4j-core-2.17.1.jar log4j-api-2.17.1.jar lo
+ gback-core-1.2.11.jar google-oauth-client-java6-1.31.0.jar google-oau
+ th-client-1.31.0.jar google-http-client-1.36.0.jar opencensus-contrib
+ -http-util-0.24.0.jar guava-29.0-android.jar kotlin-stdlib-common-1.8
+ .21.jar annotations-23.0.0.jar config-1.4.2.jar netty-codec-http2-4.1
+ .92.Final.jar alpn-api-1.1.3.v20160715.jar netty-transport-native-kqu
+ eue-4.1.92.Final.jar netty-transport-native-epoll-4.1.92.Final.jar fr
+ eemarker-2.3.32.jar jsr305-3.0.2.jar failureaccess-1.0.1.jar listenab
+ lefuture-9999.0-empty-to-avoid-conflict-with-guava.jar checker-compat
+ -qual-2.5.5.jar error_prone_annotations-2.3.4.jar j2objc-annotations-
+ 1.3.jar netty-codec-http-4.1.92.Final.jar netty-handler-4.1.92.Final.
+ jar netty-codec-4.1.92.Final.jar netty-transport-classes-kqueue-4.1.9
+ 2.Final.jar netty-transport-classes-epoll-4.1.92.Final.jar netty-tran
+ sport-native-unix-common-4.1.92.Final.jar netty-transport-4.1.92.Fina
+ l.jar netty-buffer-4.1.92.Final.jar netty-resolver-4.1.92.Final.jar n
+ etty-common-4.1.92.Final.jar httpclient-4.5.12.jar httpcore-4.4.13.ja
+ r opencensus-api-0.24.0.jar commons-logging-1.2.jar commons-codec-1.1
+ 1.jar grpc-context-1.22.1.jar
 Main-Class: furhatos.app.isiser.IsiserSkill
 

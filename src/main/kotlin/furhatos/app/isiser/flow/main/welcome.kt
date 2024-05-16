@@ -1,8 +1,9 @@
 package furhatos.app.isiser.flow.main
 
-import furhatos.app.isiser.Session
+import furhatos.app.isiser.App
 import furhatos.app.isiser.flow.Parent
-import furhatos.app.isiser.nlu.Greetings
+import furhatos.app.isiser.handlers.SessionEvent
+import furhatos.app.isiser.setting.EventType
 import furhatos.flow.kotlin.*
 import furhatos.gestures.Gestures
 import furhatos.nlu.common.No
@@ -10,7 +11,7 @@ import furhatos.nlu.common.Yes
 
 val Welcome : State = state(Parent) {
     onEntry {
-        Session.printState(thisState)
+        App.printState(thisState)
         furhat.gesture(OpenEyes, priority = 10)
         furhat.gesture(Gestures.Smile(duration = 2.0))
 
@@ -29,13 +30,14 @@ val Welcome : State = state(Parent) {
             + "How you doing?"})
     }
     onReentry {
-        Session.printState(thisState,"R")
-        furhat.say {
+        App.printState(thisState,"R")
+        furhat.ask {
             +"Oh, you there."
             +delay(1000)
             +"Shall we carry on?"
         }
     }
+
     onResponse{
         goto(ReviewInstructions)
     }
@@ -70,4 +72,5 @@ val ReviewInstructions : State = state(Parent) {
     onResponse {
         reentry()
     }
+
 }

@@ -1,7 +1,9 @@
-package furhatos.app.isiser.setting
+package furhatos.app.isiser.handlers
 
 
-import furhatos.app.isiser.Session
+import furhatos.app.isiser.App
+import furhatos.app.isiser.setting.EventType
+import furhatos.app.isiser.setting.EnumStages
 import furhatos.event.Event
 import furhatos.event.EventSystem
 import io.ktor.server.routing.*
@@ -18,7 +20,67 @@ import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import java.time.Duration
 
+class GUIHandler(evFactory: EventFactory) {
+    private val EvFactory: EventFactory = evFactory
+    private var stage: EnumStages = EnumStages.STAGE_0
+    private var markedAnswer = "" //EnumAnswer.UNDEFINED
+    private var firstQuestionPassed = false
+    private var guiLoaded = false
 
+
+    fun getStage(): EnumStages = stage
+    fun getStageName(): String = stage.toString()
+    fun setStage(value: String) {stage = EnumStages.fromString(value)}
+    fun isQuestionStage(): Boolean = stage.isQuestionStage()
+    fun isFirstQuestion(): Boolean = !firstQuestionPassed && isQuestionStage()
+    fun isGUILoaded(): Boolean = guiLoaded
+    fun setGUILoaded(){ guiLoaded = true}
+    fun getAnswer(): String = markedAnswer
+
+    // Method to set the stage
+    fun setAnswer(value: String) {
+        if(value != "" || value != markedAnswer )markedAnswer = value
+    }
+    fun isAnswerMarked(): Boolean = markedAnswer != ""
+
+    fun handleEvent(event: GUIEvent){
+        // The GUI event represents the instant where the Application.module() (below in this file)
+        // answered the request from the GUI. This means that the event will contain the request data
+        // and also the response data, including if it was accepted. This acceptance is actually a
+        // promise. That event needs to be handled now, and accomplish the promise.
+        if(event.isAcceptable){
+            setStage(event.getResponseValue("stage"))
+            setAnswer(event.getResponseValue("answer"))
+            when (event.type) {
+                EventType.ANSWER_MARKED -> {
+                    // The answer has been updated above.
+                }
+                EventType.SYNCH_REQUESTED -> {
+                    // This happens when the GUI reconnects. The server should not do anything.
+                }
+                EventType.NEW_STAGE_REQUESTED -> {
+                    if(stage.isStartingStage() ){
+                        EvFactory.triggerSessionEvent(EventType.USER_SET, event.getResponseValue("subject"))
+                    }else {
+                        //THIS ASSUMES THAT THE STARTING PAGE CANNOT BE A QUESTION STAGE
+                        if (!isFirstQuestion()) {
+                            EvFactory.triggerSessionEvent(EventType.ANSWER_CONFIRMED, getStage())
+                        } else {
+                            firstQuestionPassed = true
+                        }
+                        EvFactory.triggerSessionEvent(EventType.QUESTION_SET, getStage())
+                    }
+                }
+                else -> {
+
+                }
+            }
+
+        }
+
+
+    }
+}
 fun Application.module() {
     println("Starting server...")
     install(CORS) {
@@ -48,21 +110,17 @@ fun Application.module() {
             resources("gui")
             intercept(ApplicationCallPipeline.Call) {
                 if (call.request.uri == "/") {
-                    if(Session.isGUILoaded()){
-                        EventSystem.send(GUIEvent(EventType.GUI_STARTED, Session.getStage(), Session.getSubject()))
+                    if(App.isGUILoaded()){
+                        EventSystem.send(GUIEvent(EventType.GUI_STARTED))
                     }else{
-                        Session.setGUILoaded()
-                        EventSystem.send(GUIEvent(EventType.GUI_RELOADED, Session.getStage(), Session.getSubject()))
+                        App.setGUILoaded()
+                        EventSystem.send(GUIEvent(EventType.GUI_RELOADED))
                     }
                 }
             }
         }
         post("/receive") {
             val data = call.receive<Map<String, String>>()
-            /*val message = data["message"] ?: "No message"
-            val stage = data["stage"] ?: Session.getStage()
-            val answer = data["answer"] ?: ""
-            */
             /*
                 This is the handler of the messages coming from the GUI, which may contain two fields:
                     1. stage
@@ -91,33 +149,12 @@ fun Application.module() {
                             - the user selected the CONFIRM button of the question.
              */
 
-            val guiLoaded = Session.isGUILoaded()
+            val guiLoaded = App.isGUILoaded()
 
-            /*
-            val statusStr = if (guiLoaded) " [ACCEPTED]" else " [REJECTED]"
-            val status = if (guiLoaded) 0 else 1
-            val statusCode: HttpStatusCode = if (guiLoaded) HttpStatusCode.OK else HttpStatusCode.Forbidden
-            if(guiLoaded){
-                Session.setStage(stage)
-                Session.setAnswer(answer)
-            }
-             */
-            val event = GUIEvent(data, Session.getStage(), Session.getSubject(), guiLoaded)
-            if(event.isAcceptable){
-                Session.setStage(event.getResponseValue("stage"))
-                Session.setSubject(event.getResponseValue("subject"))
-                Session.setAnswer(event.getResponseValue("answer"))
-            }
+            val event = GUIEvent(data, guiLoaded)
 
-            println("XXXX isGuiloaded $event.responseStatusCode")
+            println("XXXGUIEvent ${event.responseStatusCode.toString()}")
             call.respond(event.responseStatusCode, event.responseData)  // Ensure this is a proper JSON response
-
-            /*call.respond(statusCode, mapOf("status" to status,
-                "received" to message,
-                "stage" to stage))  // Ensure this is a proper JSON response
-
-            val event2 = GUIEvent2(message + statusStr)
-            */
 
             // Create and send the event
             EventSystem.send(event)
@@ -125,7 +162,7 @@ fun Application.module() {
         var currentSession: WebSocketSession? = null
 
         webSocket("/updates") {
-            Session.currentSession = this
+            App.currentSession = this
             try {
                 for (frame in incoming) {
                     when (frame) {
@@ -150,24 +187,16 @@ fun Application.module() {
             } catch (e: Exception) {
                 println("WebSocket error: ${e.localizedMessage}")
             } finally {
-                if (Session.currentSession == this) {
-                    Session.currentSession = null
+                if (App.currentSession == this) {
+                    App.currentSession = null
                 }
             }
         }
     }
 }
 
-class ISISEREvent(val msg: String, val typ: EventType? = EventType.GENERIC) : Event(){
-    var message: String = msg ?: "No message"
-    val type: EventType = typ!!
-}
-class InteractionEvent(val msg: String, val typ: EventType? = EventType.GENERIC) : Event(){
-    var message: String = msg ?: "No message"
-    val type: EventType = typ!!
-}
 
-class GUIEvent(initialData: Map<String, String>, val appStage: StagesEnum, val appSubject: String, val isGUIloaded: Boolean ) : Event() {
+class GUIEvent2(initialData: Map<String, String>, val appStage: EnumStages, val appSubject: String, val isGUIloaded: Boolean ) : Event() {
     val isQuestionStage: Boolean = false
     var requestData: Map<String, String> = initialData.toMap() // Create a defensive copy
     val type: EventType = EventType.fromString(requestData["type"] ?: "GENERIC")
@@ -179,18 +208,19 @@ class GUIEvent(initialData: Map<String, String>, val appStage: StagesEnum, val a
         "answer" to  (requestData["answer"] ?: ""),
         "subject" to (if (isAcceptable) guiSubject else appSubject),
         "stage" to (requestData["stage"] ?: appStage.toString())) //
+
     val responseStatusCode: HttpStatusCode = if (isGUIloaded) HttpStatusCode.OK else HttpStatusCode.Forbidden
 
 
     fun getRequestValue(key: String, defaultValue: String = ""): String = requestData.getOrDefault(key, defaultValue)
     fun getResponseValue(key: String, defaultValue: String = ""): String = responseData.getOrDefault(key, defaultValue)
 
-    constructor(message: String, appStage: StagesEnum, appSubject: String ) : this(
+    constructor(message: String, appStage: EnumStages, appSubject: String ) : this(
         initialData = mapOf("message" to message, "type" to message),
         appStage = appStage, // Defaulting appStage to a sensible default
         appSubject = appSubject, // Defaulting appSubject to a sensible default
         isGUIloaded = true // Defaulting accept to false or true as needed
     )
-    constructor(evType: EventType, appStage: StagesEnum, appSubject: String ) : this(evType.toString(), appStage, appSubject)
+    constructor(evType: EventType, appStage: EnumStages, appSubject: String ) : this(evType.toString(), appStage, appSubject)
     init {}
 }
