@@ -1,60 +1,47 @@
-2024-05-16 12:40:25	Autoreload is disabled because the development mode is off.
-2024-05-16 12:40:26	Application started in 0.652 seconds.
-2024-05-16 12:40:26	Responding at http://127.0.0.1:8888
-2024-05-16 12:40:30	----------------- NEW EXECUTION-------------------
-2024-05-16 12:40:30	ActionGesture	CloseEyes
-2024-05-16 12:40:31	GUIEvent	GUI_RELOADED	GUI_RELOADED [ACCEPTED]	0.0	UNDEFINED	UNDEFINED	Init
-2024-05-16 12:40:31	GUIEvent	SYNCH_REQUESTED	SYNCH REQUESTED .. [ACCEPTED]	0.0	UNDEFINED	UNDEFINED	Init
-2024-05-16 12:40:33	GUIEvent	NEW_STAGE_REQUESTED	STAGE[0.2] [5] REQUESTED .. [ACCEPTED]	0.0	UNDEFINED	UNDEFINED	Init
-2024-05-16 12:40:33	SessionEvent	USER_SET	USER TO ACTIVATE.	0.2	5	UNDEFINED	Init
-2024-05-16 12:40:33	ActionGesture	OpenEyes
-2024-05-16 12:40:33	ActionGesture	Smile
-2024-05-16 12:40:33	MonitorSpeechStart	Hi there	477
-2024-05-16 12:40:33	ActionGesture	BrowRaise
-2024-05-16 12:40:35	ActionGesture	BigSmile
-2024-05-16 12:40:35	MonitorSpeechStart	Nice to meet you.	824
-2024-05-16 12:40:35	ActionGesture	BrowRaise
-2024-05-16 12:40:36	GUIEvent	NEW_STAGE_REQUESTED	STAGE[1] [5] REQUESTED .. [ACCEPTED]	0.2	5	CONDITION1	Init
-2024-05-16 12:40:36	SessionEvent	QUESTION_SET	NEW QUESTION TO ACTIVATE	1		CONDITION1	Init
-2024-05-16 12:40:37	MonitorSpeechStart	Ok #QNUM#. Let's see	2658
-2024-05-16 12:40:38	ActionGesture	BrowRaise
-2024-05-16 12:40:39	ActionGesture	BrowRaise
-2024-05-16 12:40:42	ActionGesture	Smile
-2024-05-16 12:40:43	SenseSpeech	yes	1312
-2024-05-16 12:40:43	MonitorSpeechStart	ASSENT	577
-2024-05-16 12:40:44	ActionGesture	BrowRaise
-2024-05-16 12:40:44	MonitorSpeechStart	We need to mark the answer.	1250
-2024-05-16 12:40:45	ActionGesture	BrowRaise
-2024-05-16 12:40:48	ActionGesture	Smile
-2024-05-16 12:40:49	SenseSpeech	Maybe	1019
-2024-05-16 12:40:51	MonitorSpeechStart	NON_COMMITTAL	1104
-2024-05-16 12:40:51	ActionGesture	BrowRaise
-2024-05-16 12:40:51	ActionGesture	BrowRaise
-2024-05-16 12:40:52	MonitorSpeechStart	I think we need to mark the answer. I did already.	2807
-2024-05-16 12:40:53	ActionGesture	BrowRaise
-2024-05-16 12:40:55	ActionGesture	BrowRaise
-2024-05-16 12:40:59	ActionGesture	Smile
-2024-05-16 12:41:00	SenseSpeech	I don't know	1273
-2024-05-16 12:41:00	MonitorSpeechStart	NON_COMMITTAL	1104
-2024-05-16 12:41:00	ActionGesture	BrowRaise
-2024-05-16 12:41:01	ActionGesture	BrowRaise
-2024-05-16 12:41:02	MonitorSpeechStart	Before moving on, you need to mark your answer. Did you?	3348
-2024-05-16 12:41:02	ActionGesture	BrowRaise
-2024-05-16 12:41:04	ActionGesture	BrowRaise
-2024-05-16 12:41:10	ActionGesture	Smile
-2024-05-16 12:41:11	SenseSpeech	I marked it	1302
-2024-05-16 12:41:12	MonitorSpeechStart	ANSWER_MARKED	1389
-2024-05-16 12:41:12	ActionGesture	BrowRaise
-2024-05-16 12:41:13	ActionGesture	BrowRaise
-2024-05-16 12:41:13	MonitorSpeechStart	We need to mark the answer.	1250
-2024-05-16 12:41:14	ActionGesture	BrowRaise
-2024-05-16 12:41:15	GUIEvent	ANSWER_MARKED	ANSWER[FALSE] [1] [5] SENT .. [ACCEPTED]	1	5	CONDITION1	Init
-2024-05-16 12:41:19	ActionGesture	Smile
-2024-05-16 12:41:21	SenseSpeech	okay my market	1783
-2024-05-16 12:41:21	MonitorSpeechStart	ASSENT	577
-2024-05-16 12:41:21	ActionGesture	BrowRaise
-2024-05-16 12:41:22	MonitorSpeechStart	DISCLOSURE 1 NEUTRAL FOR Q 1	2063
-2024-05-16 12:41:23	ActionGesture	BrowRaise
-2024-05-16 12:41:24	ActionGesture	BrowRaise
-2024-05-16 12:41:29	MonitorSpeechStart	DISCLOSURE 1 NEUTRAL FOR Q 1	2063
-2024-05-16 12:41:30	ActionGesture	BrowRaise
+2024-05-17 15:06:11	Autoreload is disabled because the development mode is off.
+2024-05-17 15:06:12	Application started in 0.584 seconds.
+2024-05-17 15:06:12	Responding at http://127.0.0.1:8888
+2024-05-17 15:06:14	----------------- NEW EXECUTION-------------------
+2024-05-17 15:06:14	ActionGesture	CloseEyes
+2024-05-17 15:06:29	Autoreload is disabled because the development mode is off.
+2024-05-17 15:06:30	Application started in 0.626 seconds.
+2024-05-17 15:06:30	Responding at http://127.0.0.1:8888
+2024-05-17 15:06:31	----------------- NEW EXECUTION-------------------
+2024-05-17 15:06:31	ActionGesture	CloseEyes
+2024-05-17 15:06:32	GUIEvent	GUI_RELOADED	GUI_RELOADED [ACCEPTED]	0.0	UNDEFINED	UNDEFINED	Init
+2024-05-17 15:06:33	GUIEvent	SYNCH_REQUESTED	SYNCH REQUESTED .. [ACCEPTED]	0.0	UNDEFINED	UNDEFINED	Init
+2024-05-17 15:06:43	GUIEvent	NEW_STAGE_REQUESTED	STAGE[0.2] [4] REQUESTED .. [ACCEPTED]	0.0	UNDEFINED	UNDEFINED	Init
+2024-05-17 15:06:43	SessionEvent	USER_SET	USER TO ACTIVATE.	0.2	4	UNDEFINED	Init
+2024-05-17 15:06:43	ActionGesture	OpenEyes
+2024-05-17 15:06:43	ActionGesture	Smile
+2024-05-17 15:06:44	MonitorSpeechStart	Hi there	477
+2024-05-17 15:06:44	ActionGesture	BrowRaise
+2024-05-17 15:06:45	ActionGesture	BigSmile
+2024-05-17 15:06:45	MonitorSpeechStart	Nice to meet you.	824
+2024-05-17 15:06:46	ActionGesture	BrowRaise
+2024-05-17 15:06:47	MonitorSpeechStart	How you doing?	741
+2024-05-17 15:06:47	ActionGesture	BrowRaise
+2024-05-17 15:06:49	GUIEvent	NEW_STAGE_REQUESTED	STAGE[1] [4] REQUESTED .. [ACCEPTED]	0.2	4	CONDITION1	Init
+2024-05-17 15:06:49	SessionEvent	QUESTION_SET	NEW QUESTION TO ACTIVATE	1		CONDITION1	Init
+2024-05-17 15:06:49	MonitorSpeechStart	Ok #QNUM#. Let's see	2658
+2024-05-17 15:06:51	ActionGesture	BrowRaise
+2024-05-17 15:06:51	ActionGesture	BrowRaise
+2024-05-17 15:06:57	MonitorSpeechStart	Ok let me know when you marked the answer	2040
+2024-05-17 15:06:59	ActionGesture	BrowRaise
+2024-05-17 15:07:02	GUIEvent	ANSWER_MARKED	ANSWER[TRUE] [1] [4] SENT .. [ACCEPTED]	1	4	CONDITION1	Init
+2024-05-17 15:07:02	ActionGesture	Smile
+2024-05-17 15:07:04	SenseSpeech	okay	1549
+2024-05-17 15:07:04	MonitorSpeechStart	ASSENT	577
+2024-05-17 15:07:04	ActionGesture	BrowRaise
+2024-05-17 15:07:05	MonitorSpeechStart	I replied that it is true. What did you answer?	2636
+2024-05-17 15:07:07	ActionGesture	BrowRaise
+2024-05-17 15:07:10	ActionGesture	Smile
+2024-05-17 15:07:12	SenseSpeech	yeah me too	1228
+2024-05-17 15:07:12	MonitorSpeechStart	Review!	524
+2024-05-17 15:08:19	MonitorSpeechStart	FRIENDLY CLAIM 1 (Part1) NEUTRAL FOR Q1	3580
+2024-05-17 15:08:22	ActionGesture	BrowRaise
+2024-05-17 15:08:28	MonitorSpeechStart	Checkpoint!	648
+2024-05-17 15:08:28	ActionGesture	BrowRaise
+2024-05-17 15:08:29	MonitorSpeechStart	we agree with #ROBOT_ANSWER# as we discussed?	3387
+2024-05-17 15:08:30	ActionGesture	BrowRaise
+2024-05-17 15:08:32	ActionGesture	BrowRaise

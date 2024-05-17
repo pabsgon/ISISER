@@ -2,12 +2,14 @@ package furhatos.app.isiser.setting
 const val GUI = "GUI"
 const val UNDEFINED = "UNDEFINED"
 const val NO_MESSAGE = "NO MESSAGE"
+const val SAFE_STRING = "THIS IS A WARNING"
+const val FOR_PERSUASION = false
+const val FOR_REVIEW = true
 const val UNFRIENDLY_SUFFIX = "_U"
 const val FRIENDLY_SUFFIX = "_F"
 const val ASSERTIONS_PER_CLAIM = 2
 const val MAX_QUESTIONS=8
 const val SOURCEDATA_SETTINGS_SIZE = 9 // the first N elements of each row are settings, the rest texts.
-const val SOURCEDATA_CLAIM_SIZE = 6 // the first N elements of each row are settings, the rest texts.
 const val SOURCEDATA_TRUE = "TRUE"
 const val SOURCEDATA_FALSE = "FALSE"
 const val SOURCEDATA_FRIENDLY = "FRIENDLY"
@@ -47,6 +49,13 @@ enum class EnumAnswer {
                 "FALSE" -> EnumAnswer.FALSE
                 else -> EnumAnswer.UNDEFINED
             }
+        }
+    }
+    fun getOpposite(): EnumAnswer {
+        return when (this) {
+            EnumAnswer.TRUE -> EnumAnswer.FALSE
+            EnumAnswer.FALSE -> EnumAnswer.TRUE
+            else -> EnumAnswer.UNDEFINED
         }
     }
 }
@@ -109,7 +118,7 @@ enum class EventType(val defMsg: String, val cat: EventCategory) {
                 // so it connect the flow  the button on the bottom to advance to the next stage, or when presses "Confirm" after answering. But it is also thought
                 // to be used in case of emergency, after a fatal error occurred for some reason, and things need to be restarted at a particular stage. In that case, this
                 // can be used to force the server to move to a particular stage.
-                "ANSWER_SENT" -> ANSWER_MARKED
+                "ANSWER_MARKED" -> ANSWER_MARKED
                 else -> GENERIC
             }
         }
@@ -138,14 +147,14 @@ enum class EnumQuestionStageStates {// CONNECTED TO THE DATA SPREADSHEET
     ULTIMATUM,
     CONFIRMATION
 }
-enum class EnumSubjectRejoinders {// CONNECTED TO THE DATA SPREADSHEET
+enum class EnumRejoinders {// CONNECTED TO THE DATA SPREADSHEET
     I_AM_DONE,
     ANSWER_MARKED,
     ANSWER_TRUE,
     ANSWER_FALSE,
     REJOINDER_AGREED,
     REJOINDER_DISAGREED,
-    REJOINDER_NONCOMMITED,
+    /* REJOINDER_NONCOMMITED, This was considered, but never used. */
     PROBE,
     DENIAL,
     ELABORATION_REQUEST,
@@ -155,7 +164,15 @@ enum class EnumSubjectRejoinders {// CONNECTED TO THE DATA SPREADSHEET
     OFF_TOPIC,
     ASSENT,
     REPEAT_REQUEST,
-    SILENCE
+    SILENCE;
+    fun getAnswer(): EnumAnswer {
+        return when (this) {
+            ANSWER_TRUE -> EnumAnswer.TRUE
+            ANSWER_FALSE ->EnumAnswer.FALSE
+            else -> EnumAnswer.UNDEFINED
+        }
+    }
+
 }
 
 enum class EnumStatementTypes { // CONNECTED TO THE DATA SPREADSHEET

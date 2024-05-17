@@ -2,16 +2,9 @@ package furhatos.app.isiser.nlu
 
 import com.sun.tracing.Probe
 import furhat.libraries.standard.NluLib
-import furhatos.app.isiser.setting.EnumSubjectRejoinders
-import furhatos.flow.kotlin.raise
-import furhatos.nlu.ComplexEnumEntity
-import furhatos.nlu.EnumEntity
+import furhatos.app.isiser.setting.EnumRejoinders
 import furhatos.nlu.Intent
-import furhatos.nlu.ListEntity
 import furhatos.nlu.common.*
-import furhatos.nlu.common.Number
-import furhatos.util.Language
-
 
 
 //Greetings and beyond are defined in resources/furhatos.app.isiser.nlu
@@ -37,48 +30,46 @@ class Agree: Intent()
 
 // -------------------------------
 
-class Case1 : Intent {
-    var rejoinder: EnumSubjectRejoinders
+class AllIntents : Intent {
+    var rejoinder: EnumRejoinders
 
     // Primary constructor accepting an Intent and initializing rejoinder based on the intent
     constructor() {
-        rejoinder = EnumSubjectRejoinders.OFF_TOPIC
+        rejoinder = EnumRejoinders.OFF_TOPIC
     }
     constructor(intent: Intent) : this() {
         rejoinder = when (intent) {
-            is NluLib.IAmDone -> EnumSubjectRejoinders.I_AM_DONE
-            is AnswerFalse -> EnumSubjectRejoinders.ANSWER_FALSE
-            is AnswerTrue -> EnumSubjectRejoinders.ANSWER_TRUE
+            is NluLib.IAmDone -> EnumRejoinders.I_AM_DONE
+            is AnswerFalse -> EnumRejoinders.ANSWER_FALSE
+            is AnswerTrue -> EnumRejoinders.ANSWER_TRUE
 
-            is AnswerMarked -> EnumSubjectRejoinders.ANSWER_MARKED
+            is AnswerMarked -> EnumRejoinders.ANSWER_MARKED
 
-            is RejoinderAgreed -> EnumSubjectRejoinders.REJOINDER_AGREED
-            is RejoinderDisagreed -> EnumSubjectRejoinders.REJOINDER_DISAGREED
+            is RejoinderAgreed -> EnumRejoinders.REJOINDER_AGREED
+            is RejoinderDisagreed -> EnumRejoinders.REJOINDER_DISAGREED
 
-            is No -> EnumSubjectRejoinders.DENIAL
-            is Disagree -> EnumSubjectRejoinders.DENIAL
+            is No -> EnumRejoinders.DENIAL
+            is Disagree -> EnumRejoinders.DENIAL
 
-            is Probe -> EnumSubjectRejoinders.PROBE
-            is ElaborationRequest -> EnumSubjectRejoinders.ELABORATION_REQUEST
-            is RequestRepeat -> EnumSubjectRejoinders.REPEAT_REQUEST
-            is Wait -> EnumSubjectRejoinders.TIME_REQUEST
+            is Probe -> EnumRejoinders.PROBE
+            is ElaborationRequest -> EnumRejoinders.ELABORATION_REQUEST
 
-            is Maybe -> EnumSubjectRejoinders.NON_COMMITTAL
-            is DontKnow -> EnumSubjectRejoinders.NON_COMMITTAL
-            is Backchannel -> EnumSubjectRejoinders.BACKCHANNEL
+            is Maybe -> EnumRejoinders.NON_COMMITTAL
+            is DontKnow -> EnumRejoinders.NON_COMMITTAL
+            is Backchannel -> EnumRejoinders.BACKCHANNEL
 
-            is Agree -> EnumSubjectRejoinders.ASSENT
-            is Yes -> EnumSubjectRejoinders.ASSENT
-            else -> EnumSubjectRejoinders.OFF_TOPIC
+            is Agree -> EnumRejoinders.ASSENT
+            is Yes -> EnumRejoinders.ASSENT
+            else -> EnumRejoinders.OFF_TOPIC
         }
     }
     // Secondary constructor accepting an EnumSubjectRejoinders and initializing rejoinder to it
-    constructor(e: EnumSubjectRejoinders) : this() {
+    constructor(e: EnumRejoinders) : this() {
         rejoinder = e
     }
 }
-class Case2  (val  e: EnumSubjectRejoinders = EnumSubjectRejoinders.OFF_TOPIC) : Intent(){
-    var rejoinder: EnumSubjectRejoinders = e
+class Case2  (val  e: EnumRejoinders = EnumRejoinders.OFF_TOPIC) : Intent(){
+    var rejoinder: EnumRejoinders = e
 }
 
 /*

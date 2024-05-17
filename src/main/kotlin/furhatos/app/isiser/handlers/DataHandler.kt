@@ -171,18 +171,30 @@ data class DataHandler(val evFactory: EventFactory,
 
 
     private fun addClaim(questions: MutableList<Question>, qIndex: Int, id: String, subType: Boolean, textTriplets:  MutableList<TextTriplet> ) {
+    //Here the list of triplets will contain the 1) the UNFRIENDLY claim, and the rest of triplets must be used to create a statement, which
+        //will be added to the list of friendly statements of the claim.
 
         if (qIndex < 0) {
             error("Error loading data: Question Index = [1.. $MAX_QUESTIONS]")
         } else {
-            val s1 = Statement(id + UNFRIENDLY_SUFFIX, EnumStatementTypes.CLAIM, textTriplets.subList(0, 1), subType)
-            val s2 = Statement(id + FRIENDLY_SUFFIX, EnumStatementTypes.CLAIM, textTriplets.subList(1, 2), subType)
-            statements.add(s1)
-            statements.add(s2)
-            // Call addStatement on the item at qIndex if it's within the bounds of the list
-            questions.getOrNull(qIndex)?.addClaim(Claim(id,s1,s2)) ?: println("Error loading data: Question Index is out of bounds")
+            val tempStatements: MutableList<Statement> = mutableListOf()
+
+            // Add the unfriendly statement (first triplet)
+            val s1 = Statement(id + UNFRIENDLY_SUFFIX, EnumStatementTypes.CLAIM, textTriplets.subList(0, 1).toMutableList(), subType)
+            tempStatements.add(s1)
+
+            // Add the remaining triplets as friendly statements
+            for (i in 1 until textTriplets.size) {
+                val s = Statement(id + FRIENDLY_SUFFIX + i, EnumStatementTypes.CLAIM, mutableListOf(textTriplets[i]), subType)
+                tempStatements.add(s)
+            }
+
+            // Call addClaim on the item at qIndex if it's within the bounds of the list
+            questions.getOrNull(qIndex)?.addClaim(Claim(id, tempStatements)) ?: println("Error loading data: Question Index is out of bounds")
         }
     }
+
+
     fun processLine(questions: MutableList<Question>, c: Int, settings: List<Any>, texts: List<Any>) {
         val textsAsStringArray = texts.map { it.toString() }.toTypedArray()
         val id = settings[SOURCEDATA_ID].toString()
@@ -193,10 +205,6 @@ data class DataHandler(val evFactory: EventFactory,
         val pertriplet = settings[SOURCEDATA_PERTRIPLET].toString() == SOURCEDATA_TRUE
 
 
-
-        if(type == EnumStatementTypes.CLAIM && texts.size!= SOURCEDATA_CLAIM_SIZE){
-            error("Error loading data. Claim in row $c must have exactly $SOURCEDATA_CLAIM_SIZE items.")
-        }
         println("DATA LOADING: ----[$id]-----")
         println("Calling addStatement with values - qIndex: $qIndex, id: $id, type: $type, subType: $subType, stIndex: $stIndex, pertriplet: $pertriplet, texts: ${textsAsStringArray.joinToString(", ")}")
 

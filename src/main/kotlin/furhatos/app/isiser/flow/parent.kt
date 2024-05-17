@@ -6,6 +6,7 @@ import furhatos.app.isiser.flow.main.Sleep
 import furhatos.app.isiser.flow.main.Welcome
 import furhatos.app.isiser.handlers.SessionEvent
 import furhatos.app.isiser.nlu.Backchannel
+import furhatos.app.isiser.nlu.RejoinderDisagreed
 import furhatos.app.isiser.setting.*
 import furhatos.flow.kotlin.*
 import furhatos.nlu.common.Goodbye
@@ -33,13 +34,7 @@ val Parent: State = state {
     onResponseFailed {
         furhat.say("I think my connection broke. Did you say something?")
     }
-    onEvent<SessionEvent> {
-        when(it.type){
-            EventType.USER_SET -> App.goto(Welcome)
-            EventType.QUESTION_SET -> App.goto(QuestionReflection)
-            else -> {}
-        }
-    }
+
     onResponse<RequestRepeat>{
         furhat.ask("Yes I would repeat it but I have not been programmed for this yet")
     }
@@ -47,13 +42,28 @@ val Parent: State = state {
         furhat.ask("Yes I would give you more time but I have not been programmed for this yet")
     }
     onResponse<Goodbye>{
-        goto(QuestionReflection)
+        if(TESTING_LEVEL>0) {
+            goto(QuestionReflection)
+        }else{
+            furhat.ask("Oh!")
+        }
     }
     onResponse {
         if(seemsLikeBackchannel(it.text, it.speech.length)){
             raise(Backchannel())
         }else{
-            furhat.ask(session.getElaborationRequest())
+            if(session.inAgreement()){
+                furhat.ask(session.getElaborationRequest())
+            }else {
+                raise(RejoinderDisagreed())
+            }
+        }
+    }
+    onEvent<SessionEvent> {
+        when(it.type){
+            EventType.USER_SET -> App.goto(Welcome)
+            EventType.QUESTION_SET -> App.goto(QuestionReflection)
+            else -> {}
         }
     }
     /*

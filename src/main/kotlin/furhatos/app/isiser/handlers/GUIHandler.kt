@@ -2,6 +2,7 @@ package furhatos.app.isiser.handlers
 
 
 import furhatos.app.isiser.App
+import furhatos.app.isiser.setting.EnumAnswer
 import furhatos.app.isiser.setting.EventType
 import furhatos.app.isiser.setting.EnumStages
 import furhatos.event.Event
@@ -23,56 +24,66 @@ import java.time.Duration
 class GUIHandler(evFactory: EventFactory) {
     private val EvFactory: EventFactory = evFactory
     private var stage: EnumStages = EnumStages.STAGE_0
-    private var markedAnswer = "" //EnumAnswer.UNDEFINED
+    private var markedAnswer = EnumAnswer.UNDEFINED
     private var firstQuestionPassed = false
     private var guiLoaded = false
 
 
     fun getStage(): EnumStages = stage
     fun getStageName(): String = stage.toString()
-    fun setStage(value: String) {stage = EnumStages.fromString(value)}
     fun isQuestionStage(): Boolean = stage.isQuestionStage()
     fun isFirstQuestion(): Boolean = !firstQuestionPassed && isQuestionStage()
     fun isGUILoaded(): Boolean = guiLoaded
+    fun getMarkedAnswer(): EnumAnswer = markedAnswer
+    fun isAnswerMarked(): Boolean = markedAnswer != EnumAnswer.UNDEFINED
+
+
+
     fun setGUILoaded(){ guiLoaded = true}
-    fun getAnswer(): String = markedAnswer
-
-    // Method to set the stage
-    fun setAnswer(value: String) {
-        if(value != "" || value != markedAnswer )markedAnswer = value
+    fun setStage(value: String) {
+        stage = EnumStages.fromString(value)
     }
-    fun isAnswerMarked(): Boolean = markedAnswer != ""
-
+    fun setAnswer(value: String) {
+        // If the web sends an empty string in the request, it means
+        // that it is not an answer-change request, so it should be ignored.
+        if(value != "" )markedAnswer = EnumAnswer.fromString(value)
+    }
+    fun resetAnswer() {markedAnswer = EnumAnswer.UNDEFINED}
     fun handleEvent(event: GUIEvent){
         // The GUI event represents the instant where the Application.module() (below in this file)
         // answered the request from the GUI. This means that the event will contain the request data
         // and also the response data, including if it was accepted. This acceptance is actually a
         // promise. That event needs to be handled now, and accomplish the promise.
         if(event.isAcceptable){
-            setStage(event.getResponseValue("stage"))
-            setAnswer(event.getResponseValue("answer"))
             when (event.type) {
                 EventType.ANSWER_MARKED -> {
                     // The answer has been updated above.
+                    setAnswer(event.getResponseValue("answer"))
                 }
                 EventType.SYNCH_REQUESTED -> {
                     // This happens when the GUI reconnects. The server should not do anything.
                 }
                 EventType.NEW_STAGE_REQUESTED -> {
+                    setStage(event.getResponseValue("stage"))
+                    resetAnswer()
                     if(stage.isStartingStage() ){
                         EvFactory.triggerSessionEvent(EventType.USER_SET, event.getResponseValue("subject"))
                     }else {
                         //THIS ASSUMES THAT THE STARTING PAGE CANNOT BE A QUESTION STAGE
-                        if (!isFirstQuestion()) {
-                            EvFactory.triggerSessionEvent(EventType.ANSWER_CONFIRMED, getStage())
-                        } else {
-                            firstQuestionPassed = true
+                        if (isQuestionStage()) {
+                            if (isFirstQuestion()) {
+                                firstQuestionPassed = true
+                            } else {
+                                EvFactory.triggerSessionEvent(EventType.ANSWER_CONFIRMED, getStage())
+                            }
+                            EvFactory.triggerSessionEvent(EventType.QUESTION_SET, getStage())
+                        }else{
+                            // THis is the farewell stage
                         }
-                        EvFactory.triggerSessionEvent(EventType.QUESTION_SET, getStage())
                     }
                 }
                 else -> {
-
+                    // The rest of cases are the page loading and reloading. Nothing to be done.
                 }
             }
 

@@ -1,6 +1,5 @@
 package furhatos.app.isiser.setting
 
-import furhatos.app.isiser.flow.main.QuestionReview
 import furhatos.app.isiser.questions.Question
 import furhatos.flow.kotlin.State
 
@@ -60,7 +59,7 @@ class Aside(
     isIndexical: Boolean, // Inherited property
     val state: State? = null, // Additional property for Asides, null means it works for any state
     val statePhase: EnumStatePhase, // Additional property indicating when the aside is applicable (ENTRY, BODY, ANY)
-    val forRejoinder: EnumSubjectRejoinders? = null // Additional property, null means it works for any rejoinder situation
+    val forRejoinder: EnumRejoinders? = null // Additional property, null means it works for any rejoinder situation
 ) : Statement(id, type, texts, isIndexical) {
     // All properties and methods from Statement are inherited and available here
 
@@ -71,21 +70,25 @@ class Aside(
 class Claim(
     val id: String,
     val unfriendlyStatement: Statement,
-    val friendlyStatement: Statement,
+    val friendlyStatementList: MutableList<Statement> = mutableListOf(),
     val assertions: MutableList<Statement> = mutableListOf(),
     var pendingAssertions: Int = ASSERTIONS_PER_CLAIM
 ) {
+    constructor(id: String, statements: List<Statement>) : this(
+        id = id,
+        unfriendlyStatement = statements.first(),
+        friendlyStatementList = statements.drop(1).toMutableList()
+    )
+
     fun setAssertion(st: Statement){
         assertions.add(st)
     }
+
     fun getText(question: Question): String {
-        // Will return the text of the claim depending on the state the question is in
-        // If both are in agreement, the friendlyStatement will be provided.
-        // By default, persuasionStatement will be returned.
-        return if(question.inAgreement())
-            friendlyStatement.getText(question)
-        else
-            unfriendlyStatement.getText(question)
+        return unfriendlyStatement.getText(question)
+    }
+    fun getfriendlyStatements(question: Question): MutableList<Statement> {
+        return friendlyStatementList
     }
 
     fun getAssertion(question: Question): String? {

@@ -9,7 +9,15 @@ const val ENGAGMENT_DISTANCE = 1.5
 const val LOG_ALL_EVENTS = false // If true, all events will be logged. Otherwise, only the GUI, dialog and gesture events will be logged.
 const val MAX_NUM_BACKCHANNEL_WORDS = 2
 const val MAX_BACKCHANNEL_LENGTH = 4000 //Milliseconds.
+const val MAX_NUM_PROBES_AT_PERSUASION = 1
+const val MAX_NUM_PROBES_AT_REVIEW = 1
+
+const val USE_PROBES_AT_DISCUSSION = true /* If this is true, in Persuasion and Review, when the user denies, a number of probes will be
+posed (either MAX_NUM_PROBES_AT_PERSUASION or MAX_NUM_PROBES_AT_REVIEW); once reached, it will continue with claims.
+If false, it will always proceed with claims.*/
+
 const val TESTING_LEVEL = 0 // 0 means no testing. 1 means testing the intents.
+
 
 
 

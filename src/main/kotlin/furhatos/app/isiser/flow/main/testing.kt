@@ -42,8 +42,11 @@ val Testing = state(parent = Parent) {
     onResponse<No> {
         furhat.ask("You denied")
     }
-        onResponse<Agree> {
+    onResponse<Agree> {
         furhat.ask("You agreed")
+    }
+    onResponse<Wait> {
+        furhat.ask("More time?")
     }
     onResponse<Disagree> {
         if (it.intent.intentName != "Disagree")

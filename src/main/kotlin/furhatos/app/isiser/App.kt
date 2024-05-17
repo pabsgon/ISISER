@@ -21,7 +21,7 @@ object App {
     private var dataHandler: DataHandler = DataHandler(eventFactory)
     private var guiHandler: GUIHandler = GUIHandler(eventFactory)
     private var flowHandler: FlowHandler = FlowHandler(eventFactory)
-    private var sessionHandler: SessionHandler = SessionHandler(eventFactory,dataHandler,flowHandler )
+    private var sessionHandler: SessionHandler = SessionHandler(dataHandler,flowHandler, guiHandler )
     private val loggerEventListener = EventListener { event -> handleEvent(event)}
     //private var fcr: FlowControlRunner? = null
 
@@ -73,9 +73,11 @@ object App {
     fun setStage(value: String) {
         println("XXX> setSubject ${value} ")
         guiHandler.setStage(value)}
+/*
     fun isQuestionStage(): Boolean {return guiHandler.isQuestionStage()}
 
     fun isAnswerMarked(): Boolean  {return guiHandler.isAnswerMarked()}
+*/
 
     fun getSubject(): String  {return sessionHandler.getUser()}
 
