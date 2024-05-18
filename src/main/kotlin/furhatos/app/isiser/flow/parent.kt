@@ -15,6 +15,7 @@ import furhatos.nlu.common.Wait
 
 val Parent: State = state {
     var session = App.getSession()
+
     onUserLeave(instant = true) {
         println("Parent>onUserLeave")
         when {

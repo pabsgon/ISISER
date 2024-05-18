@@ -1,7 +1,10 @@
 package furhatos.app.isiser.handlers
 
+import furhatos.app.isiser.App
 import furhatos.app.isiser.questions.Question
 import furhatos.app.isiser.setting.*
+import furhatos.flow.kotlin.Utterance
+import furhatos.flow.kotlin.utterance
 
 class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
 
@@ -60,6 +63,10 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
         lastRobotText = text
         return text
     }
+    fun buildUtterance2(text: String, aside: String = ""): Utterance{
+        //THIS NEEDS TO BE COMPLETED
+        return createUtterance(aside + " " + text)
+    }
     fun confirmAnswer(){ currentQuestion!!.confirm() }
 
     fun getCheckpoint(rejoinder: EnumRejoinders?):String{
@@ -106,6 +113,9 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
     }
     fun getUser():  String { return user }
 
+    fun getWording(state: EnumStates, i: Int): Utterance{
+        return buildUtterance2(dataHandler.getWording(state,i))
+    }
 
     fun impliedRejoinder(rejoinder: EnumRejoinders):EnumRejoinders{
         if(rejoinder == EnumRejoinders.ANSWER_TRUE ||
@@ -204,4 +214,52 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
         println("Printing all questions (${questions.size}):")
         questions.forEach { println(it) }
     }
+
+    fun createUtterance(s1: String): Utterance {
+        val currentStateIsTrimode: Boolean = App.isCurrentStateTriMode()
+        val robotMode = if (currentStateIsTrimode) currentQuestion!!.getRobotMode() else EnumRobotMode.NEUTRAL
+        val speechRate = robotMode.speechRate
+
+        val processedString = if (currentStateIsTrimode) {
+            s1.replace(SOURCEDATA_CODE_QNUM, getQuestionNumber())
+                .replace(SOURCEDATA_CODE_ROBOT_ANSWER, currentQuestion!!.getRobotAnswer().toString())
+                .replace(SOURCEDATA_CODE_USER_ANSWER, guiHandler.getMarkedAnswer().toString())
+        } else {
+            s1.replace(SOURCEDATA_CODE_QNUM, "SAMPLE 4")
+                .replace(SOURCEDATA_CODE_ROBOT_ANSWER, "SAMPLE TRUE")
+                .replace(SOURCEDATA_CODE_USER_ANSWER, "SAMPLE FALSE")
+        }
+
+        return utterance {
+            //+rate(speechRate)
+            var currentText = StringBuilder()
+            var i = 0
+            while (i < processedString.length) {
+                when {
+                    processedString[i] == '.' -> {
+                        var dotCount = 0
+                        while (i < processedString.length && processedString[i] == '.') {
+                            dotCount++
+                            i++
+                        }
+                        if (dotCount > 1) {
+                            if (currentText.isNotEmpty()) {
+                                +currentText.toString().trim()
+                                currentText = StringBuilder()
+                            }
+                            +delay(250 * dotCount)
+                        }
+                    }
+                    else -> {
+                        currentText.append(processedString[i])
+                        i++
+                    }
+                }
+            }
+            if (currentText.isNotEmpty()) {
+                +currentText.toString().trim()
+            }
+        }
+    }
+
 }

@@ -13,11 +13,13 @@ class FlowHandler(evFactory: EventFactory ) {
     private var ready: Boolean = false
 
     fun getStateId(): String = state.name
+    fun getState():State = state
     fun isReady(): Boolean = (flowRunner != null && state != null)
     fun handleEvent(event: FlowEvent) {
         when (event.type) {
             EventType.NEW_FLOW_STATE -> {
-                state = event.data["state"] as State
+                /*state = event.data["state"] as State*/
+                state = event.state as State
             }
             EventType.FLOW_START -> {
                 //flowRunner = event.data["flowRunner"] as? FlowControlRunner

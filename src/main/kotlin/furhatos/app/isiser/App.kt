@@ -91,11 +91,11 @@ object App {
         logHandler.log("----------------- NEW EXECUTION-------------------")
     }
     fun startFlow(newFcr: FlowControlRunner){
-        flowHandler.setFlowRunner(newFcr)
         //eventFactory.triggerFlowEvent( newFcr )
+        flowHandler.setFlowRunner(newFcr)
     }
     fun goto(to:State){
-        //eventFactory.triggerFlowEvent(to)
+        eventFactory.triggerFlowEvent(to)
         flowHandler.goto(to)
     }
 
@@ -104,6 +104,9 @@ object App {
     }
     fun printState(st: State){printState(st,"E")}
 
+    fun isCurrentStateTriMode(): Boolean{
+        return EnumStates.fromState(flowHandler.getState())?.robotModeApplies?: false
+    }
     /* ------------------------- INIT ------------------------------ */
     init{
         EventSystem.addEventListener(App.loggerEventListener)
@@ -114,6 +117,7 @@ object App {
         dataHandler.printStatements()
         sessionHandler.printQuestions()
         dataHandler.printConditions()
+        dataHandler.printWordings()
 
 
         println("----------------- DATA LOADED -------------------")

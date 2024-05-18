@@ -103,16 +103,15 @@ class SessionEvent(
     }
 }
 
-
 class FlowEvent(
     message: String,
     subject: String,
-    type: EventType? = EventType.GENERIC
+    type: EventType? = EventType.GENERIC,
+    val state: State? = null // New property to store state
 ) : ISISEREvent(
     message = message,
     subject = subject,
     type = type ?: EventType.GENERIC  // Ensures a non-null value is passed
-
 ) {
     override val stateId = if (type == EventType.NEW_FLOW_STATE) message else super.stateId
     var data: MutableMap<String, Any> = mutableMapOf()
@@ -123,23 +122,27 @@ class FlowEvent(
     ) : this(
         message = type.getDefaultMessage(),
         subject = subject,
-        type = type
+        type = type,
+        state = null
     )
+
     constructor(state: State) : this(
         message = state.name,
         subject = "",
-        type = EventType.NEW_FLOW_STATE
-    ){
-        data["state"] =  state // Add flowRunner to the map
-    }
+        type = EventType.NEW_FLOW_STATE,
+        state = state // Directly set the state property
+    )
 
     constructor(newFcr: FlowControlRunner) : this(
+        message = "",
         subject = "",
         type = EventType.FLOW_START,
-    ){
+        state = null
+    ) {
         data["flowRunner"] = newFcr  // Add flowRunner to the map
     }
 }
+
 /*
 class GUIEvent2(initialData: Map<String, String>,
                 val isGUIloaded: Boolean ) : Event() {

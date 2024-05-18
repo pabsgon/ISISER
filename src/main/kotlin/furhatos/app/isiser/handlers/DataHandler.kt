@@ -12,8 +12,11 @@ import java.io.FileInputStream
 data class DataHandler(val evFactory: EventFactory,
     val statements: MutableList<Statement> = mutableListOf(),
     val conditions: MutableMap<EnumConditions, List<EnumRobotMode>> = mutableMapOf(),
-    val users: MutableMap<Int, EnumConditions> = mutableMapOf()
+    val users: MutableMap<Int, EnumConditions> = mutableMapOf(),
+    var wordings: Wordings = Wordings()
 ){
+
+    fun getWording(s: EnumStates, i: Int): String = wordings.get(s,i)
 
     fun getSheetsService(): Sheets {
         val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
@@ -52,7 +55,7 @@ data class DataHandler(val evFactory: EventFactory,
             if(it.isNotEmpty()) {
                 println("Loading: $it")
                 when (it) {
-                    "STATEMENT" -> {
+                    SOURCEDATA_WORDING, SOURCEDATA_STATEMENT -> {
                         stCount++
                         // Check if the row has enough elements to split into two parts
                         if (row.size >= SOURCEDATA_SETTINGS_SIZE +1) {
@@ -68,14 +71,17 @@ data class DataHandler(val evFactory: EventFactory,
                                     }
                                 }
                             }
-
-                            // Call the processLine function with the two lists
-                            processLine(questions, stCount, list1, list2)
+                            if(it== SOURCEDATA_WORDING){
+                                processUtterance(stCount, list1, list2)
+                            }else {
+                                // Call the processLine function with the two lists
+                                processLine(questions, stCount, list1, list2)
+                            }
                         }
                     }
-                    "QUESTION" -> {qnlist = row.subList(1, MAX_QUESTIONS +1)}
-                    "CORRECT_ANSWER" ->{qalist = row.subList(1, MAX_QUESTIONS +1)}
-                    "ROBOT_ANSWER" ->
+                    SOURCEDATA_WORD_QUESTION -> {qnlist = row.subList(1, MAX_QUESTIONS +1)}
+                    SOURCEDATA_CORRECT_ANSWER ->{qalist = row.subList(1, MAX_QUESTIONS +1)}
+                    SOURCEDATA_ROBOT_ANSEWR ->
                     {
                         val list1 = row.subList(1, MAX_QUESTIONS +1)
                         for (i in 0 until list1.size) {
@@ -91,7 +97,9 @@ data class DataHandler(val evFactory: EventFactory,
                             questions.add(Question(id,cAns,rAns))
                         }
                     }
-                    "CONDITION1", "CONDITION2", "CONDITION3"  ->
+                    EnumConditions.CONDITION1.toString(),
+                    EnumConditions.CONDITION2.toString(),
+                    EnumConditions.CONDITION3.toString()   ->
                     {
                         if (row.size >= MAX_QUESTIONS +1) {
                             // The first 8 elements go into list1
@@ -193,7 +201,11 @@ data class DataHandler(val evFactory: EventFactory,
             questions.getOrNull(qIndex)?.addClaim(Claim(id, tempStatements)) ?: println("Error loading data: Question Index is out of bounds")
         }
     }
-
+    fun processUtterance(c: Int, settings: List<Any>, texts: List<Any>) {
+        val state = settings[SOURCEDATA_STATE].toString()
+        val qIndex = settings[SOURCEDATA_QUESTION].toString()
+        wordings.add(state, texts)
+    }
 
     fun processLine(questions: MutableList<Question>, c: Int, settings: List<Any>, texts: List<Any>) {
         val textsAsStringArray = texts.map { it.toString() }.toTypedArray()
@@ -233,6 +245,9 @@ data class DataHandler(val evFactory: EventFactory,
             else -> false
         }
     }
+    fun printWordings(){
+        println("--Wordings--")
+        wordings.print()}
 
     fun printStatements() {
         println("Printing all statements:")

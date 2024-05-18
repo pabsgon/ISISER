@@ -38,7 +38,7 @@ val Init : State = state() {
         /** start the interaction */
         when (TESTING_LEVEL) {
             0 -> App.goto(Sleep)
-            1 -> goto(Testing)
+            1 -> App.goto(Testing)
         }
     }
 }

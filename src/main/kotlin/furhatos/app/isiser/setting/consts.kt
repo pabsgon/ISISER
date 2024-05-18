@@ -1,4 +1,9 @@
 package furhatos.app.isiser.setting
+
+import Farewell
+import furhatos.app.isiser.flow.main.*
+import furhatos.flow.kotlin.State
+
 const val GUI = "GUI"
 const val UNDEFINED = "UNDEFINED"
 const val NO_MESSAGE = "NO MESSAGE"
@@ -14,12 +19,22 @@ const val SOURCEDATA_TRUE = "TRUE"
 const val SOURCEDATA_FALSE = "FALSE"
 const val SOURCEDATA_FRIENDLY = "FRIENDLY"
 const val SOURCEDATA_QUESTION = 0
+const val SOURCEDATA_STATE = 1
+const val SOURCEDATA_STATE_PHASE = 2
+const val SOURCEDATA_FOR_REJOINDER = 3
 const val SOURCEDATA_TYPE = 4
 const val SOURCEDATA_STATEMENT_INDEX = 5
 const val SOURCEDATA_PERTRIPLET = 6
 const val SOURCEDATA_SUBTYPE = 7
 const val SOURCEDATA_ID = 8
-
+const val SOURCEDATA_WORDING="WORDING"
+const val SOURCEDATA_STATEMENT = "STATEMENT"
+const val SOURCEDATA_WORD_QUESTION = "QUESTION"
+const val SOURCEDATA_CORRECT_ANSWER = "CORRECT_ANSWER"
+const val SOURCEDATA_ROBOT_ANSEWR = "ROBOT_ANSWER"
+const val SOURCEDATA_CODE_QNUM ="#QNUM#"
+const val SOURCEDATA_CODE_ROBOT_ANSWER = "#ROBOT_ANSWER#"
+const val SOURCEDATA_CODE_USER_ANSWER = "#USER_ANSWER#"
 
 enum class EnumQuestionPhase {
     REFLECTION, DISCLOSURE, PERSUASION, REVIEW, CHECKPOINT, ULTIMATUM, CONFIRMATION
@@ -37,8 +52,10 @@ enum class EnumConditions {
     }
 }
 
-enum class EnumRobotMode {
-    NEUTRAL, CERTAIN, UNCERTAIN
+enum class EnumRobotMode(val speechRate: Double) {
+    NEUTRAL(1.0),
+    CERTAIN(CERTAIN_ROBOT_SPEECH_RATE),
+    UNCERTAIN(UNCERTAIN_ROBOT_SPEECH_RATE)
 }
 enum class EnumAnswer {
     TRUE, FALSE, UNDEFINED;
@@ -141,14 +158,23 @@ enum class EventType(val defMsg: String, val cat: EventCategory) {
     }
 }
 
-enum class EnumQuestionStageStates {// CONNECTED TO THE DATA SPREADSHEET
-    REFLECTION,
-    DISCLOSURE,
-    PERSUASION,
-    REVISION,
-    CHECKPOINT,
-    ULTIMATUM,
-    CONFIRMATION
+enum class EnumStates(val state:State, val robotModeApplies: Boolean) {// CONNECTED TO THE DATA SPREADSHEET
+    WELCOME(Welcome, false),
+    INSTRUCTIONS(ReviewInstructions, false),
+    REFLECTION(QuestionReflection, false),
+    DISCLOSURE(QuestionDisclosure(), true),
+    PERSUASION(QuestionPersuasion(), true),
+    REVIEW(QuestionReview(), true),
+    CHECKPOINT(QuestionCheckpoint(), true),
+    ULTIMATUM(QuestionUltimatum(), false),
+    CONFIRMATION(QuestionConfirmation(), false),
+    FAREWELL(Farewell, false);
+
+    companion object {
+        fun fromState(state: State): EnumStates? {
+            return values().find { it.state == state }
+        }
+    }
 }
 enum class EnumRejoinders {// CONNECTED TO THE DATA SPREADSHEET
     I_AM_DONE,
