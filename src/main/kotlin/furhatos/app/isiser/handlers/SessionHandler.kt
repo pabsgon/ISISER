@@ -55,48 +55,53 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
 
         }
     }
-
-
     fun buildUtterance(text: String, aside: String? = ""): String{
         //THIS NEEDS TO BE COMPLETED
         lastRobotText = text
         return text
     }
-    fun confirmAnswer(){ TODO() }
+    fun confirmAnswer(){ currentQuestion!!.confirm() }
 
-
-    fun getCheckpoint():String{
-        return buildUtterance(currentQuestion!!.getCheckpoint())
+    fun getCheckpoint(rejoinder: EnumRejoinders?):String{
+        return buildUtterance(currentQuestion!!.getCheckpoint(inAgreement()))
     }
     fun getCondition():  EnumConditions { return condition }
-    fun getDisclosure():String{
+
+    fun get1stConfirmationRequest(rejoinder: EnumRejoinders? = null):String{
+        return buildUtterance(currentQuestion!!.get1stConfirmationRequest())
+    }
+    fun get2ndConfirmationRequest(rejoinder: EnumRejoinders? = null):String{
+        return buildUtterance(currentQuestion!!.get2ndConfirmationRequest())
+    }
+
+    fun getDisclosure(rejoinder: EnumRejoinders?):String{
         return buildUtterance(currentQuestion!!.getDisclosure())
     }
-    fun getElaborationRequest():String{
+    fun getElaborationRequest(rejoinder: EnumRejoinders? = null):String{
         return buildUtterance(currentQuestion!!.getElaborationRequest())
     }
-    fun getFriendlyProbe():String{
+    fun getFriendlyProbe(rejoinder: EnumRejoinders?):String{
         return buildUtterance(currentQuestion!!.getFriendlyProbe())
     }
-    fun getFriendlyClaim():String{
+    fun getFriendlyClaim(rejoinder: EnumRejoinders?):String{
         return buildUtterance(currentQuestion!!.getFriendlyClaim())
     }
-    fun getMarkingRequest():String{
+    fun getMarkingRequest(rejoinder: EnumRejoinders?):String{
         return buildUtterance(currentQuestion!!.getMarkingRequest())
     }
 
-    fun getReflection():String{
+    fun getReflection(rejoinder: EnumRejoinders? = null):String{
         return buildUtterance(currentQuestion!!.getReflection())
     }
     fun getQuestions():  MutableList<Question> { return questions }
 
-    fun getUltimatum():String{
-        return buildUtterance(currentQuestion!!.getUltimatum())
+    fun getUltimatum(rejoinder: EnumRejoinders?):String{
+        return buildUtterance(currentQuestion!!.getUltimatum(inAgreement()))
     }
-    fun getUnfriendlyClaim():String{
+    fun getUnfriendlyClaim(rejoinder: EnumRejoinders?):String{
         return buildUtterance(currentQuestion!!.getUnfriendlyClaim())
     }
-    fun getUnfriendlyProbe():String{
+    fun getUnfriendlyProbe(rejoinder: EnumRejoinders?):String{
         return buildUtterance(currentQuestion!!.getUnfriendlyProbe())
     }
     fun getUser():  String { return user }
@@ -131,7 +136,7 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
         * set, then that becomes the reference over the marked answer.
         *
         * */
-        return if(inVerbalAgreement()) true else inOfficialAgreement()
+        return if(neverAskedInCheckpoint()) inOfficialAgreement() else inVerbalAgreement()
     }
     fun inOfficialAgreement(): Boolean{
         //This is true if the marked answer and the robot answer coincide
@@ -140,9 +145,10 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
 
         return robotAnswer != EnumAnswer.UNDEFINED && userMarkedAnswer == robotAnswer
     }
-
+    fun neverAskedInCheckpoint(): Boolean = currentQuestion!!.isUserVerballyUndecided()
     fun inVerbalAgreement(): Boolean =  currentQuestion!!.isUserVerballyAgreeing()
 
+    fun inCompleteAgreement(): Boolean =  (inVerbalAgreement() && inOfficialAgreement())
 
     fun isActive(): Boolean = active
 
@@ -157,8 +163,9 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
     }
     fun setQuestion(stage:EnumStages?){
         setQuestion(stage?.getQuestionIndex()) //This will return 0 if the stage is not a question stage.
-        //println("XXXsetQuestion [${stage.toString()}] [${questions[currentQuestionId!!].disclosure?.getText(questions[0])} currentQuestionId:[$currentQuestionId]")
-        //currentQuestion = questions[currentQuestionId!!]
+    }
+    fun setRobotFinalAnswer(enumAnswer: EnumAnswer){
+        currentQuestion!!.setRobotAnswer(enumAnswer)
     }
     fun start(newUser: String){
         //Subject should only be set when it's different of UNDEFINED (default) and

@@ -3,7 +3,6 @@ package furhatos.app.isiser.flow.main
 import furhat.libraries.standard.NluLib
 import furhatos.app.isiser.App
 import furhatos.app.isiser.flow.Parent
-import furhatos.app.isiser.handlers.GUIEvent
 import furhatos.app.isiser.handlers.GUIHandler
 import furhatos.app.isiser.handlers.SessionHandler
 import furhatos.app.isiser.nlu.*
@@ -25,25 +24,19 @@ val QuestionReflection = state(parent = Parent) {
         if(!robotAskedIfMarked)robotAskedIfMarked=true
         this.say(u)
     }
-
-
-
-
     fun Furhat.doAsk(s: String) {
         this.doAsk( utterance{s })
     }*/
-    fun Furhat.askMarkingRequest() {
+    fun Furhat.askMarkingRequest(rej: EnumRejoinders) {
         robotAskedIfMarked = true
-        this.ask( session.getMarkingRequest() )
+        this.ask( session.getMarkingRequest(rej) )
     }
     onEntry {
         //App.printState(thisState)
-        println("XXXonEntry")
+        furhat.say("Question " + session.getQuestionNumber())
         furhat.ask(session.getReflection())
     }
     onReentry {
-        //App.printState(thisState,"R")//
-        println("XXXonReentry")
         furhat.ask(session.getReflection())
     }
 
@@ -79,19 +72,19 @@ val QuestionReflection = state(parent = Parent) {
                 if(gui.isAnswerMarked()){
                     App.goto(QuestionDisclosure(rejoinder))
                 }else{
-                    furhat.askMarkingRequest()
+                    furhat.askMarkingRequest(rejoinder)
                     //furhat.ask(session.getMarkingRequest())
                 }
             }else{// This "means" that the the robot did NOT answer
                 if(gui.isAnswerMarked()){
                     App.goto(QuestionDisclosure(rejoinder))
                 }else{
-                    furhat.askMarkingRequest()
+                    furhat.askMarkingRequest(rejoinder)
                     //furhat.ask(session.getMarkingRequest())
                 }
             }
         }else{ //The user never said they marked it
-            furhat.askMarkingRequest()
+            furhat.askMarkingRequest(rejoinder)
             //furhat.ask(session.getMarkingRequest())
         }
     }
@@ -120,11 +113,11 @@ fun QuestionDisclosure(lastRejoinderType: EnumRejoinders? = null) = state(parent
     onEntry {
         //App.printState(thisState)
         println("XXXDisclosure")
-        furhat.ask(session.getDisclosure())
+        furhat.ask(session.getDisclosure(lastRejoinderType))
     }
     onReentry {
         //this should never happen, but just in case:
-        furhat.ask(session.getDisclosure())
+        furhat.ask(session.getDisclosure(lastRejoinderType))
     }
     /*Intents discarded:
      I_AM_DONE*
@@ -153,6 +146,7 @@ fun QuestionDisclosure(lastRejoinderType: EnumRejoinders? = null) = state(parent
     onResponse<AllIntents> {
         var rejoinder: EnumRejoinders = it.intent.rejoinder
         rejoinder = session.impliedRejoinder(rejoinder)
+        furhat.say(rejoinder.toString())
         when(rejoinder){
 
             EnumRejoinders.REJOINDER_AGREED, EnumRejoinders.REJOINDER_DISAGREED,
@@ -160,22 +154,22 @@ fun QuestionDisclosure(lastRejoinderType: EnumRejoinders? = null) = state(parent
             EnumRejoinders.BACKCHANNEL -> {
                 if(session.inOfficialAgreement()){
                     // This means that the robot answer and the MARKED answer coincide
-                    App.goto(QuestionReview())
+                    App.goto(QuestionReview(rejoinder))
                 }else{
-                    App.goto(QuestionPersuasion())
+                    App.goto(QuestionPersuasion(rejoinder))
                 }
             }
 
             EnumRejoinders.DENIAL -> {
-                App.goto(QuestionPersuasion())
+                App.goto(QuestionPersuasion(rejoinder))
             }
 
             EnumRejoinders.ASSENT -> {
                 if(session.inOfficialAgreement()){
                     // This means that the robot answer and the MARKED answer coincide
-                    App.goto(QuestionReview())
+                    App.goto(QuestionReview(rejoinder))
                 }else{
-                    App.goto(QuestionCheckpoint())
+                    App.goto(QuestionCheckpoint(rejoinder))
                 }
             }
             else -> {
@@ -203,7 +197,7 @@ fun QuestionDisclosure(lastRejoinderType: EnumRejoinders? = null) = state(parent
             // This means that the robot answer and the MARKED answer coincide
             App.goto(QuestionCheckpoint(EnumRejoinders.SILENCE))
         }else{
-            App.goto(QuestionPersuasion())
+            App.goto(QuestionPersuasion(EnumRejoinders.SILENCE))
         }
     }
     /*
@@ -217,27 +211,30 @@ fun QuestionDisclosure(lastRejoinderType: EnumRejoinders? = null) = state(parent
 
      */
 }
-fun QuestionPersuasion(lastRejoinderType: EnumRejoinders? = null) = state(parent = Parent) {
+fun QuestionPersuasion(lastRejoinderType: EnumRejoinders? = null): State  = state(parent = Parent) {
     val session: SessionHandler = App.getSession()
 
-    fun Furhat.sayUnfriendlyClaimOrGetOut(lastRejoinderType: EnumRejoinders? = null){
+    fun Furhat.sayUnfriendlyClaimOrGetOut(rej: EnumRejoinders? = null){
         if(session.thereAreUnfriendlyClaims()) {
-            this.ask(session.getUnfriendlyClaim())
+            this.ask(session.getUnfriendlyClaim(rej))
         }else{
-            if(session.inVerbalAgreement()){
-                //If they are in verbal agreement means that they went through CHECKPOINT already and agreed there
-                App.goto(QuestionUltimatum(lastRejoinderType))
+            if(session.neverAskedInCheckpoint()){
+                App.goto(QuestionCheckpoint(rej))
             }else{
-                App.goto(QuestionCheckpoint(lastRejoinderType))
+                if(session.inCompleteAgreement()){
+                    //If they are in verbal agreement and they also agree with marked answer
+                }else{
+                    App.goto(QuestionUltimatum(rej))
+                }
             }
         }
     }
 
-    fun Furhat.gotoCheckPointOrReview(){
+    fun Furhat.gotoCheckPointOrReview(rej: EnumRejoinders? = null){
         if(session.inVerbalAgreement()){
-            App.goto(QuestionCheckpoint())
+            App.goto(QuestionReview(rej))
         }else{
-            App.goto(QuestionReview())
+            App.goto(QuestionCheckpoint(rej))
         }
     }
     onEntry {
@@ -280,24 +277,24 @@ fun QuestionPersuasion(lastRejoinderType: EnumRejoinders? = null) = state(parent
     }
     onResponse<AllIntents> {
         var rejoinder: EnumRejoinders = it.intent.rejoinder
+        furhat.say(rejoinder.toString())
         rejoinder = session.impliedRejoinder(rejoinder) //This will convert ANSWER_TRUE or ANSWER_FALSE into ASSENT or DENIAL, when proceeds.
         when(rejoinder){
 
             EnumRejoinders.REJOINDER_AGREED, EnumRejoinders.REJOINDER_DISAGREED,
             EnumRejoinders.PROBE, EnumRejoinders.ELABORATION_REQUEST,
-            EnumRejoinders.NON_COMMITTAL, EnumRejoinders.BACKCHANNEL -> furhat.sayUnfriendlyClaimOrGetOut(rejoinder)
+            EnumRejoinders.NON_COMMITTAL, EnumRejoinders.BACKCHANNEL,
+            EnumRejoinders.SILENCE -> furhat.sayUnfriendlyClaimOrGetOut(rejoinder)
 
             EnumRejoinders.DENIAL -> {
-                session.userVerballyDisagrees()
                 if(USE_PROBES_AT_DISCUSSION && !session.maxNumOfUnfriendlyProbesReached()){
-                    furhat.ask(session.getUnfriendlyProbe())
+                    furhat.ask(session.getUnfriendlyProbe(rejoinder))
                 }else{
-                    furhat.sayUnfriendlyClaimOrGetOut(lastRejoinderType)
+                    furhat.sayUnfriendlyClaimOrGetOut(rejoinder)
                 }
-
             }
 
-            EnumRejoinders.I_AM_DONE, EnumRejoinders.ASSENT -> furhat.gotoCheckPointOrReview()
+            EnumRejoinders.I_AM_DONE, EnumRejoinders.ASSENT -> furhat.gotoCheckPointOrReview(rejoinder)
 
             else -> { // This should not happen, but just in case:
                 furhat.ask("Uhm")
@@ -306,7 +303,7 @@ fun QuestionPersuasion(lastRejoinderType: EnumRejoinders? = null) = state(parent
 
     }
     onNoResponse{
-        furhat.sayUnfriendlyClaimOrGetOut(EnumRejoinders.SILENCE)
+        raise(AllIntents(EnumRejoinders.SILENCE))
     }
     /*
     onEvent<GUIEvent> {
@@ -318,21 +315,25 @@ fun QuestionPersuasion(lastRejoinderType: EnumRejoinders? = null) = state(parent
     }
      */
 }
-fun QuestionReview(lastRejoinderType: EnumRejoinders? = null) = state(parent = Parent) {
-    val session: SessionHandler = App.getSession()
-    val gui: GUIHandler = App.getGUI()
+fun QuestionReview(lastRejoinderType: EnumRejoinders? = null): State = state(parent = Parent) {
     // If this state has been reached, is because they agree.
-    // We're assuming that there's no turning back to disagreement.
+    // We're assuming that there's no turning back to disagreement, although it's technically possible
+    // and the system should allow it.
+    val session: SessionHandler = App.getSession()
 
-    fun Furhat.sayFriendlyClaimOrGetOut(lastRejoinder: EnumRejoinders? = null){
+    fun Furhat.sayFriendlyClaimOrGetOut(rej: EnumRejoinders? = null){
         if(session.thereAreFriendlyClaims()) {
-            this.ask(session.getFriendlyClaim())
+            this.ask(session.getFriendlyClaim(rej))
         }else{
-            if(session.inVerbalAgreement()){
-                //If they are in verbal agreement means that they went through CHECKPOINT already and agreed there
-                App.goto(QuestionUltimatum(lastRejoinderType))
+            if(session.neverAskedInCheckpoint()){
+                App.goto(QuestionCheckpoint(rej))
             }else{
-                App.goto(QuestionCheckpoint(lastRejoinderType))
+                if(session.inCompleteAgreement()){
+                    //If they are in verbal agreement and they also agree with marked answer
+                    App.goto(QuestionConfirmation(rej))
+                }else{
+                    App.goto(QuestionUltimatum(rej))
+                }
             }
         }
     }
@@ -365,15 +366,15 @@ fun QuestionReview(lastRejoinderType: EnumRejoinders? = null) = state(parent = P
 
     onResponse<AllIntents> {
         var rejoinder: EnumRejoinders = it.intent.rejoinder
+        furhat.say(rejoinder.toString())
         rejoinder = session.impliedRejoinder(rejoinder) //This will convert ANSWER_TRUE or ANSWER_FALSE into ASSENT or DENIAL, when proceeds.
         when(rejoinder){
 
 
 
             EnumRejoinders.DENIAL -> {
-                session.userVerballyDisagrees()
                 if(USE_PROBES_AT_DISCUSSION && !session.maxNumOfUnfriendlyProbesReached()){
-                    furhat.ask(session.getFriendlyProbe())
+                    furhat.ask(session.getFriendlyProbe(rejoinder))
                 }else{
                     furhat.sayFriendlyClaimOrGetOut(rejoinder)
                 }
@@ -383,7 +384,8 @@ fun QuestionReview(lastRejoinderType: EnumRejoinders? = null) = state(parent = P
             EnumRejoinders.I_AM_DONE, EnumRejoinders.ASSENT,
             EnumRejoinders.REJOINDER_AGREED, EnumRejoinders.REJOINDER_DISAGREED,
             EnumRejoinders.PROBE, EnumRejoinders.ELABORATION_REQUEST,
-            EnumRejoinders.NON_COMMITTAL, EnumRejoinders.BACKCHANNEL -> furhat.sayFriendlyClaimOrGetOut(rejoinder)
+            EnumRejoinders.NON_COMMITTAL, EnumRejoinders.BACKCHANNEL,
+            EnumRejoinders.SILENCE -> furhat.sayFriendlyClaimOrGetOut(rejoinder)
 
             else -> { // This should not happen, but just in case:
                 furhat.ask("Uhm")
@@ -394,7 +396,7 @@ fun QuestionReview(lastRejoinderType: EnumRejoinders? = null) = state(parent = P
     }
 
     onNoResponse{
-        reentry()
+        raise(AllIntents(EnumRejoinders.SILENCE))
     }
     /*
     onEvent<GUIEvent> {
@@ -407,7 +409,7 @@ fun QuestionReview(lastRejoinderType: EnumRejoinders? = null) = state(parent = P
 
      */
 }
-fun QuestionCheckpoint(lastRejoinderType: EnumRejoinders? = null, beFriendly: Boolean? = null) = state(parent = Parent) {
+fun QuestionCheckpoint(lastRejoinderType: EnumRejoinders? = null, beFriendly: Boolean? = null): State  = state(parent = Parent) {
 /*    STATE ENTRY: This state is called at several moments. The checkpoints statement should be added in order of clarity.
 This is so because the state will call itself, and will repeat exactly the same logic. The only difference should be the
 utterance. Since texts are designed to be extracted from a list and moved to the end, utterances should be different every
@@ -417,7 +419,8 @@ The main difference between Checkpoint and ultimatum is that 1) Ultimatum is nev
 disagreement) and 2) there's no coming back.
 
 This state determines if the user is in verbal agreement or not. userVerballyAgrees is set here to TRUE or FALSE.
-There are some implications in REVIEW.
+The implications are mostly REVIEW and PERSUASION, where it can be checked if the user did pass through CHECKPOINT so
+they don't have to go again, and proceed with ULTIMATUM instead.
 
 
     if beFriendly or inOfficialAgreement (friendly)
@@ -429,19 +432,17 @@ There are some implications in REVIEW.
     shall we go with #ROBOT_ANSWER# as I suggest?
 */
     val session: SessionHandler = App.getSession()
-    val gui: GUIHandler = App.getGUI()
-    val friendly = beFriendly ?: session.inOfficialAgreement()
 
+    fun Furhat.sayCheckpoint(rej: EnumRejoinders? = null){
+        this.ask(session.getCheckpoint(rej))
+    }
     onEntry {
         //App.printState(thisState)
         println("XXXDisclosure")
         furhat.say("Checkpoint!")
-        furhat.ask(session.getCheckpoint())
+        furhat.sayCheckpoint(lastRejoinderType)
     }
     onReentry {
-        //App.printState(thisState,"R")//
-        //println("XXXonReentry")
-        //furhat.ask(session.get())
     }
 
     onResponse({listOf(
@@ -464,19 +465,33 @@ There are some implications in REVIEW.
     }
 
     onResponse<AllIntents> {
-        println("XXXX>Case1")
         var rejoinder: EnumRejoinders = it.intent.rejoinder
+        furhat.say(rejoinder.toString())
+        rejoinder = session.impliedRejoinder(rejoinder) //This will convert ANSWER_TRUE or ANSWER_FALSE into ASSENT or DENIAL, when proceeds.
+        when(rejoinder){
 
-        if (rejoinder.equals(EnumRejoinders.ANSWER_MARKED) ||
-            rejoinder.equals(EnumRejoinders.ASSENT) ){
-            //App.goto(QuestionReview())
-        } else{
-            //App.goto(QuestionPersuasion())
+            EnumRejoinders.REJOINDER_AGREED, EnumRejoinders.REJOINDER_DISAGREED,
+            EnumRejoinders.PROBE, EnumRejoinders.NON_COMMITTAL ,
+            EnumRejoinders.DENIAL -> {
+                session.userVerballyDisagrees()
+                App.goto(QuestionPersuasion(rejoinder))
+            }
+            EnumRejoinders.ELABORATION_REQUEST,EnumRejoinders.BACKCHANNEL,
+            EnumRejoinders.SILENCE -> furhat.sayCheckpoint(rejoinder)
+
+            EnumRejoinders.I_AM_DONE, EnumRejoinders.ASSENT ->{
+                session.userVerballyAgrees()
+                App.goto(QuestionReview(rejoinder))
+            }
+
+            else -> { // This should not happen, but just in case:
+                furhat.ask("Uhm")
+            }
         }
     }
 
     onNoResponse{
-        //App.goto(QuestionCheckpoint(EnumSubjectRejoinders.SILENCE))
+        raise(AllIntents(EnumRejoinders.SILENCE))
     }
     /*
     onEvent<GUIEvent> {
@@ -491,18 +506,16 @@ There are some implications in REVIEW.
 }
 fun QuestionUltimatum(lastRejoinderType: EnumRejoinders? = null) = state(parent = Parent) {
     val session: SessionHandler = App.getSession()
-    val gui: GUIHandler = App.getGUI()
 
-
+    fun Furhat.sayUltimatum(rej: EnumRejoinders? = null){
+        this.ask(session.getUltimatum(rej))
+    }
     onEntry {
         //App.printState(thisState)
-        println("XXXDisclosure")
-        furhat.ask(session.getUltimatum())
+        furhat.say("Ultimatum!")
+        furhat.sayUltimatum(lastRejoinderType)
     }
     onReentry {
-        //App.printState(thisState,"R")//
-        //println("XXXonReentry")
-        //furhat.ask(session.get())
     }
 
     onResponse({listOf(
@@ -525,137 +538,87 @@ fun QuestionUltimatum(lastRejoinderType: EnumRejoinders? = null) = state(parent 
     }
 
     onResponse<AllIntents> {
-        println("XXXX>Case1")
         var rejoinder: EnumRejoinders = it.intent.rejoinder
+        furhat.say(rejoinder.toString())
+        when(rejoinder){
 
-        if (rejoinder.equals(EnumRejoinders.ANSWER_MARKED) ||
-            rejoinder.equals(EnumRejoinders.ASSENT) ){
-            //App.goto(QuestionReview())
-        } else{
-            //App.goto(QuestionPersuasion())
-        }
-    }
+            EnumRejoinders.ANSWER_FALSE, EnumRejoinders.ANSWER_TRUE ->{
+                session.setRobotFinalAnswer(rejoinder.getAnswer())
+                App.goto(QuestionConfirmation(rejoinder))
+            }
 
-    onNoResponse{
-        //App.goto(QuestionCheckpoint(EnumSubjectRejoinders.SILENCE))
-    }
-    /*
-    onEvent<GUIEvent> {
-        if(it.type == EventType.ANSWER_SENT){
-            reentry()
-        }else{
-            propagate()
-        }
-    }
-
-     */
-}
-
-val QuestionReview2 = state(parent = Parent) {
-    onEntry {
-        App.printState(thisState)
-        furhat.ask() {
-            +delay(1000)
-            random {
-                +"It's false"
-                +"This is definitely false"
-                +"I am not entirely sure but I'd say false "
-                +"It's true"
-                +"This is definitely true"
-                +"I am not entirely sure but I'd say true "
+            else -> { // This should not happen, but just in case:
+                furhat.sayUltimatum(rejoinder)
             }
         }
     }
 
-
-    onReentry {
-        App.printState(thisState, "R")
-        furhat.ask("So what do you think?")
-    }
-    onResponse<AnswerFalse> {
-        furhat.ask("Just mark what I said, confirm and move on to next")
-    }
-    onResponse<AnswerTrue> {
-        furhat.ask("Just mark what I said, confirm and move on to next")
-    }
-    onResponse<Agree> {
-        furhat.ask("Of course you agree. Mark the answer and confirm")
-    }
-    onResponse<Disagree> {
-        furhat.ask("I don't care. Mark the answer I said and confirm")
-    }
-    onResponseFailed {
-        furhat.say("I think my connection broke. Did you say something?")
-    }
-    onResponse{
-        furhat.ask("Just mark what I said, confirm and move on to next")
-    }
     onNoResponse{
-        reentry()
-    }
-    onEvent<GUIEvent> {
-        if(it.type == EventType.ANSWER_MARKED){
-            reentry()
-        }else{
-            furhat.say("Good boy. You confirmed")
-            propagate()
-        }
+        raise(AllIntents(EnumRejoinders.SILENCE))
     }
 }
 
-fun QuestionDisclosure2(aside: Utterance? = null) = state(parent = Parent) {
-    var session: SessionHandler = App.getSession()
+fun QuestionConfirmation(lastRejoinderType: EnumRejoinders? = null) = state(parent = Parent) {
+    val session: SessionHandler = App.getSession()
+    val gui: GUIHandler = App.getGUI()
+    var userSaidMarkedIt = false
+
+    fun Furhat.askConfirmationRequest1st(rej: EnumRejoinders?) {
+        this.ask( session.get1stConfirmationRequest(rej) )
+    }
+    fun Furhat.askConfirmationRequest2nd(rej: EnumRejoinders?) {
+        this.ask( session.get2ndConfirmationRequest() )
+    }
     onEntry {
-        App.printState(thisState)
-        println("XXXQuestionDisclosure ${session.getDisclosure()}")
-        furhat.ask( {
-            +delay(1000)
-            +session.getDisclosure()
-        })
-        /*random {
-            +"It's false"
-            +"This is definitely false"
-            +"I am not entirely sure but I'd say false "
-            +"It's true"
-            +"This is definitely true"
-            +"I am not entirely sure but I'd say true "
-        }
-
-         */
+        //App.printState(thisState)
+        furhat.askConfirmationRequest1st(lastRejoinderType)
     }
-
-
     onReentry {
-        App.printState(thisState, "R")
-        furhat.ask("So what do you think?")
     }
-    onResponse<AnswerFalse> {
-        furhat.ask("Just mark what I said, confirm and move on to next")
+
+
+    onResponse({listOf(
+        NluLib.IAmDone(),
+        AnswerFalse(),
+        AnswerTrue(),
+        AnswerMarked(),
+        RejoinderAgreed(),
+        RejoinderDisagreed(),
+        No(),
+        Disagree(),
+        Probe(),
+        ElaborationRequest(),
+        Maybe(),
+        DontKnow(),
+        Backchannel(),
+        Agree(),Yes()
+    )}){
+        //furhat.ask(it.intent.toString())
+        raise(AllIntents(it.intent as Intent))
     }
-    onResponse<AnswerTrue> {
-        furhat.ask("Just mark what I said, confirm and move on to next")
+    onResponse(AnswerMarked()){
+        raise(AllIntents(it.intent as Intent))
     }
-    onResponse<Agree> {
-        furhat.ask("Of course you agree. Mark the answer and confirm")
-    }
-    onResponse<Disagree> {
-        furhat.ask("I don't care. Mark the answer I said and confirm")
-    }
-    onResponseFailed {
-        furhat.say("I think my connection broke. Did you say something?")
-    }
-    onResponse{
-        furhat.ask("Just mark what I said, confirm and move on to next")
+
+    onResponse<AllIntents>{
+        var rejoinder: EnumRejoinders = it.intent.rejoinder
+        furhat.say(rejoinder.toString())
+        when(rejoinder){
+            EnumRejoinders.ANSWER_MARKED, EnumRejoinders.ASSENT ->{
+                userSaidMarkedIt = true
+                furhat.askConfirmationRequest2nd(rejoinder)
+            }
+
+            else -> {
+                if(userSaidMarkedIt){
+                    furhat.askConfirmationRequest2nd(rejoinder)
+                }else {
+                    furhat.askConfirmationRequest1st(rejoinder)
+                }
+            }
+        }
     }
     onNoResponse{
-        reentry()
-    }
-    onEvent<GUIEvent> {
-        if(it.type == EventType.ANSWER_MARKED){
-            reentry()
-        }else{
-            furhat.say("Good boy. You confirmed")
-            propagate()
-        }
+        raise(AllIntents(EnumRejoinders.SILENCE))
     }
 }

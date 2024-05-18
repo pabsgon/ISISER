@@ -1,4 +1,9 @@
-const DEV_MODE = false
+const DEV_MOD1 = 0 // This does not go to the server
+const DEV_MOD2 = 1 // THis will run only q 7 and 8 
+const ADM_MODE = 2 // This wil show the questions on the right hand side
+const PRO_MODE = 9
+
+const APP_MODE = DEV_MOD2
 const LANG_EN = "EN"
 const LANG_SE = "SE"
 const NUMBER_STUDENTS = 62
@@ -11,6 +16,7 @@ const readyButton = document.getElementById('readyBut')
 const falseButton = document.getElementById('falseBut')
 const trueButton = document.getElementById('trueBut')
 const STAGES = [0,0.2,1,2,3,4,5,6,7,8,0.3]
+const LAST2_STAGES = [0,0.2,7,8,0.3]
 const STAGE_1ST_QUESTION = 1
 const EVTYPE_SYNCH_REQUESTED = "SYNCH_REQUESTED"
 const EVTYPE_NEW_STAGE_REQUESTED = "NEW_STAGE_REQUESTED"
@@ -20,7 +26,7 @@ const EVTYPE_ANSWER_MARKED = "ANSWER_MARKED"
 // The server will return the stage and user. The webpage will set these two params, showing the correct stage.
 
 /* ............... STAGES .......................*/ 
-var stages = STAGES
+var stages = APP_MODE==DEV_MOD2?LAST2_STAGES:STAGES
 stages.curPos = -1
 stages.next = function(){return this[this.curPos+1]}
 stages.set = function(st){
@@ -77,7 +83,7 @@ function synch(){
 }
 function contactServer(req) {
 	console.log("Contactig server with req=[" + JSON.stringify(req) + "]")
-	if(DEV_MODE){
+	if(APP_MODE<DEV_MOD2){
 		return
 	} 
 	
@@ -183,7 +189,7 @@ function tryChangeStage(st){
 	console.log("tryChangeStage(st=" + st + ") called")
 	st = parseFloat(st)
 	st = stages.includes(st)?st:undefined
-	if(DEV_MODE){
+	if(APP_MODE<DEV_MOD2){
 		changeStage(st)
 	}else{//requesting stage to the server
 		requestStage(st)
@@ -195,7 +201,7 @@ function tryNextStage(){
 }
 
 function trySynch(){
-	if(DEV_MODE){
+	if(APP_MODE<DEV_MOD2){
 		changeStage(0)
 	}else{//requesting stage to the server
 		synch()
@@ -297,11 +303,11 @@ function setUpButtons(){
 }
 
 function init(){
-	if(DEV_MODE)document.getElementById('devmode').style.display="block"
+	if(APP_MODE<PRO_MODE)document.getElementById('devmode').style.display="block"
 	createNumButtons()
 	loadTexts()
 	if(URL_VARS.admin){
-		if(DEV_MODE)document.getElementById('admin').style.display="block"
+		if(APP_MODE<PRO_MODE)document.getElementById('admin').style.display="block"
 	}
 	trySynch()
 	//tryChangeStage()

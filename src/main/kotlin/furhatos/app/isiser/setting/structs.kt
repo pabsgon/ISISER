@@ -42,14 +42,14 @@ open class Statement(
         usedInQuestion = question
 
         // Return the text for the given question's robot mode
-        return triplet.getText(question.robotMode!!)
+        return triplet.getText(question.getRobotMode())
     }
 
     override fun toString(): String {
         val textDescriptions = texts.joinToString(separator = ", ") { it.toString() }
         return "ID: $id, Type: $type, Texts: [$textDescriptions]"
     }
-    fun isIndexical(): Boolean{ return subType}
+    fun isSubtypeTRUE(): Boolean{ return subType}
     fun isFriendly(): Boolean{ return subType}
 }
 class Aside(

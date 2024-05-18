@@ -227,7 +227,8 @@ data class DataHandler(val evFactory: EventFactory,
     }
     fun subTypeToBool(type: EnumStatementTypes, subType: String): Boolean {
         return when (type) {
-            EnumStatementTypes.CHECKPOINT, EnumStatementTypes.ULTIMATUM -> subType== SOURCEDATA_FRIENDLY
+            EnumStatementTypes.CHECKPOINT, EnumStatementTypes.ULTIMATUM,
+            EnumStatementTypes.CONFIRMATION_REQUEST -> subType== SOURCEDATA_FRIENDLY
             EnumStatementTypes.ASSERTION -> subType== SOURCEDATA_TRUE
             else -> false
         }

@@ -3,8 +3,8 @@ const val GUI = "GUI"
 const val UNDEFINED = "UNDEFINED"
 const val NO_MESSAGE = "NO MESSAGE"
 const val SAFE_STRING = "THIS IS A WARNING"
-const val FOR_PERSUASION = false
-const val FOR_REVIEW = true
+const val UNFRIENDLY = false
+const val FRIENDLY = true
 const val UNFRIENDLY_SUFFIX = "_U"
 const val FRIENDLY_SUFFIX = "_F"
 const val ASSERTIONS_PER_CLAIM = 2
@@ -57,6 +57,9 @@ enum class EnumAnswer {
             EnumAnswer.FALSE -> EnumAnswer.TRUE
             else -> EnumAnswer.UNDEFINED
         }
+    }
+    fun agreesWith(ans: EnumAnswer): Boolean {
+        return (this != EnumAnswer.UNDEFINED && this == ans)
     }
 }
 enum class EnumStages(val num: Double, val isQuestion: Boolean, val isSartingStage: Boolean) {
@@ -185,6 +188,7 @@ enum class EnumStatementTypes { // CONNECTED TO THE DATA SPREADSHEET
     CHECKPOINT,
     ELABORATION_REQUEST,
     DISCLOSURE,
+    CONFIRMATION_REQUEST,
     ULTIMATUM;
     companion object {
         fun fromString(ans: String): EnumStatementTypes {

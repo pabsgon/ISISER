@@ -1,7 +1,13 @@
-const DEV_MODE = false
+const DEV_MOD1 = 0 // This does not go to the server
+const DEV_MOD2 = 1 // THis will run only q 7 and 8 
+const ADM_MODE = 2 // This wil show the questions on the right hand side
+const PRO_MODE = 9
 
+const APP_MODE = DEV_MOD2
+const LANG_EN = "EN"
+const LANG_SE = "SE"
 const NUMBER_STUDENTS = 62
-const LANG = "SE"
+const LANG = LANG_EN
 const IMAGES_PATH = "resources/images/"
 const ANSWER_TRUE = "TRUE"
 const ANSWER_FALSE = "FALSE"
@@ -10,16 +16,17 @@ const readyButton = document.getElementById('readyBut')
 const falseButton = document.getElementById('falseBut')
 const trueButton = document.getElementById('trueBut')
 const STAGES = [0,0.2,1,2,3,4,5,6,7,8,0.3]
+const LAST2_STAGES = [0,0.2,7,8,0.3]
 const STAGE_1ST_QUESTION = 1
 const EVTYPE_SYNCH_REQUESTED = "SYNCH_REQUESTED"
 const EVTYPE_NEW_STAGE_REQUESTED = "NEW_STAGE_REQUESTED"
-const EVTYPE_ANSWER_SENT = "ANSWER_SENT"	
+const EVTYPE_ANSWER_MARKED = "ANSWER_MARKED"	
 
 // The first time, the page will always try to synch with the server, in case the webpage closed.
 // The server will return the stage and user. The webpage will set these two params, showing the correct stage.
 
 /* ............... STAGES .......................*/ 
-var stages = STAGES
+var stages = APP_MODE==DEV_MOD2?LAST2_STAGES:STAGES
 stages.curPos = -1
 stages.next = function(){return this[this.curPos+1]}
 stages.set = function(st){
@@ -48,15 +55,14 @@ stages.init = function(){
 var data = []
 var answer, subjectId, selectedSubjectButton
 var dict,qs;
-
-data["EN"]={"project": "ISISER-SOLNA Project [EN]","title": "Class competition in Electronics","sendingToFurhat": "Sending to Furhat: Question ","instructions": "A few instruccions..","instruction1": "Answer as many questions correctly as fast as possible.","instruction2": "Have a discussion if needed.","instruction3": "You and the robot can change your answer once before confirming.","instruction4": "Both the robot and you must confirm the same answer to be valid.","instruction5": "You can now wake up Furhat...Say hello or something similar!","gettingReady": "Getting ready!","instruction6": "Talking to Furhat until you are both ready","weAreReady": "We are ready","termQuestion": "Question","termConfirm": "Confirm","termTrue": "True ","termFalse": "False ","termNextInstruction": "Next instruction","farewell": "Ok, that was it!","instruction0": "Press your number to select. Then press again to confirm.","questions": ["qOriginalId|qStatement|qImage","4|In this situation, the red light is off, yellow on, and blue on.|question4_5_6_7.png","15|The three bulbs have the same brightness|question15.png","6|If the switch is connected, the blue light will be brighter than the red and the yellow.|question4_5_6_7.png","17|C1 and C2 are not equivalent, but the blue lights will consume the same power|question17.png","1|All the yellow bulbs have the same brightness|question1_2_3.png","3|In C1, the blue bulb receives more current than in C2|question1_2_3.png","8|If the switch is connected, the yellow light could not be brighter than now|question8.png","9|Despite the difference in resistance between C1 and C2, blue bulbs still consume the same power in both circuits.|question9.png"]}
-data["SE"]={"project": "ISISER-SOLNA Project [SE]","title": "Class competition in Electronics","sendingToFurhat": "Sending to Furhat: Question ","instructions": "A few instruccions..","instruction1": "Answer as many questions correctly as fast as possible.","instruction2": "Have a discussion if needed.","instruction3": "You and the robot can change your answer once before confirming.","instruction4": "Both the robot and you must confirm the same answer to be valid.","instruction5": "You can now wake up Furhat...Say hello or something similar!","gettingReady": "Getting ready!","instruction6": "Talking to Furhat until you are both ready","weAreReady": "We are ready","termQuestion": "Question","termConfirm": "Confirm","termTrue": "True ","termFalse": "False ","termNextInstruction": "Next instruction","farewell": "Ok, that was it!","instruction0": "Press your number to select. Then press again to confirm.","questions": ["qOriginalId|qStatement|qImage","4|In this situation, the red light is off, yellow on, and blue on.|question4_5_6_7.png","15|The three bulbs have the same brightness|question15.png","6|If the switch is connected, the blue light will be brighter than the red and the yellow.|question4_5_6_7.png","17|C1 and C2 are not equivalent, but the blue lights will consume the same power|question17.png","1|All the yellow bulbs have the same brightness|question1_2_3.png","3|In C1, the blue bulb receives more current than in C2|question1_2_3.png","8|If the switch is connected, the yellow light could not be brighter than now|question8.png","9|Despite the difference in resistance between C1 and C2, blue bulbs still consume the same power in both circuits.|question9.png"]}
+data["EN"]={"project": "ISISER-SOLNA Project [EN]","title": "Class competition in Electronics","sendingToFurhat": "Sending to Furhat: Question ","instructions": "A few instruccions...","instruction1": "Answer as many questions correctly as fast as possible.","instruction2": "Have a discussion if needed.","instruction3": "You and the robot can change your answer once before confirming.","instruction4": "Both the robot and you must confirm the same answer to be valid.","instruction5": "You can now wake up Furhat...Say hello or something similar!","gettingReady": "Getting ready!","instruction6": "Talking to Furhat until you are both ready","weAreReady": "We are ready","termQuestion": "Question","termConfirm": "Confirm","termTrue": "True ","termFalse": "False ","termNextInstruction": "Next instruction","farewell": "Ok, that was it!","instruction0": "Press your number to select. Then press again to confirm.","questions": ["qOriginalId|qStatement|qImage","10|When the lamps are connected in series, all the lamps will glow more dimly when another lamp is connected.|question10.png","20|The blue lamp in C2 shines brighter than the blue lamp in C1.|question20.png","6|If the switch is turned on, the blue light will shine brighter than the red and yellow lights|question4_5_6_7.png","14|The blue lights in C1 and C2 consume the same amount of power.|question13_14.png","16|The green light shines as brightly as the other three.|question16.png","21|The blue lamp in C2 shines brighter than the one in C1.|question21.png","7|If the power switch is turned on, the yellow light will dim|question4_5_6_7.png","9|The blue lamp in C1 consumes less power than the blue lamp in C2|question9.png"]}
+data["SE"]={"project": "ISISER-SOLNA Project [SE]","title": "Elkretsar: Tävling mellan Na och EL","sendingToFurhat": "Skickar till Furhat: Fråga","instructions": "Instruktioner","instruction1": "Du ska svara på 8 frågor och du får ta roboten till hjälp för att bestämma dig för rätt svar.","instruction3": "Du får ändra dig efter att roboten beskrivit sin bild av problemet","instruction4": "När du bestämt dig trycker du på Bekräfta.","instruction5": "Nu kan du börja prata med Furhat. Säg Hej, så vaknar han.","gettingReady": "Gör er klara.","instruction6": "Kolla med Furhat att han är redo","weAreReady": "Vi är klara","termQuestion": "Fråga","termConfirm": "Bekräfta","termTrue": "Sant","termFalse": "Falskt","termNextInstruction": "Nästa instruktion","farewell": "Det var allt!","instruction0": "Välj den deltagarsiffra du fick i bekräftelse-mejlet. Tryck igen för att bekräfta.","questions": ["qOriginalId|qStatement|qImage","10|När lamporna är kopplade i serie kommer alla lampor att lysa svagare när en till lampa kopplas in.|question10.png","20|Den blå lampan i C2 lyser starkare än den blå lampan i C1.|question20.png","6|Om strömbrytaren slås till kommer den blå lampan lysa starkare än den röda och gula lampan|question4_5_6_7.png","14|De blå lamporna i C1 och C2 förbrukar lika mycket effekt.|question13_14.png","16|Den gröna lampan lyser lika starkt som de andra tre.|question16.png","21|Den blå lampan i C2 lyser starkare än den i C1.|question21.png","7|Om strömbrytaren slås till kommer den gula lampan att lysa svagare|question4_5_6_7.png","9|Den blå lampan i C1 förbrukar mindre effekt än den blå lampan i C2|question9.png"]}	
 
 // app.js
 
 function sendAnswer(){
 	var req = {"message": "ANSWER[" + answer + "] [" + stages.current + "] [" + subjectId + "] SENT ..",
-				"type": EVTYPE_ANSWER_SENT,
+				"type": EVTYPE_ANSWER_MARKED,
 				"stage": stages.current,
 				"subject": subjectId,
 				"answer": answer}
@@ -77,9 +83,9 @@ function synch(){
 }
 function contactServer(req) {
 	console.log("Contactig server with req=[" + JSON.stringify(req) + "]")
-	if(DEV_MODE){
+	if(APP_MODE<DEV_MOD2){
 		return
-	}
+	} 
 	
     fetch('/receive', {
         method: 'POST',
@@ -88,7 +94,7 @@ function contactServer(req) {
         },
         body: JSON.stringify(req)
     }).then(response => {
-        if (!response.ok) {
+        if (!response.ok) { 		 	
             throw new Error('[ISISER] Network response was not ok');
         }
         return response.json();  // Only parse as JSON if the response is OK
@@ -183,7 +189,7 @@ function tryChangeStage(st){
 	console.log("tryChangeStage(st=" + st + ") called")
 	st = parseFloat(st)
 	st = stages.includes(st)?st:undefined
-	if(DEV_MODE){
+	if(APP_MODE<DEV_MOD2){
 		changeStage(st)
 	}else{//requesting stage to the server
 		requestStage(st)
@@ -195,7 +201,7 @@ function tryNextStage(){
 }
 
 function trySynch(){
-	if(DEV_MODE){
+	if(APP_MODE<DEV_MOD2){
 		changeStage(0)
 	}else{//requesting stage to the server
 		synch()
@@ -297,11 +303,11 @@ function setUpButtons(){
 }
 
 function init(){
-	if(DEV_MODE)document.getElementById('devmode').style.display="block"
+	if(APP_MODE<PRO_MODE)document.getElementById('devmode').style.display="block"
 	createNumButtons()
 	loadTexts()
 	if(URL_VARS.admin){
-		if(DEV_MODE)document.getElementById('admin').style.display="block"
+		if(APP_MODE<PRO_MODE)document.getElementById('admin').style.display="block"
 	}
 	trySynch()
 	//tryChangeStage()

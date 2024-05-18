@@ -22,6 +22,8 @@ data class Question(
     private var friendlyCheckpoint: Statement?,
     private var unfriendlyCheckpoint: Statement?,
     private var elaborationRequest: Statement?,
+    private var confirmationRequest1st: Statement?, // Set in data loading per statement
+    private var confirmationRequest2nd: Statement?, // Set in data loading per statement
     private var unfriendlyClaims: MutableList<Claim> = mutableListOf(),
     private var currentClaim: Claim?,
     private var friendlyClaims: MutableList<Statement> = mutableListOf(),
@@ -32,7 +34,7 @@ data class Question(
     private var previousState: State?,
     private var lastUtterance: String,
 ) {
-    private var userVerballyAgrees: Boolean = false
+    private var userVerbalAnswer: EnumAnswer = EnumAnswer.UNDEFINED
     private var currentUnfriendlyClaim: Claim? = null
     private var unfriendlyProbesCount:Int = 0
     private var friendlyProbesCount:Int = 0
@@ -54,6 +56,8 @@ data class Question(
         friendlyCheckpoint = null,
         unfriendlyCheckpoint = null,
         elaborationRequest = null,
+        confirmationRequest1st = null,
+        confirmationRequest2nd = null,
         unfriendlyClaims = mutableListOf(),
         friendlyClaims = mutableListOf(),
         currentClaim = null,
@@ -66,10 +70,19 @@ data class Question(
         if(currentUnfriendlyClaim ==null)currentUnfriendlyClaim = claim //Just adding the first one.
         unfriendlyClaims.add(claim)
     }
-
-    fun getCheckpoint(forReview: Boolean = FOR_PERSUASION): String{
-        val s: Statement? = if(forReview) friendlyCheckpoint else unfriendlyCheckpoint
+    fun confirm() {confirmed=true}
+    fun getCheckpoint(forReview: Boolean? = FRIENDLY): String{
+        // Returns the friendly or unfriendly checkpoint depending on the param or,
+        // if not provided, whether the user already agreed verbally in a
+        // previous checkpoint.
+        val s: Statement? = if(forReview!!) friendlyCheckpoint else unfriendlyCheckpoint
         return s!!.getText(this)
+    }
+    fun get1stConfirmationRequest(): String{
+        return confirmationRequest1st!!.getText(this)
+    }
+    fun get2ndConfirmationRequest(): String{
+        return confirmationRequest2nd!!.getText(this)
     }
     fun getDisclosure(): String{
         return disclosure!!.getText(this)
@@ -78,14 +91,41 @@ data class Question(
         return elaborationRequest!!.getText(this)
     }
     fun getFriendlyClaim():String{
+        /* Friendly claims (fClaim) are lists of claims linked to each unfriendly claim (uClaim). Each fClaim is
+         a combination of the next 2 uclaims. So, for example, given a list of 4 uClaims, if the first fClaim is
+        requested, the list of fClaims belonging to the first uClaim should be made the current list of fClaims.
+        Then the first fClaim of the list should be served.
+        And then the first uClaim of the list of Uclaims should be removed. At this point, the list of uClaims
+        should have 2 claims. The list of fClaims should have 1 claim.
+        If for any reason now an uClaim is requested, the right uClaim will be served.
+        */
         if(!friendlyClaimsWereUsed){
+            friendlyClaimsWereUsed = true
+            if (unfriendlyClaims.isNotEmpty()) {
+                friendlyClaims = unfriendlyClaims[0].friendlyStatementList
+            }else{/*this should not be happening*/
+                println("Fatal error I would say.")
+            }
+            /* Explanation of why currentUnfriendlyClaim can be null. This is because every time an fClaim is requested
+            two positions of uClaims are moved forward (i.e. two uClaims are removed for each fClaim removed). This means
+            that when the second to
+            */
+/*
             setNextUnfriendlyClaimAsCurrent()
             friendlyClaims = if(currentUnfriendlyClaim==null) friendlyClaims else currentUnfriendlyClaim?.friendlyStatementList!!
+*/
         }
-        return if (friendlyClaims.isNotEmpty() == true) friendlyClaims.removeFirst().getText(this) else ""
+        // After the above, the friendlyClaims are set.
+        if(friendlyClaims.isNotEmpty()){
+            //Removing two unfriendly claims per friendly claim delivered.
+            unfriendlyClaims.removeFirst()
+            unfriendlyClaims.removeFirst()
+            return friendlyClaims.removeFirst().getText(this)
+        }else{return ""}
+        //return if (friendlyClaims.isNotEmpty() == true) friendlyClaims.removeFirst().getText(this) else ""
 
     }
-    fun getFriendlyProbe():String{return getProbe(FOR_REVIEW)}
+    fun getFriendlyProbe():String{return getProbe(FRIENDLY)}
 
     fun getReflection(): String{
         return reflection!!.getText(this)
@@ -101,17 +141,21 @@ data class Question(
     fun getRobotAnswer(): EnumAnswer{
         return robotAnswer
     }
-
-    fun getUltimatum(forReview: Boolean = FOR_PERSUASION): String{
+    fun getRobotMode(): EnumRobotMode{
+        return robotMode!!
+    }
+    fun getUltimatum(forReview: Boolean = UNFRIENDLY): String{
         val s: Statement? = if(forReview) friendlyUltimatum else unfriendlyUltimatum
         return s!!.getText(this)
     }
     fun getUnfriendlyClaim(): String {
+        friendlyClaimsWereUsed = false // This is in case friendly claims were used, and then
+        //again, unfriendly claim is requested. In that case, the current list of friendly claims should be discarded.
         setNextUnfriendlyClaimAsCurrent()
         return currentUnfriendlyClaim?.getText(this) ?: ""
     }
     fun getUnfriendlyProbe():String{
-        return getProbe(FOR_PERSUASION)
+        return getProbe(UNFRIENDLY)
     }
 
     fun maxNumOfFriendlyProbesReached():Boolean = friendlyProbesCount>= MAX_NUM_PROBES_AT_REVIEW
@@ -125,6 +169,10 @@ data class Question(
                 currentUnfriendlyClaim = unfriendlyClaims.removeFirst()
             }
         }
+    }
+
+    fun setRobotAnswer(enumAnswer: EnumAnswer){
+        robotAnswer = enumAnswer
     }
     fun setRobotMode(mode: EnumRobotMode){robotMode=mode}
     fun setStatement(st: Statement, index: Int = 0){
@@ -166,7 +214,14 @@ data class Question(
                     unfriendlyUltimatum = st
                 }
             }
+            EnumStatementTypes.CONFIRMATION_REQUEST ->  {
+                if(st.isFriendly()) {
+                    confirmationRequest1st = st
+                }else{
+                    confirmationRequest2nd = st
+                }
 
+            }
         }
     }
 
@@ -175,15 +230,20 @@ data class Question(
         return unfriendlyClaims.size>0
     }
     fun thereAreFriendlyClaims():Boolean{
-        return thereAreUnfriendlyClaims() || (friendlyClaimsWereUsed && friendlyClaims.size>0)
+        if(friendlyClaimsWereUsed){
+            return friendlyClaims.size>0
+        }else{
+            return thereAreUnfriendlyClaims()
+        }
     }
     fun userVerballyAgrees(){
-        userVerballyAgrees = true
+        userVerbalAnswer = robotAnswer
     }
     fun userVerballyDisagrees(){
-        userVerballyAgrees = false
+        userVerbalAnswer = robotAnswer.getOpposite()
     }
-    fun isUserVerballyAgreeing(): Boolean = userVerballyAgrees
+    fun isUserVerballyAgreeing(): Boolean = userVerbalAnswer.agreesWith(robotAnswer)
+    fun isUserVerballyUndecided(): Boolean = userVerbalAnswer == EnumAnswer.UNDEFINED
 
 
 
@@ -195,23 +255,25 @@ data class Question(
         |ID: $id
         |Correct Answer: ${correctAnswer ?: "Not Set"}
         |Robot Mode: ${robotMode ?: "Not Set"}
-        |Robot Answer: ${robotAnswer ?: "Not Set"}
-        |User Verbally agrees: ${userVerballyAgrees ?: "Not Set"}
+        |Robot Answer: ${robotAnswer}
+        |User Verbally agrees: ${userVerbalAnswer}
         |Reflection: ${reflection ?: "Not Set"}
-        |Reflection: ${markingRequest ?: "Not Set"}
+        |Marking request: ${markingRequest ?: "Not Set"}
         |Disclosure: ${disclosure ?: "Not Set"}
         |Disclosure Has Question: ${disclosureHasQuestion ?: "Not Set"}
         |Friendly Ultimatum: ${friendlyUltimatum ?: "Not Set"}
         |Unfriendly Ultimatum: ${unfriendlyUltimatum ?: "Not Set"}
         |Friendly Checkpoint: ${friendlyCheckpoint ?: "Not Set"}
         |Unfriendly Checkpoint: ${unfriendlyCheckpoint ?: "Not Set"}
+        |First confirmation req: ${confirmationRequest1st ?: "Not Set"}
+        |Second confirmation req: ${confirmationRequest2nd ?: "Not Set"}
         |Current Claim: ${currentUnfriendlyClaim ?: "Not Set"}
         |Last Rejoinder: ${lastRejoinder ?: "Not Set"}
         |Current State: ${currentState ?: "Not Set"}
         |Previous State: ${previousState ?: "Not Set"}
-        |Last Utterance: ${lastUtterance ?: "Not Set"}
-        |Claims Count: ${unfriendlyClaims.size ?: "No claims"}
-        |Past Claims Count: ${friendlyClaims.size}
+        |Last Utterance: ${lastUtterance}
+        |Unfriendly Claims Count: ${unfriendlyClaims.size}
+        |Friendly Claims Count: ${friendlyClaims.size}
         """.trimMargin()
     }
 
