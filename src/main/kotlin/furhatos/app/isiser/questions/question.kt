@@ -1,7 +1,9 @@
 package furhatos.app.isiser.questions
 
+import furhatos.app.isiser.App
 import furhatos.app.isiser.setting.*
 import furhatos.flow.kotlin.State
+import java.awt.Stroke
 
 data class Question(
     val id: String,  // immutable ID, no need for setter
@@ -10,7 +12,6 @@ data class Question(
     private var robotAnswer: EnumAnswer, // Set in construction
 
     private var confirmed: Boolean = false,
-
     // Statements/Utterances
     private var reflection: Statement?, // Set in data loading per statement
     private var markingRequest: Statement?, // Set in data loading per statement
@@ -34,11 +35,12 @@ data class Question(
     private var previousState: State?,
     private var lastUtterance: String,
 ) {
-    private var userVerbalAnswer: EnumAnswer = EnumAnswer.UNDEFINED
+    private var userVerbalAnswer: EnumAnswer = EnumAnswer.UNSET
     private var currentUnfriendlyClaim: Claim? = null
     private var unfriendlyProbesCount:Int = 0
     private var friendlyProbesCount:Int = 0
 
+    private var statements: StatementMap = StatementMap(mutableMapOf(), this)
     // Secondary constructor
     constructor(id: String, cAns: EnumAnswer, rAns: EnumAnswer ) : this(
         id = id,
@@ -88,7 +90,8 @@ data class Question(
         return disclosure!!.getText(this)
     }
     fun getElaborationRequest(): String{
-        return elaborationRequest!!.getText(this)
+        return getStatement(EnumWordingTypes.ELABORATION_REQUEST)
+        //return elaborationRequest!!.getText(this)
     }
     fun getFriendlyClaim():String{
         /* Friendly claims (fClaim) are lists of claims linked to each unfriendly claim (uClaim). Each fClaim is
@@ -125,18 +128,16 @@ data class Question(
         //return if (friendlyClaims.isNotEmpty() == true) friendlyClaims.removeFirst().getText(this) else ""
 
     }
-    fun getFriendlyProbe():String{return getProbe(FRIENDLY)}
+    fun getFriendlyProbe():String{return getProbe(EnumFriendliness.FRIENDLY)}
 
-    fun getReflection(): String{
-        return reflection!!.getText(this)
-    }
-    fun getMarkingRequest(): String{
-        return markingRequest!!.getText(this)
-    }
 
-    fun getProbe(forReview: Boolean):String{
-        if(forReview)friendlyProbesCount++ else unfriendlyProbesCount++
-        return probe!!.getText(this)
+    fun getMarkedAnswer():EnumAnswer = App.getGUI().getMarkedAnswer()
+
+
+    fun getProbe(friendly: EnumFriendliness):String{
+        if(friendly==EnumFriendliness.FRIENDLY) friendlyProbesCount++ else unfriendlyProbesCount++
+        return getStatement(EnumWordingTypes.PROBE,friendly)
+        //return probe!!.getText(this)
     }
     fun getRobotAnswer(): EnumAnswer{
         return robotAnswer
@@ -144,9 +145,20 @@ data class Question(
     fun getRobotMode(): EnumRobotMode{
         return robotMode!!
     }
+    fun getStatement(wordingId: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): String{
+        return if(wordingId == EnumWordingTypes.CLAIM){
+            getClaim(friendliness!!)
+        }else {
+            statements.get(wordingId, friendliness)
+        }
+    }
+
     fun getUltimatum(forReview: Boolean = UNFRIENDLY): String{
         val s: Statement? = if(forReview) friendlyUltimatum else unfriendlyUltimatum
         return s!!.getText(this)
+    }
+    fun getClaim(friendliness: EnumFriendliness): String{
+        return if(friendliness == EnumFriendliness.UNFRIENDLY) getUnfriendlyClaim() else getFriendlyClaim()
     }
     fun getUnfriendlyClaim(): String {
         friendlyClaimsWereUsed = false // This is in case friendly claims were used, and then
@@ -155,14 +167,13 @@ data class Question(
         return currentUnfriendlyClaim?.getText(this) ?: ""
     }
     fun getUnfriendlyProbe():String{
-        return getProbe(UNFRIENDLY)
+        return getProbe(EnumFriendliness.UNFRIENDLY)
     }
 
     fun maxNumOfFriendlyProbesReached():Boolean = friendlyProbesCount>= MAX_NUM_PROBES_AT_REVIEW
 
     fun maxNumOfUnfriendlyProbesReached():Boolean = unfriendlyProbesCount>= MAX_NUM_PROBES_AT_PERSUASION
 
-    fun repeat(): String = lastUtterance ?: ""
     private fun setNextUnfriendlyClaimAsCurrent() {
         currentUnfriendlyClaim?.let {
             if (unfriendlyClaims.isNotEmpty() == true) {
@@ -176,45 +187,47 @@ data class Question(
     }
     fun setRobotMode(mode: EnumRobotMode){robotMode=mode}
     fun setStatement(st: Statement, index: Int = 0){
+
+        statements.add(st)
+
         when (st.type) {
-            EnumStatementTypes.REFLECTION -> {
+            EnumWordingTypes.REFLECTION -> {
                 reflection = st
             }
-            EnumStatementTypes.MARKING_REQUEST -> {
+            EnumWordingTypes.MARKING_REQUEST -> {
                 markingRequest = st
             }
-            EnumStatementTypes.CLAIM -> {//Performed via add Claim
+            EnumWordingTypes.CLAIM -> {//Performed via add Claim
             }
-            EnumStatementTypes.ASSERTION -> {
+            EnumWordingTypes.ASSERTION -> {
                 unfriendlyClaims[index].setAssertion(st)
             }
-            EnumStatementTypes.PROBE -> {
+            EnumWordingTypes.PROBE -> {
                 probe = st
             }
-            EnumStatementTypes.ASIDE -> {
-                //TODO()
+            EnumWordingTypes.ASIDE -> {//Performed via add Aside
             }
-            EnumStatementTypes.CHECKPOINT -> {
+            EnumWordingTypes.CHECKPOINT -> {
                 if(st.isFriendly()) {
                     friendlyCheckpoint = st
                 }else{
                     unfriendlyCheckpoint = st
                 }
             }
-            EnumStatementTypes.ELABORATION_REQUEST -> {
+            EnumWordingTypes.ELABORATION_REQUEST -> {
                 elaborationRequest = st
             }
-            EnumStatementTypes.DISCLOSURE -> {
+            EnumWordingTypes.DISCLOSURE -> {
                 disclosure = st
             }
-            EnumStatementTypes.ULTIMATUM -> {
+            EnumWordingTypes.ULTIMATUM -> {
                 if(st.isFriendly()) {
                     friendlyUltimatum = st
                 }else{
                     unfriendlyUltimatum = st
                 }
             }
-            EnumStatementTypes.CONFIRMATION_REQUEST ->  {
+            EnumWordingTypes.CONFIRMATION_REQUEST ->  {
                 if(st.isFriendly()) {
                     confirmationRequest1st = st
                 }else{
@@ -222,6 +235,17 @@ data class Question(
                 }
 
             }
+            EnumWordingTypes.REPEAT -> {/*Impossible, since they are not statements. Handled programmatically.*/}
+            EnumWordingTypes.WELCOME,
+            EnumWordingTypes.INSTRUCTIONS_INTRO ,
+            EnumWordingTypes.INSTRUCTIONS_CHECKPOINT ,
+            EnumWordingTypes.INSTRUCTIONS_GENERAL ,
+            EnumWordingTypes.INSTRUCTIONS_DETAILED ,
+            EnumWordingTypes.PRESS_READY_REQUEST,
+            EnumWordingTypes.FAREWELL,
+                    EnumWordingTypes.ANY -> {/*Impossible, since they are not statements. Handled by wording.*/}
+
+
         }
     }
 
@@ -243,7 +267,7 @@ data class Question(
         userVerbalAnswer = robotAnswer.getOpposite()
     }
     fun isUserVerballyAgreeing(): Boolean = userVerbalAnswer.agreesWith(robotAnswer)
-    fun isUserVerballyUndecided(): Boolean = userVerbalAnswer == EnumAnswer.UNDEFINED
+    fun isUserVerballyUndecided(): Boolean = userVerbalAnswer == EnumAnswer.UNSET
 
 
 

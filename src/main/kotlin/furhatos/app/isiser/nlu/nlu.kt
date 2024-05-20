@@ -26,6 +26,7 @@ class ElaborationRequest: Intent()
 // DontKnow() is built-in
 class Backchannel: Intent()
 class Agree: Intent()
+class MeReady: Intent()
 // Yes() is built-in
 
 // -------------------------------
@@ -40,6 +41,7 @@ class AllIntents : Intent {
     constructor(intent: Intent) : this() {
         rejoinder = when (intent) {
             is NluLib.IAmDone -> EnumRejoinders.I_AM_DONE
+            is MeReady -> EnumRejoinders.ME_READY
             is AnswerFalse -> EnumRejoinders.ANSWER_FALSE
             is AnswerTrue -> EnumRejoinders.ANSWER_TRUE
 

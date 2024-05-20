@@ -5,6 +5,9 @@ import furhatos.app.isiser.flow.main.QuestionReflection
 import furhatos.app.isiser.flow.main.Sleep
 import furhatos.app.isiser.flow.main.Welcome
 import furhatos.app.isiser.handlers.SessionEvent
+import furhatos.app.isiser.handlers.doAsk
+import furhatos.app.isiser.handlers.doSay
+import furhatos.app.isiser.nlu.AllIntents
 import furhatos.app.isiser.nlu.Backchannel
 import furhatos.app.isiser.nlu.RejoinderDisagreed
 import furhatos.app.isiser.setting.*
@@ -27,36 +30,33 @@ val Parent: State = state {
         println("Parent>onUserEnter")
         furhat.glance(it)
     }
-    onNoResponse {
-        println("Parent>onNoResponse")
-        furhat.say("Oops, I don't hear you.")
-        reentry()
-    }
-    onResponseFailed {
-        furhat.say("I think my connection broke. Did you say something?")
-    }
 
     onResponse<RequestRepeat>{
-        furhat.ask("Yes I would repeat it but I have not been programmed for this yet")
+        furhat.doAsk(session.getRepeat())
     }
     onResponse<Wait>{
-        furhat.ask("Yes I would give you more time but I have not been programmed for this yet")
+        furhat.doAsk("Yes I would give you more time but I have not been programmed for this yet")
     }
-    onResponse<Goodbye>{
-        if(TESTING_LEVEL>0) {
-            goto(QuestionReflection)
-        }else{
-            furhat.ask("Oh!")
-        }
+/*    onNoResponse {
+        println("Parent>onNoResponse")
+        furhat.doAsk("Oops, I don't hear you.")
+    }*/
+    onResponseFailed {
+        furhat.doAsk("I think my connection broke. Did you say something?")
     }
+
     onResponse {
         if(seemsLikeBackchannel(it.text, it.speech.length)){
-            raise(Backchannel())
+            raise(AllIntents(EnumRejoinders.BACKCHANNEL))
         }else{
-            if(session.inAgreement()){
-                furhat.ask(session.getElaborationRequest())
-            }else {
-                raise(RejoinderDisagreed())
+            if(session.isActive()){
+                if(session.inAgreement()){
+                    furhat.doAsk(session.getUtterance(EnumWordingTypes.ELABORATION_REQUEST, EnumRejoinders.REJOINDER_AGREED))
+                }else {
+                    raise(AllIntents(EnumRejoinders.REJOINDER_DISAGREED))
+                }
+            }else{
+                raise(AllIntents(EnumRejoinders.OFF_TOPIC))
             }
         }
     }
@@ -66,6 +66,11 @@ val Parent: State = state {
             EventType.QUESTION_SET -> App.goto(QuestionReflection)
             else -> {}
         }
+    }
+
+    onNoResponse{
+        furhat.say("Parent")
+        raise(AllIntents(EnumRejoinders.SILENCE))
     }
     /*
     onEvent<GUIEvent> {

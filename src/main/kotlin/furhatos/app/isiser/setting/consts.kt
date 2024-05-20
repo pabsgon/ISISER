@@ -1,9 +1,5 @@
 package furhatos.app.isiser.setting
 
-import Farewell
-import furhatos.app.isiser.flow.main.*
-import furhatos.flow.kotlin.State
-
 const val GUI = "GUI"
 const val UNDEFINED = "UNDEFINED"
 const val NO_MESSAGE = "NO MESSAGE"
@@ -19,13 +15,13 @@ const val SOURCEDATA_TRUE = "TRUE"
 const val SOURCEDATA_FALSE = "FALSE"
 const val SOURCEDATA_FRIENDLY = "FRIENDLY"
 const val SOURCEDATA_QUESTION = 0
-const val SOURCEDATA_STATE = 1
-const val SOURCEDATA_STATE_PHASE = 2
-const val SOURCEDATA_FOR_REJOINDER = 3
-const val SOURCEDATA_TYPE = 4
+const val SOURCEDATA_WORDING_FOR_ASIDE = 1 // Linked to EnumWordingTypes
+const val SOURCEDATA_STATE_PHASE = 2 //  Linked to EnumStatePhase
+const val SOURCEDATA_FOR_REJOINDER = 3 // Linked to EnumRejoinders
+const val SOURCEDATA_WORDING_TYPE = 4
 const val SOURCEDATA_STATEMENT_INDEX = 5
 const val SOURCEDATA_PERTRIPLET = 6
-const val SOURCEDATA_SUBTYPE = 7
+const val SOURCEDATA_SUBTYPE = 7 // Linked to EnumFriendliness
 const val SOURCEDATA_ID = 8
 const val SOURCEDATA_WORDING="WORDING"
 const val SOURCEDATA_STATEMENT = "STATEMENT"
@@ -37,7 +33,27 @@ const val SOURCEDATA_CODE_ROBOT_ANSWER = "#ROBOT_ANSWER#"
 const val SOURCEDATA_CODE_USER_ANSWER = "#USER_ANSWER#"
 
 enum class EnumQuestionPhase {
-    REFLECTION, DISCLOSURE, PERSUASION, REVIEW, CHECKPOINT, ULTIMATUM, CONFIRMATION
+    WELCOME, REFLECTION, DISCLOSURE, PERSUASION, REVIEW, CHECKPOINT, ULTIMATUM, CONFIRMATION
+}
+
+enum class EnumFriendliness{
+    FRIENDLY,
+    UNFRIENDLY,
+    ANY;
+    companion object {
+        fun fromString(ans: String): EnumFriendliness {
+            return try {
+                enumValueOf<EnumFriendliness>(ans.toUpperCase())
+            } catch (e: IllegalArgumentException) {
+                if(ans.isEmpty()) {
+                    return EnumFriendliness.ANY
+                }else{
+                    error("Error loading data: SUBTYPE value '$ans' unknown. [TRUE,FALSE,FRIENDLY,UNFRIENDLY] expected")
+                }
+
+            }
+        }
+    }
 }
 enum class EnumConditions {
     UNDEFINED, CONDITION1, CONDITION2, CONDITION3;
@@ -58,13 +74,13 @@ enum class EnumRobotMode(val speechRate: Double) {
     UNCERTAIN(UNCERTAIN_ROBOT_SPEECH_RATE)
 }
 enum class EnumAnswer {
-    TRUE, FALSE, UNDEFINED;
+    TRUE, FALSE, UNSET;
     companion object {
         fun fromString(ans: String): EnumAnswer {
             return when (ans.toUpperCase()) {
                 "TRUE" -> EnumAnswer.TRUE
                 "FALSE" -> EnumAnswer.FALSE
-                else -> EnumAnswer.UNDEFINED
+                else -> EnumAnswer.UNSET
             }
         }
     }
@@ -72,11 +88,11 @@ enum class EnumAnswer {
         return when (this) {
             EnumAnswer.TRUE -> EnumAnswer.FALSE
             EnumAnswer.FALSE -> EnumAnswer.TRUE
-            else -> EnumAnswer.UNDEFINED
+            else -> EnumAnswer.UNSET
         }
     }
     fun agreesWith(ans: EnumAnswer): Boolean {
-        return (this != EnumAnswer.UNDEFINED && this == ans)
+        return (this != EnumAnswer.UNSET && this == ans)
     }
 }
 enum class EnumStages(val num: Double, val isQuestion: Boolean, val isSartingStage: Boolean) {
@@ -158,26 +174,9 @@ enum class EventType(val defMsg: String, val cat: EventCategory) {
     }
 }
 
-enum class EnumStates(val state:State, val robotModeApplies: Boolean) {// CONNECTED TO THE DATA SPREADSHEET
-    WELCOME(Welcome, false),
-    INSTRUCTIONS(ReviewInstructions, false),
-    REFLECTION(QuestionReflection, false),
-    DISCLOSURE(QuestionDisclosure(), true),
-    PERSUASION(QuestionPersuasion(), true),
-    REVIEW(QuestionReview(), true),
-    CHECKPOINT(QuestionCheckpoint(), true),
-    ULTIMATUM(QuestionUltimatum(), false),
-    CONFIRMATION(QuestionConfirmation(), false),
-    FAREWELL(Farewell, false);
-
-    companion object {
-        fun fromState(state: State): EnumStates? {
-            return values().find { it.state == state }
-        }
-    }
-}
 enum class EnumRejoinders {// CONNECTED TO THE DATA SPREADSHEET
     I_AM_DONE,
+    ME_READY,
     ANSWER_MARKED,
     ANSWER_TRUE,
     ANSWER_FALSE,
@@ -192,34 +191,46 @@ enum class EnumRejoinders {// CONNECTED TO THE DATA SPREADSHEET
     BACKCHANNEL,
     OFF_TOPIC,
     ASSENT,
+    I_UNDERSTAND,
     REPEAT_REQUEST,
-    SILENCE;
+    SILENCE,
+    ANY;
     fun getAnswer(): EnumAnswer {
         return when (this) {
             ANSWER_TRUE -> EnumAnswer.TRUE
             ANSWER_FALSE ->EnumAnswer.FALSE
-            else -> EnumAnswer.UNDEFINED
+            else -> EnumAnswer.UNSET
         }
     }
 
 }
 
-enum class EnumStatementTypes { // CONNECTED TO THE DATA SPREADSHEET
-    REFLECTION,
-    MARKING_REQUEST,
-    CLAIM,
-    ASSERTION,
-    PROBE,
-    ASIDE,
-    CHECKPOINT,
-    ELABORATION_REQUEST,
-    DISCLOSURE,
-    CONFIRMATION_REQUEST,
-    ULTIMATUM;
+enum class EnumWordingTypes(val isWording:Boolean, val robotModeApplies: Boolean) {// CONNECTED TO THE DATA SPREADSHEET
+    WELCOME(true, false),
+    INSTRUCTIONS_INTRO( true, false),
+    INSTRUCTIONS_GENERAL( true, false),
+    INSTRUCTIONS_DETAILED( true, false),
+    INSTRUCTIONS_CHECKPOINT( true, false),
+    PRESS_READY_REQUEST( true, false),
+    REFLECTION( false, false),
+    MARKING_REQUEST(false, false),
+    DISCLOSURE(false, true),
+    CLAIM( false, true),
+    ASSERTION( false, true),
+    PROBE(false, true),
+    CHECKPOINT( false, true),
+    ULTIMATUM( false, false),
+    ELABORATION_REQUEST (false, false),
+    ASIDE (false, false),
+    CONFIRMATION_REQUEST( false, false),
+    FAREWELL( true, false),
+    REPEAT(true, false),
+    ANY(true, false);
+
     companion object {
-        fun fromString(ans: String): EnumStatementTypes {
+        fun fromString(ans: String): EnumWordingTypes {
             return try {
-                enumValueOf<EnumStatementTypes>(ans.toUpperCase())
+                enumValueOf<EnumWordingTypes>(ans.toUpperCase())
             } catch (e: IllegalArgumentException) {
                 error("Source data error: EnumStatementTypes value '$ans' unknown")
             }

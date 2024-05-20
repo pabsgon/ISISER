@@ -1,10 +1,7 @@
 package furhatos.app.isiser.handlers
 
-import furhatos.app.isiser.App
 import furhatos.app.isiser.questions.Question
 import furhatos.app.isiser.setting.*
-import furhatos.flow.kotlin.Utterance
-import furhatos.flow.kotlin.utterance
 
 class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
 
@@ -60,19 +57,17 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
     }
     fun buildUtterance(text: String, aside: String? = ""): String{
         //THIS NEEDS TO BE COMPLETED
-        lastRobotText = text
+
         return text
     }
-    fun buildUtterance2(text: String, aside: String = ""): Utterance{
-        //THIS NEEDS TO BE COMPLETED
-        return createUtterance(aside + " " + text)
-    }
-    fun confirmAnswer(){ currentQuestion!!.confirm() }
 
+    fun confirmAnswer(){ currentQuestion!!.confirm() }
+/*
     fun getCheckpoint(rejoinder: EnumRejoinders?):String{
         return buildUtterance(currentQuestion!!.getCheckpoint(inAgreement()))
-    }
+    }*/
     fun getCondition():  EnumConditions { return condition }
+/*
 
     fun get1stConfirmationRequest(rejoinder: EnumRejoinders? = null):String{
         return buildUtterance(currentQuestion!!.get1stConfirmationRequest())
@@ -80,42 +75,38 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
     fun get2ndConfirmationRequest(rejoinder: EnumRejoinders? = null):String{
         return buildUtterance(currentQuestion!!.get2ndConfirmationRequest())
     }
+*/
 
-    fun getDisclosure(rejoinder: EnumRejoinders?):String{
-        return buildUtterance(currentQuestion!!.getDisclosure())
+/*
+    fun getDisclosure(rejoinder: EnumRejoinders? = EnumRejoinders.ANY):ExtendedUtterance{
+        val aside: String = dataHandler.getAside(EnumWordingTypes.DISCLOSURE, rejoinder)
+        return deprecated_createUtterance(currentQuestion!!.getDisclosure(), aside)
+        return createUtterance(currentQuestion!!.getDisclosure())
     }
-    fun getElaborationRequest(rejoinder: EnumRejoinders? = null):String{
-        return buildUtterance(currentQuestion!!.getElaborationRequest())
-    }
+*/
+
     fun getFriendlyProbe(rejoinder: EnumRejoinders?):String{
         return buildUtterance(currentQuestion!!.getFriendlyProbe())
     }
     fun getFriendlyClaim(rejoinder: EnumRejoinders?):String{
         return buildUtterance(currentQuestion!!.getFriendlyClaim())
     }
-    fun getMarkingRequest(rejoinder: EnumRejoinders?):String{
-        return buildUtterance(currentQuestion!!.getMarkingRequest())
-    }
 
-    fun getReflection(rejoinder: EnumRejoinders? = null):String{
-        return buildUtterance(currentQuestion!!.getReflection())
-    }
     fun getQuestions():  MutableList<Question> { return questions }
 
-    fun getUltimatum(rejoinder: EnumRejoinders?):String{
-        return buildUtterance(currentQuestion!!.getUltimatum(inAgreement()))
-    }
     fun getUnfriendlyClaim(rejoinder: EnumRejoinders?):String{
         return buildUtterance(currentQuestion!!.getUnfriendlyClaim())
     }
     fun getUnfriendlyProbe(rejoinder: EnumRejoinders?):String{
         return buildUtterance(currentQuestion!!.getUnfriendlyProbe())
     }
+/*
+    fun getUltimatum(rejoinder: EnumRejoinders?):ExtendedUtterance{
+        return getUtterance(EnumWordingTypes.ULTIMATUM, rejoinder,
+            (if(inAgreement()) EnumFriendliness.FRIENDLY else EnumFriendliness.UNFRIENDLY) )
+    }*/
     fun getUser():  String { return user }
 
-    fun getWording(state: EnumStates, i: Int): Utterance{
-        return buildUtterance2(dataHandler.getWording(state,i))
-    }
 
     fun impliedRejoinder(rejoinder: EnumRejoinders):EnumRejoinders{
         if(rejoinder == EnumRejoinders.ANSWER_TRUE ||
@@ -153,7 +144,7 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
         val robotAnswer = currentQuestion!!.getRobotAnswer()
         val userMarkedAnswer =   guiHandler.getMarkedAnswer()
 
-        return robotAnswer != EnumAnswer.UNDEFINED && userMarkedAnswer == robotAnswer
+        return robotAnswer != EnumAnswer.UNSET && userMarkedAnswer == robotAnswer
     }
     fun neverAskedInCheckpoint(): Boolean = currentQuestion!!.isUserVerballyUndecided()
     fun inVerbalAgreement(): Boolean =  currentQuestion!!.isUserVerballyAgreeing()
@@ -186,7 +177,6 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
                 condition = dataHandler.getConditionForUser(user)
                 val robotModes: List<EnumRobotMode> = dataHandler.getRobotModesForCondition(condition)
                 setupQuestions(robotModes)
-                active = true
             }
         }
     }
@@ -215,51 +205,51 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
         questions.forEach { println(it) }
     }
 
-    fun createUtterance(s1: String): Utterance {
-        val currentStateIsTrimode: Boolean = App.isCurrentStateTriMode()
+    fun deprecated_createUtterance(text: String, aside: String = "", currentStateIsTrimode: Boolean = false): ExtendedUtterance {
+        //val currentStateIsTrimode: Boolean = App.isCurrentStateTriMode()
         val robotMode = if (currentStateIsTrimode) currentQuestion!!.getRobotMode() else EnumRobotMode.NEUTRAL
-        val speechRate = robotMode.speechRate
 
         val processedString = if (currentStateIsTrimode) {
-            s1.replace(SOURCEDATA_CODE_QNUM, getQuestionNumber())
+            text.replace(SOURCEDATA_CODE_QNUM, getQuestionNumber())
                 .replace(SOURCEDATA_CODE_ROBOT_ANSWER, currentQuestion!!.getRobotAnswer().toString())
                 .replace(SOURCEDATA_CODE_USER_ANSWER, guiHandler.getMarkedAnswer().toString())
         } else {
-            s1.replace(SOURCEDATA_CODE_QNUM, "SAMPLE 4")
+            text.replace(SOURCEDATA_CODE_QNUM, "SAMPLE 4")
                 .replace(SOURCEDATA_CODE_ROBOT_ANSWER, "SAMPLE TRUE")
                 .replace(SOURCEDATA_CODE_USER_ANSWER, "SAMPLE FALSE")
         }
+        lastRobotText = processedString
+        return ExtendedUtterance(processedString, aside, robotMode)
+    }
 
-        return utterance {
-            //+rate(speechRate)
-            var currentText = StringBuilder()
-            var i = 0
-            while (i < processedString.length) {
-                when {
-                    processedString[i] == '.' -> {
-                        var dotCount = 0
-                        while (i < processedString.length && processedString[i] == '.') {
-                            dotCount++
-                            i++
-                        }
-                        if (dotCount > 1) {
-                            if (currentText.isNotEmpty()) {
-                                +currentText.toString().trim()
-                                currentText = StringBuilder()
-                            }
-                            +delay(250 * dotCount)
-                        }
-                    }
-                    else -> {
-                        currentText.append(processedString[i])
-                        i++
-                    }
-                }
-            }
-            if (currentText.isNotEmpty()) {
-                +currentText.toString().trim()
-            }
+    fun getRepeat(): ExtendedUtterance{
+        return deprecated_createUtterance(lastRobotText,dataHandler.getAside(EnumWordingTypes.REPEAT, EnumRejoinders.REPEAT_REQUEST))
+    }
+
+    fun getUtterance(wordingId: EnumWordingTypes,
+                     rejoinder: EnumRejoinders? = EnumRejoinders.ANY,
+                     friendly: EnumFriendliness? = EnumFriendliness.ANY,
+                     statePhase: EnumStatePhase? = EnumStatePhase.ANY): ExtendedUtterance {
+        val friendliness: EnumFriendliness = when(wordingId){
+            EnumWordingTypes.ULTIMATUM,EnumWordingTypes.CHECKPOINT -> (if(inAgreement()) EnumFriendliness.FRIENDLY else EnumFriendliness.UNFRIENDLY)
+            else -> { friendly!!}
         }
+
+
+        val aside: String = dataHandler.getAside(wordingId, rejoinder, statePhase)
+
+        val utterance: ExtendedUtterance = if(wordingId.isWording){
+            ExtendedUtterance(dataHandler.getWording(wordingId), aside)
+        }else{
+            ExtendedUtterance(
+                currentQuestion!!.getStatement(wordingId, friendliness),
+                aside,
+                currentQuestion!!.getRobotMode()
+            )
+        }
+
+        lastRobotText = utterance.mainText
+        return utterance
     }
 
 }

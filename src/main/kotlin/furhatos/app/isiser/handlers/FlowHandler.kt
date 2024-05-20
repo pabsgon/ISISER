@@ -1,9 +1,11 @@
 package furhatos.app.isiser.handlers
 
+import furhatos.app.isiser.App
 import furhatos.app.isiser.flow.Init
 import furhatos.app.isiser.setting.EventType
-import furhatos.flow.kotlin.FlowControlRunner
-import furhatos.flow.kotlin.State
+import furhatos.app.isiser.setting.ExtendedUtterance
+import furhatos.app.isiser.setting.WAITING_TIME_MILLISECS
+import furhatos.flow.kotlin.*
 
 class FlowHandler(evFactory: EventFactory ) {
 
@@ -35,5 +37,37 @@ class FlowHandler(evFactory: EventFactory ) {
         flowRunner = newFcr
     }
 
+}
+fun Furhat.doAsk(s: String){
+    this.voice.rate = 1.0
+    this.ask(s,  timeout = WAITING_TIME_MILLISECS)
+}
+fun Furhat.doAsk(u: Utterance){
+    this.voice.rate = 1.0
+    this.ask(u)
+}
+fun Furhat.doAsk(u: UtteranceDefinition){
+    this.voice.rate = 1.0
+    this.ask(u)
+}
 
+fun Furhat.doAsk(u: ExtendedUtterance, rate: Double? = null){
+    this.voice.rate = rate ?: u.rate
+    this.ask(u.utterance, timeout = WAITING_TIME_MILLISECS)
+}
+fun Furhat.doSay(s: String){
+    this.voice.rate = 1.0
+    this.say(s)
+}
+fun Furhat.doSay(u: Utterance){
+    this.voice.rate = 1.0
+    this.say(u)
+}
+fun Furhat.doSay(u: UtteranceDefinition){
+    this.voice.rate = 1.0
+    this.say(u)
+}
+fun Furhat.doSay(u: ExtendedUtterance, rate: Double? = null){
+    this.voice.rate = rate ?: u.rate
+    this.say(u.utterance)
 }

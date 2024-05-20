@@ -13,10 +13,11 @@ data class DataHandler(val evFactory: EventFactory,
     val statements: MutableList<Statement> = mutableListOf(),
     val conditions: MutableMap<EnumConditions, List<EnumRobotMode>> = mutableMapOf(),
     val users: MutableMap<Int, EnumConditions> = mutableMapOf(),
-    var wordings: Wordings = Wordings()
+   var wordings: Wordings = Wordings(),
+   var asides: Asides = Asides()
 ){
 
-    fun getWording(s: EnumStates, i: Int): String = wordings.get(s,i)
+    fun getWording(s: EnumWordingTypes): String = wordings.get(s)
 
     fun getSheetsService(): Sheets {
         val httpTransport = GoogleNetHttpTransport.newTrustedTransport()
@@ -72,8 +73,11 @@ data class DataHandler(val evFactory: EventFactory,
                                 }
                             }
                             if(it== SOURCEDATA_WORDING){
-                                processUtterance(stCount, list1, list2)
+                                processWording(stCount, list1, list2)
                             }else {
+                                if(EnumWordingTypes.fromString( list1[SOURCEDATA_WORDING_TYPE].toString()) == EnumWordingTypes.ASIDE){
+                                    addAside( stCount, list1, list2)
+                                }
                                 // Call the processLine function with the two lists
                                 processLine(questions, stCount, list1, list2)
                             }
@@ -87,11 +91,11 @@ data class DataHandler(val evFactory: EventFactory,
                         for (i in 0 until list1.size) {
                             val id = qnlist!![i].toString()
                             val cAns = EnumAnswer.fromString(qalist!![i].toString())
-                            if(cAns.equals(EnumAnswer.UNDEFINED)) {
+                            if(cAns.equals(EnumAnswer.UNSET)) {
                                 error("Unexpected value in row \"CORRECT_ANSWER\" col[{$i}]. Expected TRUE/FALSE.")
                             }
                             val rAns = EnumAnswer.fromString(list1[i].toString())
-                            if(rAns.equals(EnumAnswer.UNDEFINED)) {
+                            if(rAns.equals(EnumAnswer.UNSET)) {
                                 error("Unexpected value in row \"ROBOT_ANSWER\" col[{$i}]. Expected TRUE/FALSE.")
                             }
                             questions.add(Question(id,cAns,rAns))
@@ -145,8 +149,9 @@ data class DataHandler(val evFactory: EventFactory,
         conditions[cond] = enumList
         unlist.map {it }.forEach { key -> users[key] = cond }
     }
-    private fun addStatement(questions: MutableList<Question>, qIndex: Int, id: String, type: EnumStatementTypes,
-                             subType: Boolean, stIndex: Int, perTriplet: Boolean,
+
+    private fun addStatement(questions: MutableList<Question>, qIndex: Int, id: String, type: EnumWordingTypes,
+                             subType: String, stIndex: Int, perTriplet: Boolean,
                              vararg texts: String) {
         //qIndex is 0-based, must be
         val textTriplets = if (perTriplet) {
@@ -162,7 +167,7 @@ data class DataHandler(val evFactory: EventFactory,
                 textTriplets.add(TextTriplet(neutral, uncertain, certain))
             }
         }
-        if(type.equals(EnumStatementTypes.CLAIM)){
+        if(type.equals(EnumWordingTypes.CLAIM)){
             addClaim(questions, qIndex, id, subType, textTriplets)
         }else{
             val s = Statement(id, type, textTriplets, subType) // subType=true means "Indexical" if Assertion, and Friendly if Ultimatum or Checkpoint.
@@ -178,7 +183,7 @@ data class DataHandler(val evFactory: EventFactory,
     }
 
 
-    private fun addClaim(questions: MutableList<Question>, qIndex: Int, id: String, subType: Boolean, textTriplets:  MutableList<TextTriplet> ) {
+    private fun addClaim(questions: MutableList<Question>, qIndex: Int, id: String, subType: String, textTriplets:  MutableList<TextTriplet> ) {
     //Here the list of triplets will contain the 1) the UNFRIENDLY claim, and the rest of triplets must be used to create a statement, which
         //will be added to the list of friendly statements of the claim.
 
@@ -188,12 +193,18 @@ data class DataHandler(val evFactory: EventFactory,
             val tempStatements: MutableList<Statement> = mutableListOf()
 
             // Add the unfriendly statement (first triplet)
-            val s1 = Statement(id + UNFRIENDLY_SUFFIX, EnumStatementTypes.CLAIM, textTriplets.subList(0, 1).toMutableList(), subType)
+            val s1 = Statement(id + UNFRIENDLY_SUFFIX,
+                                    EnumWordingTypes.CLAIM,
+                                    textTriplets.subList(0, 1).toMutableList(),
+                                    EnumFriendliness.UNFRIENDLY)
             tempStatements.add(s1)
 
             // Add the remaining triplets as friendly statements
             for (i in 1 until textTriplets.size) {
-                val s = Statement(id + FRIENDLY_SUFFIX + i, EnumStatementTypes.CLAIM, mutableListOf(textTriplets[i]), subType)
+                val s = Statement(id + FRIENDLY_SUFFIX + i,
+                                    EnumWordingTypes.CLAIM,
+                                    mutableListOf(textTriplets[i]),
+                                    EnumFriendliness.FRIENDLY)
                 tempStatements.add(s)
             }
 
@@ -201,18 +212,30 @@ data class DataHandler(val evFactory: EventFactory,
             questions.getOrNull(qIndex)?.addClaim(Claim(id, tempStatements)) ?: println("Error loading data: Question Index is out of bounds")
         }
     }
-    fun processUtterance(c: Int, settings: List<Any>, texts: List<Any>) {
-        val state = settings[SOURCEDATA_STATE].toString()
-        val qIndex = settings[SOURCEDATA_QUESTION].toString()
-        wordings.add(state, texts)
+    fun processWording(c: Int, settings: List<Any>, texts: List<Any>) {
+        val wordingType = settings[SOURCEDATA_WORDING_TYPE].toString()
+        wordings.add(wordingType, texts)
+    }
+
+    fun addAside(c: Int, settings: List<Any>, texts: List<Any>) {
+        val wordingForAside = settings[SOURCEDATA_WORDING_FOR_ASIDE]
+        val statePhase = settings[SOURCEDATA_STATE_PHASE]
+        val rejoinder = settings[SOURCEDATA_FOR_REJOINDER]
+        val friendliness = settings[SOURCEDATA_SUBTYPE]
+        asides.add(wordingForAside,statePhase,rejoinder, friendliness,  texts)
+    }
+    fun getAside(type: EnumWordingTypes,
+                 rejoinder: EnumRejoinders? = EnumRejoinders.ANY,
+                phase: EnumStatePhase? = EnumStatePhase.BODY, friendliness: EnumFriendliness? = EnumFriendliness.ANY): String{
+        return asides.get(type, rejoinder, phase, friendliness)
     }
 
     fun processLine(questions: MutableList<Question>, c: Int, settings: List<Any>, texts: List<Any>) {
         val textsAsStringArray = texts.map { it.toString() }.toTypedArray()
         val id = settings[SOURCEDATA_ID].toString()
         val qIndex = questionIndexToInt(settings[SOURCEDATA_QUESTION].toString(),c)
-        val type: EnumStatementTypes = EnumStatementTypes.fromString(settings[SOURCEDATA_TYPE].toString())
-        val subType = subTypeToBool(type, settings[SOURCEDATA_SUBTYPE].toString())
+        val type: EnumWordingTypes = EnumWordingTypes.fromString(settings[SOURCEDATA_WORDING_TYPE].toString())
+        val subType = settings[SOURCEDATA_SUBTYPE].toString()
         val stIndex = questionIndexToInt(settings[SOURCEDATA_STATEMENT_INDEX].toString(),c)
         val pertriplet = settings[SOURCEDATA_PERTRIPLET].toString() == SOURCEDATA_TRUE
 
@@ -237,17 +260,13 @@ data class DataHandler(val evFactory: EventFactory,
             }
         }
     }
-    fun subTypeToBool(type: EnumStatementTypes, subType: String): Boolean {
-        return when (type) {
-            EnumStatementTypes.CHECKPOINT, EnumStatementTypes.ULTIMATUM,
-            EnumStatementTypes.CONFIRMATION_REQUEST -> subType== SOURCEDATA_FRIENDLY
-            EnumStatementTypes.ASSERTION -> subType== SOURCEDATA_TRUE
-            else -> false
-        }
-    }
     fun printWordings(){
         println("--Wordings--")
         wordings.print()}
+
+    fun printAsides(){
+        println("--Asides--")
+        asides.print()}
 
     fun printStatements() {
         println("Printing all statements:")

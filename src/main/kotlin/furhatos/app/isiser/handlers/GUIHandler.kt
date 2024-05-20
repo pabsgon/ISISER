@@ -24,7 +24,7 @@ import java.time.Duration
 class GUIHandler(evFactory: EventFactory) {
     private val EvFactory: EventFactory = evFactory
     private var stage: EnumStages = EnumStages.STAGE_0
-    private var markedAnswer = EnumAnswer.UNDEFINED
+    private var markedAnswer = EnumAnswer.UNSET
     private var firstQuestionPassed = false
     private var guiLoaded = false
 
@@ -35,7 +35,7 @@ class GUIHandler(evFactory: EventFactory) {
     fun isFirstQuestion(): Boolean = !firstQuestionPassed && isQuestionStage()
     fun isGUILoaded(): Boolean = guiLoaded
     fun getMarkedAnswer(): EnumAnswer = markedAnswer
-    fun isAnswerMarked(): Boolean = markedAnswer != EnumAnswer.UNDEFINED
+    fun isAnswerMarked(): Boolean = markedAnswer != EnumAnswer.UNSET
 
 
 
@@ -48,7 +48,7 @@ class GUIHandler(evFactory: EventFactory) {
         // that it is not an answer-change request, so it should be ignored.
         if(value != "" )markedAnswer = EnumAnswer.fromString(value)
     }
-    fun resetAnswer() {markedAnswer = EnumAnswer.UNDEFINED}
+    fun resetAnswer() {markedAnswer = EnumAnswer.UNSET}
     fun handleEvent(event: GUIEvent){
         // The GUI event represents the instant where the Application.module() (below in this file)
         // answered the request from the GUI. This means that the event will contain the request data

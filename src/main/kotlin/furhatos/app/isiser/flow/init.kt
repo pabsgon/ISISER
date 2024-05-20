@@ -7,6 +7,7 @@ import furhatos.app.isiser.setting.ENGAGMENT_DISTANCE
 import furhatos.app.isiser.setting.MAX_NUM_USERS
 import furhatos.app.isiser.setting.TESTING_LEVEL
 import furhatos.flow.kotlin.*
+import furhatos.flow.kotlin.voice.PollyVoice
 import furhatos.flow.kotlin.voice.Voice
 import furhatos.util.CommonUtils
 
@@ -43,4 +44,24 @@ val Init : State = state() {
     }
 }
 
-
+class MatthewNeutral: PollyVoice.Matthew() {
+    override fun transform(text: String): String {
+        val myTransformedText = prosody(text, rate = 1.0)
+        // Don't forget to call super.transform() !!
+        return super.transform(myTransformedText)
+    }
+}
+class MatthewCertain: PollyVoice.Matthew() {
+    override fun transform(text: String): String {
+        val myTransformedText = prosody(text, rate = 1.25)
+        // Don't forget to call super.transform() !!
+        return super.transform(myTransformedText)
+    }
+}
+class MatthewUncertain: PollyVoice.Matthew() {
+    override fun transform(text: String): String {
+        val myTransformedText = prosody(text, rate = 0.75)
+        // Don't forget to call super.transform() !!
+        return super.transform(myTransformedText)
+    }
+}

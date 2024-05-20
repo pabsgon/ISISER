@@ -1,5 +1,9 @@
 // File: Session.kt
 package furhatos.app.isiser
+import Farewell
+import com.sun.org.apache.bcel.internal.generic.Instruction
+import furhatos.app.isiser.flow.Init
+import furhatos.app.isiser.flow.main.*
 import furhatos.app.isiser.handlers.*
 import furhatos.app.isiser.setting.*
 import furhatos.event.Event
@@ -104,9 +108,26 @@ object App {
     }
     fun printState(st: State){printState(st,"E")}
 
-    fun isCurrentStateTriMode(): Boolean{
-        return EnumStates.fromState(flowHandler.getState())?.robotModeApplies?: false
-    }
+/*    fun isCurrentStateTriMode(): Boolean{
+        return when(flowHandler.getStateId()){
+            Init.name,
+            Sleep.name,
+            Welcome.name,
+            QuestionReflection.name,-> false
+
+            QuestionDisclosure().name,
+            QuestionPersuasion().name,
+            QuestionReview().name,
+            QuestionCheckpoint().name -> true
+
+            QuestionUltimatum().name,
+            QuestionConfirmation().name,
+            Farewell.name -> false
+
+            else -> {false}
+        }
+        *//*return EnumStates.fromState()?.robotModeApplies?: false*//*
+    }*/
     /* ------------------------- INIT ------------------------------ */
     init{
         EventSystem.addEventListener(App.loggerEventListener)
@@ -118,6 +139,7 @@ object App {
         sessionHandler.printQuestions()
         dataHandler.printConditions()
         dataHandler.printWordings()
+        dataHandler.printAsides()
 
 
         println("----------------- DATA LOADED -------------------")

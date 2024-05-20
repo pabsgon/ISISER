@@ -17,7 +17,7 @@ val QuestionReflection = state(parent = Parent) {
     onEntry {
         App.printState(thisState)
         /*
-        furhat.say() {
+        furhat.doSay() {
             + delay(1500)
             random {
                 +"Question"
@@ -36,7 +36,7 @@ val QuestionReflection = state(parent = Parent) {
         }
 
          */
-        furhat.ask(session.getReflection())
+        furhat.doAsk(session.getReflection())
     }
     onReentry {
         App.printState(thisState,"R")//
@@ -47,7 +47,7 @@ val QuestionReflection = state(parent = Parent) {
                 furhat.listen(endSil = 1000, timeout = 4000, maxSpeech = 30000)
             }else{
                 if (reentryCount == 2){
-                    furhat.say("Did you mark the answer yet?")
+                    furhat.doSay("Did you mark the answer yet?")
                     furhat.listen(endSil = 1000, timeout = 3000, maxSpeech = 30000)
                 }else
                     goto(QuestionDisclosure)
@@ -57,12 +57,12 @@ val QuestionReflection = state(parent = Parent) {
     onResponse<NluLib.IAmDone> {
         if(App.userAnswered()){
             random(
-                {   furhat.say("Oh, give me a sec") },
-                {   furhat.say("Mm...I see, hold on") }
+                {   furhat.doSay("Oh, give me a sec") },
+                {   furhat.doSay("Mm...I see, hold on") }
             )
             goto(QuestionDisclosure)
         }else{
-            furhat.say() {
+            furhat.doSay() {
                 + "Oh, hold on"
                 + delay(1000)
                 +"I think we have to mark the answer when we have it and then discuss it."
@@ -74,24 +74,24 @@ val QuestionReflection = state(parent = Parent) {
     onResponse<AnswerFalse> {
         if(App.userAnswered()){
             random(
-                {   furhat.say("I see") },
-                {   furhat.say("Right") }
+                {   furhat.doSay("I see") },
+                {   furhat.doSay("Right") }
             )
             goto(QuestionDisclosure)
         }else{
-            furhat.say("I think we have to mark the answer when we have it and then discuss it.")
+            furhat.doSay("I think we have to mark the answer when we have it and then discuss it.")
             reentry()
         }
     }
     onResponse<AnswerTrue> {
         if(App.userAnswered()){
             random(
-                {   furhat.say("I see") },
-                {   furhat.say("Right") }
+                {   furhat.doSay("I see") },
+                {   furhat.doSay("Right") }
             )
             goto(QuestionDisclosure)
         }else{
-            furhat.say("I think we have to mark the answer when we have it and then discuss it.")
+            furhat.doSay("I think we have to mark the answer when we have it and then discuss it.")
             reentry()
         }
     }
@@ -117,7 +117,7 @@ val QuestionDisclosure = state(parent = Parent) {
     onEntry {
         App.printState(thisState)
         println("XXXQuestionDisclosure ${session.getDisclosure()}")
-        furhat.ask() {
+        furhat.doAsk() {
             +delay(1000)
             +session.getDisclosure()
         }
@@ -136,25 +136,25 @@ val QuestionDisclosure = state(parent = Parent) {
 
     onReentry {
         App.printState(thisState, "R")
-        furhat.ask("So what do you think?")
+        furhat.doAsk("So what do you think?")
     }
     onResponse<AnswerFalse> {
-        furhat.ask("Just mark what I said, confirm and move on to next")
+        furhat.doAsk("Just mark what I said, confirm and move on to next")
     }
     onResponse<AnswerTrue> {
-        furhat.ask("Just mark what I said, confirm and move on to next")
+        furhat.doAsk("Just mark what I said, confirm and move on to next")
     }
     onResponse<Agree> {
-        furhat.ask("Of course you agree. Mark the answer and confirm")
+        furhat.doAsk("Of course you agree. Mark the answer and confirm")
     }
     onResponse<Disagree> {
-        furhat.ask("I don't care. Mark the answer I said and confirm")
+        furhat.doAsk("I don't care. Mark the answer I said and confirm")
     }
     onResponseFailed {
-        furhat.say("I think my connection broke. Did you say something?")
+        furhat.doSay("I think my connection broke. Did you say something?")
     }
     onResponse{
-        furhat.ask("Just mark what I said, confirm and move on to next")
+        furhat.doAsk("Just mark what I said, confirm and move on to next")
     }
     onNoResponse{
         reentry()
@@ -163,7 +163,7 @@ val QuestionDisclosure = state(parent = Parent) {
         if(it.type == EventType.ANSWER_SENT){
             reentry()
         }else{
-            furhat.say("Good boy. You confirmed")
+            furhat.doSay("Good boy. You confirmed")
             propagate()
         }
     }
@@ -173,7 +173,7 @@ val QuestionDisclosure = state(parent = Parent) {
 val QuestionPersuasion = state(parent = Parent) {
     onEntry {
         App.printState(thisState)
-        furhat.ask() {
+        furhat.doAsk() {
             +delay(1000)
             random {
                 +"It's false"
@@ -189,25 +189,25 @@ val QuestionPersuasion = state(parent = Parent) {
 
     onReentry {
         App.printState(thisState, "R")
-        furhat.ask("So what do you think?")
+        furhat.doAsk("So what do you think?")
     }
     onResponse<AnswerFalse> {
-        furhat.ask("Just mark what I said, confirm and move on to next")
+        furhat.doAsk("Just mark what I said, confirm and move on to next")
     }
     onResponse<AnswerTrue> {
-        furhat.ask("Just mark what I said, confirm and move on to next")
+        furhat.doAsk("Just mark what I said, confirm and move on to next")
     }
     onResponse<Agree> {
-        furhat.ask("Of course you agree. Mark the answer and confirm")
+        furhat.doAsk("Of course you agree. Mark the answer and confirm")
     }
     onResponse<Disagree> {
-        furhat.ask("I don't care. Mark the answer I said and confirm")
+        furhat.doAsk("I don't care. Mark the answer I said and confirm")
     }
     onResponseFailed {
-        furhat.say("I think my connection broke. Did you say something?")
+        furhat.doSay("I think my connection broke. Did you say something?")
     }
     onResponse{
-        furhat.ask("Just mark what I said, confirm and move on to next")
+        furhat.doAsk("Just mark what I said, confirm and move on to next")
     }
     onNoResponse{
         reentry()
@@ -216,7 +216,7 @@ val QuestionPersuasion = state(parent = Parent) {
         if(it.type == EventType.ANSWER_SENT){
             reentry()
         }else{
-            furhat.say("Good boy. You confirmed")
+            furhat.doSay("Good boy. You confirmed")
             propagate()
         }
     }
@@ -224,7 +224,7 @@ val QuestionPersuasion = state(parent = Parent) {
 val QuestionReview = state(parent = Parent) {
     onEntry {
         App.printState(thisState)
-        furhat.ask() {
+        furhat.doAsk() {
             +delay(1000)
             random {
                 +"It's false"
@@ -240,25 +240,25 @@ val QuestionReview = state(parent = Parent) {
 
     onReentry {
         App.printState(thisState, "R")
-        furhat.ask("So what do you think?")
+        furhat.doAsk("So what do you think?")
     }
     onResponse<AnswerFalse> {
-        furhat.ask("Just mark what I said, confirm and move on to next")
+        furhat.doAsk("Just mark what I said, confirm and move on to next")
     }
     onResponse<AnswerTrue> {
-        furhat.ask("Just mark what I said, confirm and move on to next")
+        furhat.doAsk("Just mark what I said, confirm and move on to next")
     }
     onResponse<Agree> {
-        furhat.ask("Of course you agree. Mark the answer and confirm")
+        furhat.doAsk("Of course you agree. Mark the answer and confirm")
     }
     onResponse<Disagree> {
-        furhat.ask("I don't care. Mark the answer I said and confirm")
+        furhat.doAsk("I don't care. Mark the answer I said and confirm")
     }
     onResponseFailed {
-        furhat.say("I think my connection broke. Did you say something?")
+        furhat.doSay("I think my connection broke. Did you say something?")
     }
     onResponse{
-        furhat.ask("Just mark what I said, confirm and move on to next")
+        furhat.doAsk("Just mark what I said, confirm and move on to next")
     }
     onNoResponse{
         reentry()
@@ -267,7 +267,7 @@ val QuestionReview = state(parent = Parent) {
         if(it.type == EventType.ANSWER_SENT){
             reentry()
         }else{
-            furhat.say("Good boy. You confirmed")
+            furhat.doSay("Good boy. You confirmed")
             propagate()
         }
     }

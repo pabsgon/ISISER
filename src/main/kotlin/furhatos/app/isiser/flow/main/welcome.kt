@@ -1,88 +1,132 @@
 package furhatos.app.isiser.flow.main
 
+import furhat.libraries.standard.NluLib
 import furhatos.app.isiser.App
 import furhatos.app.isiser.flow.Parent
-import furhatos.app.isiser.handlers.SessionEvent
 import furhatos.app.isiser.handlers.SessionHandler
-import furhatos.app.isiser.setting.EnumStates
-import furhatos.app.isiser.setting.EventType
+import furhatos.app.isiser.handlers.doAsk
+import furhatos.app.isiser.handlers.doSay
+import furhatos.app.isiser.nlu.*
+import furhatos.app.isiser.setting.EnumRejoinders
+import furhatos.app.isiser.setting.EnumRobotMode
+import furhatos.app.isiser.setting.EnumWordingTypes
+import furhatos.app.isiser.setting.ExtendedUtterance
 import furhatos.flow.kotlin.*
 import furhatos.gestures.Gestures
+import furhatos.nlu.Intent
+import furhatos.nlu.common.DontKnow
+import furhatos.nlu.common.Maybe
 import furhatos.nlu.common.No
 import furhatos.nlu.common.Yes
 
 val Welcome : State = state(Parent) {
     val session: SessionHandler = App.getSession()
-    val state: EnumStates = EnumStates.WELCOME
-    fun getWording(i: Int):Utterance{
-        return session.getWording(state, 0)
-    }
 
     onEntry {
         App.printState(thisState)
         furhat.gesture(OpenEyes, priority = 10)
         furhat.gesture(Gestures.Smile(duration = 2.0))
 
-/*        random(
-            {furhat.say {
-                +"Hi there"
-                +delay(1000)}},
-            {furhat.say {
-                +"Oh, hello there"
-                +delay(1000)}}
-        )*/
-        furhat.ask(getWording(0))
+        furhat.doAsk(session.getUtterance(EnumWordingTypes.WELCOME))
 
         furhat.gesture(Gestures.BigSmile(0.6, 2.5))
-        /*furhat.ask( {+"Nice to meet you."
+        /*furhat.doAsk( {+"Nice to meet you."
             + delay(700)
             + "How you doing?"})*/
     }
     onReentry {
-        furhat.ask {
-            +"Oh, you there."
-            +delay(1000)
-            +"Shall we carry on?"
-        }
+
     }
 
     onResponse{
+/*
+        furhat.doAsk(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_INTRO))
+        when(it.text.uppercase()){
+            "ONE", "1" ->         furhat.doAsk(session.getUtterance(EnumWordingTypes.WELCOME), EnumRobotMode.CERTAIN.speechRate)
+            "TWO", "2", "TOO", "TO" ->         furhat.doAsk(session.getUtterance(EnumWordingTypes.WELCOME), EnumRobotMode.UNCERTAIN.speechRate)
+            else -> goto(ReviewInstructions)
+        }
+*/
         goto(ReviewInstructions)
+        //
     }
 }
 val ReviewInstructions : State = state(Parent) {
+    val session: SessionHandler = App.getSession()
+    var userDidntEverTalk = true
+    var checkPointReached = false
+    var checkPointPassed = false
     onEntry {
-        furhat.ask({+"Ok"
-                + delay(700)
-                + "I need to <emphasis>emphasize</emphasis> clearly this...Don't worry"
-                + delay(700)
-                + "Ineed to emphasize clearly this...Don't worry"
-                + "I suppose they told you what we are here for a little bit"
-                +delay(400)
-                + "Right?"})
+        furhat.doAsk(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_GENERAL))
     }
     onReentry {
-        furhat.ask({+"So"
-            + delay(700)
-            + "I guess we have <emphasis>clear</emphasis> what we have to do now, don't we?"
-        + delay(700)
-        + "I guess we have clear what we have to do now, don't we?"})
+        furhat.doAsk(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_GENERAL))
     }
-    onResponse<Yes> {
-        furhat.say {
+
+    onResponse({listOf(
+        MeReady(),
+        NluLib.IAmDone(),
+        Disagree(), No(),
+        Probe(),
+        ElaborationRequest(),
+        DontKnow(),
+        Backchannel(),
+        Agree(),Yes()
+    )}){
+        //furhat.doAsk(it.intent.toString())
+        raise(AllIntents(it.intent as Intent))
+    }
+    onResponse<AllIntents> {
+        val rejoinder: EnumRejoinders = it.intent.rejoinder
+        furhat.doSay(rejoinder.toString())
+        userDidntEverTalk = if(rejoinder==EnumRejoinders.SILENCE) userDidntEverTalk else false
+        if(userDidntEverTalk){
+            reentry()
+        }else{
+            if(!checkPointPassed) {
+                if (!checkPointReached) {
+                    checkPointReached = true
+                    furhat.doSay(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_DETAILED, rejoinder))
+                    furhat.doAsk(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_CHECKPOINT, rejoinder))
+                } else {
+                    when (rejoinder) {
+                        EnumRejoinders.SILENCE -> furhat.doAsk(
+                            session.getUtterance(EnumWordingTypes.INSTRUCTIONS_CHECKPOINT,rejoinder)
+                        )
+
+                        EnumRejoinders.I_AM_DONE, EnumRejoinders.ME_READY,
+                        EnumRejoinders.ASSENT -> {
+                            checkPointPassed = true
+                            furhat.doAsk(session.getUtterance(EnumWordingTypes.PRESS_READY_REQUEST))
+                        }
+                        else -> {
+                            furhat.doSay(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_DETAILED, rejoinder))
+                            furhat.doAsk(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_CHECKPOINT, rejoinder))
+                        }
+                    }
+                }
+            }else{
+                furhat.doAsk(session.getUtterance(EnumWordingTypes.PRESS_READY_REQUEST))
+            }
+        }
+    }
+
+    onNoResponse{
+        raise(AllIntents(EnumRejoinders.SILENCE))
+    }
+/*    onResponse<Yes> {
+        furhat.doSay {
             +"Right, as far as I know, once you press the button there on the tablet, "
             +"we will both get a question to resolve together.  "
             +delay(1000)
         }
-        furhat.ask({ +"So"
+        furhat.doAsk({ +"So"
             + delay(700)
             + "Whenever you want, press the button, go ahead"})
-    }
-    onResponse<No> {
-        furhat.say("I would ask you now if you have any questions. But now press the button.")
-    }
-    onResponse {
-        reentry()
-    }
+    }*/
+/*    onResponse<No> {
+        furhat.doAsk("I would ask you now if you have any questions. But now press the button.")
+    }*/
+
 
 }
