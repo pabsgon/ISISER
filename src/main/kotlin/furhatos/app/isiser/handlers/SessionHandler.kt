@@ -57,53 +57,13 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
     }
 
     fun confirmAnswer(){ currentQuestion!!.confirm() }
-/*
-    fun getCheckpoint(rejoinder: EnumRejoinders?):String{
-        return buildUtterance(currentQuestion!!.getCheckpoint(inAgreement()))
-    }*/
+
+
     fun getCondition():  EnumConditions { return condition }
-/*
 
-    fun get1stConfirmationRequest(rejoinder: EnumRejoinders? = null):String{
-        return buildUtterance(currentQuestion!!.get1stConfirmationRequest())
-    }
-    fun get2ndConfirmationRequest(rejoinder: EnumRejoinders? = null):String{
-        return buildUtterance(currentQuestion!!.get2ndConfirmationRequest())
-    }
-*/
-
-/*
-    fun getDisclosure(rejoinder: EnumRejoinders? = EnumRejoinders.ANY):ExtendedUtterance{
-        val aside: String = dataHandler.getAside(EnumWordingTypes.DISCLOSURE, rejoinder)
-        return deprecated_createUtterance(currentQuestion!!.getDisclosure(), aside)
-        return createUtterance(currentQuestion!!.getDisclosure())
-    }
-*/
-
-/*
-    fun getFriendlyProbe(rejoinder: EnumRejoinders?):String{
-        return buildUtterance(currentQuestion!!.getFriendlyProbe())
-    }
-    fun getFriendlyClaim(rejoinder: EnumRejoinders?):String{
-        return buildUtterance(currentQuestion!!.getFriendlyClaim())
-    }
-*/
 
     fun getQuestions():  MutableList<Question> { return questions }
-/*
 
-    fun getUnfriendlyClaim(rejoinder: EnumRejoinders?):String{
-        return buildUtterance(currentQuestion!!.getUnfriendlyClaim())
-    }
-    fun getUnfriendlyProbe(rejoinder: EnumRejoinders?):String{
-        return buildUtterance(currentQuestion!!.getUnfriendlyProbe())
-    }
-*/
-/*
-    fun getUltimatum(rejoinder: EnumRejoinders?):ExtendedUtterance{
-        return getUtterance(EnumWordingTypes.ULTIMATUM, rejoinder,
-            (if(inAgreement()) EnumFriendliness.FRIENDLY else EnumFriendliness.UNFRIENDLY) )
-    }*/
     fun getUser():  String { return user }
 
 
@@ -136,7 +96,7 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
         * set, then that becomes the reference over the marked answer.
         *
         * */
-        return if(neverAskedInCheckpoint()) inOfficialAgreement() else inVerbalAgreement()
+        return if(isUserVerballyUndecided()) inOfficialAgreement() else inVerbalAgreement()
     }
     fun inOfficialAgreement(): Boolean{
         //This is true if the marked answer and the robot answer coincide
@@ -145,7 +105,7 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
 
         return robotAnswer != EnumAnswer.UNSET && userMarkedAnswer == robotAnswer
     }
-    fun neverAskedInCheckpoint(): Boolean = currentQuestion!!.isUserVerballyUndecided()
+    fun isUserVerballyUndecided(): Boolean = currentQuestion!!.isUserVerballyUndecided()
     fun inVerbalAgreement(): Boolean =  currentQuestion!!.isUserVerballyAgreeing()
     fun inCompleteAgreement(): Boolean =  (inVerbalAgreement() && inOfficialAgreement())
 
@@ -175,6 +135,7 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
                 condition = dataHandler.getConditionForUser(user)
                 val robotModes: List<EnumRobotMode> = dataHandler.getRobotModesForCondition(condition)
                 setupQuestions(robotModes)
+                active = true
             }
         }
     }
@@ -188,6 +149,16 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
         //This will set return true if the answer given coincides with the robot's
         return currentQuestion!!.getRobotAnswer() == answer
     }
+
+
+    fun setUserVerbalAnswer(rejoinder: EnumRejoinders){
+        if(rejoinder == EnumRejoinders.ANSWER_TRUE ||
+            rejoinder ==EnumRejoinders.ANSWER_FALSE){
+            if(isUserAgreingWithThisAnswer(rejoinder.getAnswer())) setUserVerballyAgrees() else
+                setUserVerballyDisagrees()
+        }
+    }
+
     fun setUserVerballyAgrees(){
         currentQuestion!!.setUserVerballyAgrees()
     }
@@ -201,23 +172,6 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
     fun printQuestions() {
         println("Printing all questions (${questions.size}):")
         questions.forEach { println(it) }
-    }
-
-    fun deprecated_createUtterance(text: String, aside: String = "", currentStateIsTrimode: Boolean = false): ExtendedUtterance {
-        //val currentStateIsTrimode: Boolean = App.isCurrentStateTriMode()
-        val robotMode = if (currentStateIsTrimode) currentQuestion!!.getRobotMode() else EnumRobotMode.NEUTRAL
-
-        val processedString = if (currentStateIsTrimode) {
-            text.replace(SOURCEDATA_CODE_QNUM, getQuestionNumber())
-                .replace(SOURCEDATA_CODE_ROBOT_ANSWER, currentQuestion!!.getRobotAnswer().toString())
-                .replace(SOURCEDATA_CODE_USER_ANSWER, guiHandler.getMarkedAnswer().toString())
-        } else {
-            text.replace(SOURCEDATA_CODE_QNUM, "SAMPLE 4")
-                .replace(SOURCEDATA_CODE_ROBOT_ANSWER, "SAMPLE TRUE")
-                .replace(SOURCEDATA_CODE_USER_ANSWER, "SAMPLE FALSE")
-        }
-        lastRobotText = processedString
-        return ExtendedUtterance(processedString, aside, robotMode)
     }
 
     fun getRepeat(): ExtendedUtterance{
@@ -253,5 +207,9 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
         lastRobotText = utterance.mainText
         return utterance
     }
+
+    fun checkpointReached() = currentQuestion!!.checkpointReached()
+
+    fun wasCheckpointReached(): Boolean {return currentQuestion!!.isCheckpointReached() }
 
 }

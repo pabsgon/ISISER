@@ -329,40 +329,48 @@ class Claim(
         return assertion.getText(question)
     }
 }
+
 data class StatementMap(
     val map: MutableMap<Pair<EnumWordingTypes, EnumFriendliness>, Statement> = mutableMapOf(),
     val question: Question
 ) {
     // Function to add a new item to the map
-    fun add(wordingType: EnumWordingTypes, friendliness: EnumFriendliness, statement: Statement) {
+    private fun add(wordingType: EnumWordingTypes, friendliness: EnumFriendliness, statement: Statement) {
         val key = Pair(wordingType, friendliness)
         map[key] = statement
     }
-    // Function to add a new item to the map
+    // Function to add a new item to the map based on a statement
     fun add(statement: Statement) {
         add(statement.type, statement.friendliness, statement)
     }
 
     // Function to get a statement by wordingType and friendliness, defaults to ANY
-    fun getSpeciciStatement(wordingType: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): Statement? {
+    fun getSpeciciStatement(
+        wordingType: EnumWordingTypes,
+        friendliness: EnumFriendliness? = EnumFriendliness.ANY
+    ): Statement? {
         // Try to get the specific friendliness first
         val specificKey = Pair(wordingType, friendliness ?: EnumFriendliness.ANY)
-        val specificStatement = map[specificKey] ?: map[Pair(wordingType, EnumFriendliness.ANY)]
 
-        println("WARNING: a statement is null (wordingType = $wordingType, friendliness=$friendliness).")
-
-        return specificStatement
+        return map[specificKey] ?: map[Pair(wordingType, EnumFriendliness.ANY)]
     }
+
     // Function to get a statement by wordingType and friendliness, defaults to ANY
     fun get(wordingType: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): String {
         // Try to get the specific friendliness first
         val specificStatement = getSpeciciStatement(wordingType,friendliness)
-        return if(specificStatement == null) alertSpeech() else specificStatement.getText(question)
+        return if(specificStatement == null){
+            println("WARNING: a statement is null (wordingType = $wordingType, friendliness=$friendliness).")
+            alertSpeech()
+        } else
+            specificStatement.getText(question)
     }
+
     fun timesUsed(wordingType: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): Int {
         val specificStatement = getSpeciciStatement(wordingType,friendliness)
-        return if(specificStatement == null) 0 else specificStatement.timesUsed
+        return specificStatement?.timesUsed ?: 0
     }
+
     // Print function to see all the statements
     fun print() {
         for ((key, statement) in map) {

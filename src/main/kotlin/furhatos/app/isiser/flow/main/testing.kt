@@ -81,20 +81,17 @@ val Testing = state(parent = Parent) {
     onResponse<Backchannel> {
         furhat.doAsk("You just backchanneled.")
     }
-    onPartialResponse<DontKnow> { // Catches a Greeting together with another intent, such as Order
+    onPartialResponse<DontKnow> {
         // Greet the user and proceed with the order in the same turn
         raise(it, it.secondaryIntent)
     }
-    onPartialResponse<Agree> { // Catches a Greeting together with another intent, such as Order
-        // Greet the user and proceed with the order in the same turn
+    onPartialResponse<Agree> {
         raise(it, it.secondaryIntent)
     }
-    onPartialResponse<No> { // Catches a Greeting together with another intent, such as Order
-        // Greet the user and proceed with the order in the same turn
+    onPartialResponse<No> {
         raise(it, it.secondaryIntent)
     }
-    onPartialResponse<Yes> { // Catches a Greeting together with another intent, such as Order
-        // Greet the user and proceed with the order in the same turn
+    onPartialResponse<Yes> {
         raise(it, it.secondaryIntent)
     }
     onResponse {

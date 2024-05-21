@@ -12,10 +12,11 @@ data class Question(
 
     private var confirmed: Boolean = false,
     // Statements/Utterances
-    private var reflection: Statement?, // Set in data loading per statement
+    private var disclosureHasQuestion: Boolean?, //Unused at the moment
+
+/*    private var reflection: Statement?, // Set in data loading per statement
     private var markingRequest: Statement?, // Set in data loading per statement
     private var disclosure: Statement?, // Set in data loading per statement
-    private var disclosureHasQuestion: Boolean?, //Unused at the moment
     private var probe: Statement?, // Set in data loading per statement
     private var friendlyUltimatum: Statement?,
     private var unfriendlyUltimatum: Statement?,
@@ -24,21 +25,22 @@ data class Question(
     private var elaborationRequest: Statement?,
     private var confirmationRequest1st: Statement?, // Set in data loading per statement
     private var confirmationRequest2nd: Statement?, // Set in data loading per statement
-    private var unfriendlyClaims: MutableList<Claim> = mutableListOf(),
     private var currentClaim: Claim?,
-    private var friendlyClaims: MutableList<Statement> = mutableListOf(),
-    private var friendlyClaimsWereUsed: Boolean = false,
-
-    private var lastRejoinder: EnumRejoinders?,
     private var currentState: State?,
     private var previousState: State?,
-    private var lastUtterance: String,
+    private var lastRejoinder: EnumRejoinders?,
+    private var lastUtterance: String*/
+    private var unfriendlyClaims: MutableList<Claim> = mutableListOf(),
+    private var currentUnfriendlyClaim: Claim? = null,
+    private var friendlyClaims: MutableList<Statement> = mutableListOf(),
+    private var friendlyClaimsWereUsed: Boolean = false,
 ) {
     private var userVerbalAnswer: EnumAnswer = EnumAnswer.UNSET
-    private var currentUnfriendlyClaim: Claim? = null
+/*
     private var unfriendlyProbesCount:Int = 0
     private var friendlyProbesCount:Int = 0
-
+*/
+    private var checkpointReached: Boolean = false
     private var statements: StatementMap = StatementMap(mutableMapOf(), this)
     // Secondary constructor
     constructor(id: String, cAns: EnumAnswer, rAns: EnumAnswer ) : this(
@@ -47,10 +49,13 @@ data class Question(
         robotMode = null,
         robotAnswer = rAns,
         confirmed = false,
+        disclosureHasQuestion = null,
+        unfriendlyClaims = mutableListOf(),
+        friendlyClaims = mutableListOf()
+    /*
         reflection = null,
         markingRequest = null,
         disclosure = null,
-        disclosureHasQuestion = null,
         probe = null,
         friendlyUltimatum = null,
         unfriendlyUltimatum = null,
@@ -59,39 +64,20 @@ data class Question(
         elaborationRequest = null,
         confirmationRequest1st = null,
         confirmationRequest2nd = null,
-        unfriendlyClaims = mutableListOf(),
-        friendlyClaims = mutableListOf(),
         currentClaim = null,
-        lastRejoinder = null,
         currentState = null,
         previousState = null,
-        lastUtterance = ""
+        lastRejoinder = null,
+        lastUtterance = "",
+*/
+
     )
     fun addClaim(claim: Claim) {
         if(currentUnfriendlyClaim ==null)currentUnfriendlyClaim = claim //Just adding the first one.
         unfriendlyClaims.add(claim)
     }
     fun confirm() {confirmed=true}
-    fun getCheckpoint(forReview: Boolean? = FRIENDLY): String{
-        // Returns the friendly or unfriendly checkpoint depending on the param or,
-        // if not provided, whether the user already agreed verbally in a
-        // previous checkpoint.
-        val s: Statement? = if(forReview!!) friendlyCheckpoint else unfriendlyCheckpoint
-        return s!!.getText(this)
-    }
-    fun get1stConfirmationRequest(): String{
-        return confirmationRequest1st!!.getText(this)
-    }
-    fun get2ndConfirmationRequest(): String{
-        return confirmationRequest2nd!!.getText(this)
-    }
-    fun getDisclosure(): String{
-        return disclosure!!.getText(this)
-    }
-    fun getElaborationRequest(): String{
-        return getStatement(EnumWordingTypes.ELABORATION_REQUEST)
-        //return elaborationRequest!!.getText(this)
-    }
+
     fun getFriendlyClaim():String{
         /* Friendly claims (fClaim) are lists of claims linked to each unfriendly claim (uClaim). Each fClaim is
          a combination of the next 2 uclaims. So, for example, given a list of 4 uClaims, if the first fClaim is
@@ -127,17 +113,15 @@ data class Question(
         //return if (friendlyClaims.isNotEmpty() == true) friendlyClaims.removeFirst().getText(this) else ""
 
     }
-    fun getFriendlyProbe():String{return getProbe(EnumFriendliness.FRIENDLY)}
-
 
     fun getMarkedAnswer():EnumAnswer = App.getGUI().getMarkedAnswer()
 
-
+/*
     fun getProbe(friendly: EnumFriendliness):String{
         if(friendly==EnumFriendliness.FRIENDLY) friendlyProbesCount++ else unfriendlyProbesCount++
         return getStatement(EnumWordingTypes.PROBE,friendly)
         //return probe!!.getText(this)
-    }
+    }*/
     fun getRobotAnswer(): EnumAnswer{
         return robotAnswer
     }
@@ -151,11 +135,6 @@ data class Question(
             statements.get(wordingId, friendliness)
         }
     }
-
-    fun getUltimatum(forReview: Boolean = UNFRIENDLY): String{
-        val s: Statement? = if(forReview) friendlyUltimatum else unfriendlyUltimatum
-        return s!!.getText(this)
-    }
     fun getClaim(friendliness: EnumFriendliness): String{
         return if(friendliness == EnumFriendliness.UNFRIENDLY) getUnfriendlyClaim() else getFriendlyClaim()
     }
@@ -165,10 +144,6 @@ data class Question(
         setNextUnfriendlyClaimAsCurrent()
         return currentUnfriendlyClaim?.getText(this) ?: ""
     }
-    fun getUnfriendlyProbe():String{
-        return getProbe(EnumFriendliness.UNFRIENDLY)
-    }
-
     fun maxNumOfFriendlyProbesReached():Boolean {
         return statements.timesUsed(EnumWordingTypes.PROBE,EnumFriendliness.FRIENDLY)>= MAX_NUM_PROBES_AT_REVIEW
         //friendlyProbesCount>= MAX_NUM_PROBES_AT_REVIEW
@@ -193,7 +168,7 @@ data class Question(
     fun setStatement(st: Statement, index: Int = 0){
 
         statements.add(st)
-
+/*
         when (st.type) {
             EnumWordingTypes.REFLECTION -> {
                 reflection = st
@@ -239,7 +214,7 @@ data class Question(
                 }
 
             }
-            EnumWordingTypes.REPEAT -> {/*Impossible, since they are not statements. Handled programmatically.*/}
+            EnumWordingTypes.REPEAT -> {*//*Impossible, since they are not statements. Handled programmatically.*//*}
             EnumWordingTypes.WELCOME,
             EnumWordingTypes.INSTRUCTIONS_INTRO ,
             EnumWordingTypes.INSTRUCTIONS_CHECKPOINT ,
@@ -247,10 +222,10 @@ data class Question(
             EnumWordingTypes.INSTRUCTIONS_DETAILED ,
             EnumWordingTypes.PRESS_READY_REQUEST,
             EnumWordingTypes.FAREWELL,
-                    EnumWordingTypes.ANY -> {/*Impossible, since they are not statements. Handled by wording.*/}
+                    EnumWordingTypes.ANY -> {*//*Impossible, since they are not statements. Handled by wording.*//*}
 
 
-        }
+        }*/
     }
 
 
@@ -272,38 +247,40 @@ data class Question(
     }
     fun isUserVerballyAgreeing(): Boolean = userVerbalAnswer.agreesWith(robotAnswer)
     fun isUserVerballyUndecided(): Boolean = userVerbalAnswer == EnumAnswer.UNSET
+    fun isCheckpointReached(): Boolean{ return checkpointReached}
+    fun checkpointReached(){checkpointReached = true}
 
 
+    /*
 
-
-
-    override fun toString(): String {
-        return """
-        |Question Details:
-        |ID: $id
-        |Correct Answer: ${correctAnswer ?: "Not Set"}
-        |Robot Mode: ${robotMode ?: "Not Set"}
-        |Robot Answer: ${robotAnswer}
-        |User Verbally agrees: ${userVerbalAnswer}
-        |Reflection: ${reflection ?: "Not Set"}
-        |Marking request: ${markingRequest ?: "Not Set"}
-        |Disclosure: ${disclosure ?: "Not Set"}
-        |Disclosure Has Question: ${disclosureHasQuestion ?: "Not Set"}
-        |Friendly Ultimatum: ${friendlyUltimatum ?: "Not Set"}
-        |Unfriendly Ultimatum: ${unfriendlyUltimatum ?: "Not Set"}
-        |Friendly Checkpoint: ${friendlyCheckpoint ?: "Not Set"}
-        |Unfriendly Checkpoint: ${unfriendlyCheckpoint ?: "Not Set"}
-        |First confirmation req: ${confirmationRequest1st ?: "Not Set"}
-        |Second confirmation req: ${confirmationRequest2nd ?: "Not Set"}
-        |Current Claim: ${currentUnfriendlyClaim ?: "Not Set"}
-        |Last Rejoinder: ${lastRejoinder ?: "Not Set"}
-        |Current State: ${currentState ?: "Not Set"}
-        |Previous State: ${previousState ?: "Not Set"}
-        |Last Utterance: ${lastUtterance}
-        |Unfriendly Claims Count: ${unfriendlyClaims.size}
-        |Friendly Claims Count: ${friendlyClaims.size}
-        """.trimMargin()
-    }
+        override fun toString(): String {
+            return """
+            |Question Details:
+            |ID: $id
+            |Correct Answer: ${correctAnswer ?: "Not Set"}
+            |Robot Mode: ${robotMode ?: "Not Set"}
+            |Robot Answer: ${robotAnswer}
+            |User Verbally agrees: ${userVerbalAnswer}
+            |Reflection: ${reflection ?: "Not Set"}
+            |Marking request: ${markingRequest ?: "Not Set"}
+            |Disclosure: ${disclosure ?: "Not Set"}
+            |Disclosure Has Question: ${disclosureHasQuestion ?: "Not Set"}
+            |Friendly Ultimatum: ${friendlyUltimatum ?: "Not Set"}
+            |Unfriendly Ultimatum: ${unfriendlyUltimatum ?: "Not Set"}
+            |Friendly Checkpoint: ${friendlyCheckpoint ?: "Not Set"}
+            |Unfriendly Checkpoint: ${unfriendlyCheckpoint ?: "Not Set"}
+            |First confirmation req: ${confirmationRequest1st ?: "Not Set"}
+            |Second confirmation req: ${confirmationRequest2nd ?: "Not Set"}
+            |Current Claim: ${currentUnfriendlyClaim ?: "Not Set"}
+            |Last Rejoinder: ${lastRejoinder ?: "Not Set"}
+            |Current State: ${currentState ?: "Not Set"}
+            |Previous State: ${previousState ?: "Not Set"}
+            |Last Utterance: ${lastUtterance}
+            |Unfriendly Claims Count: ${unfriendlyClaims.size}
+            |Friendly Claims Count: ${friendlyClaims.size}
+            """.trimMargin()
+        }
+    */
 
 
 }

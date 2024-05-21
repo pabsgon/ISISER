@@ -17,7 +17,7 @@ import furhatos.nlu.common.RequestRepeat
 import furhatos.nlu.common.Wait
 
 val Parent: State = state {
-    var session = App.getSession()
+    val session = App.getSession()
 
     onUserLeave(instant = true) {
         println("Parent>onUserLeave")
@@ -30,17 +30,13 @@ val Parent: State = state {
         println("Parent>onUserEnter")
         furhat.glance(it)
     }
-
     onResponse<RequestRepeat>{
         furhat.doAsk(session.getRepeat())
     }
     onResponse<Wait>{
         furhat.doAsk("Yes I would give you more time but I have not been programmed for this yet")
     }
-/*    onNoResponse {
-        println("Parent>onNoResponse")
-        furhat.doAsk("Oops, I don't hear you.")
-    }*/
+
     onResponseFailed {
         furhat.doAsk("I think my connection broke. Did you say something?")
     }
@@ -63,7 +59,7 @@ val Parent: State = state {
     onEvent<SessionEvent> {
         when(it.type){
             EventType.USER_SET -> App.goto(Welcome)
-            EventType.QUESTION_SET -> App.goto(QuestionReflection)
+            EventType.QUESTION_SET -> App.goto(QuestionReflection())
             else -> {}
         }
     }

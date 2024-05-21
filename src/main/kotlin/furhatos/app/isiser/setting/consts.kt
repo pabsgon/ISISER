@@ -211,9 +211,11 @@ enum class EnumWordingTypes(val isWording:Boolean, val robotModeApplies: Boolean
     INSTRUCTIONS_DETAILED( true, false),
     INSTRUCTIONS_CHECKPOINT( true, false),
     PRESS_READY_REQUEST( true, false),
-    REFLECTION( false, false),
+    QUESTION_RECEPTION( false, false),
+    ANSWERING_REQUEST( false, false),
+    DISCLOSURE_EARLY( false, false),
+    DISCLOSURE_LATE( false, false),
     MARKING_REQUEST(false, false),
-    DISCLOSURE(false, true),
     CLAIM( false, true),
     ASSERTION( false, true),
     PROBE(false, true),
@@ -222,8 +224,9 @@ enum class EnumWordingTypes(val isWording:Boolean, val robotModeApplies: Boolean
     ELABORATION_REQUEST (false, false),
     ASIDE (false, false),
     CONFIRMATION_REQUEST( false, false),
-    FAREWELL( true, false),
     REPEAT(true, false),
+    FAREWELL_START(true, false),
+    FAREWELL_END(true, false),
     ANY(true, false);
 
     companion object {

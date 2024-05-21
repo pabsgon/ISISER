@@ -21,6 +21,7 @@ const STAGE_1ST_QUESTION = 1
 const EVTYPE_SYNCH_REQUESTED = "SYNCH_REQUESTED"
 const EVTYPE_NEW_STAGE_REQUESTED = "NEW_STAGE_REQUESTED"
 const EVTYPE_ANSWER_MARKED = "ANSWER_MARKED"	
+const QUESTION_CHANGE_TIME = 3000 //millisecs until the new problem is shown.
 
 // The first time, the page will always try to synch with the server, in case the webpage closed.
 // The server will return the stage and user. The webpage will set these two params, showing the correct stage.
@@ -170,7 +171,7 @@ function changeStage(st){
 			document.getElementById('qStatement').innerHTML = qs[st].qStatement
 			document.getElementById('qImage').src = IMAGES_PATH + qs[st].qImage
 			setAnswer()
-			window.setTimeout(function(){document.getElementById('slide_'+ (st<1?st:"Q")).style.display = "flex"},1500)
+			window.setTimeout(function(){document.getElementById('slide_'+ (st<1?st:"Q")).style.display = "flex"},QUESTION_CHANGE_TIME)
 		}else{
 			document.getElementById('slide_'+ (st<1?st:"Q")).style.display = "flex"
 			if(st==0.2)window.setTimeout(function(){document.getElementById('readyBut').style.visibility="visible"},3000)

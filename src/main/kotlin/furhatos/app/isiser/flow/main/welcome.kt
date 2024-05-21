@@ -1,5 +1,6 @@
 package furhatos.app.isiser.flow.main
 
+import Farewell
 import furhat.libraries.standard.NluLib
 import furhatos.app.isiser.App
 import furhatos.app.isiser.flow.Parent
@@ -39,16 +40,7 @@ val Welcome : State = state(Parent) {
     }
 
     onResponse{
-/*
-        furhat.doAsk(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_INTRO))
-        when(it.text.uppercase()){
-            "ONE", "1" ->         furhat.doAsk(session.getUtterance(EnumWordingTypes.WELCOME), EnumRobotMode.CERTAIN.speechRate)
-            "TWO", "2", "TOO", "TO" ->         furhat.doAsk(session.getUtterance(EnumWordingTypes.WELCOME), EnumRobotMode.UNCERTAIN.speechRate)
-            else -> goto(ReviewInstructions)
-        }
-*/
-        goto(ReviewInstructions)
-        //
+        App.goto(Farewell)
     }
 }
 val ReviewInstructions : State = state(Parent) {
@@ -111,9 +103,6 @@ val ReviewInstructions : State = state(Parent) {
         }
     }
 
-    onNoResponse{
-        raise(AllIntents(EnumRejoinders.SILENCE))
-    }
 /*    onResponse<Yes> {
         furhat.doSay {
             +"Right, as far as I know, once you press the button there on the tablet, "

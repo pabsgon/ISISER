@@ -13,6 +13,7 @@ val Sleep: State = state(Parent) {
         furhat.gesture(CloseEyes, priority=10)
     }
     onEntry {
+        furhat.gesture(CloseEyes, priority=10)
         App.printState(thisState)
         furhat.attendNobody()
     }
