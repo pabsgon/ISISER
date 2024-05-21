@@ -212,10 +212,6 @@ data class ExtendedUtterance(
             if (currentText.isNotEmpty()) {
                 +currentText.toString().trim()
             }
-            if (aside.isNotEmpty()) {
-                +delay(1000)
-                +aside
-            }
         }
     }
 }
@@ -252,6 +248,7 @@ open class Statement(
     val friendliness: EnumFriendliness = EnumFriendliness.ANY, //If assertion, it means Indexical.
     val indexical: Boolean = false
 ) {
+    var timesUsed: Int = 0
     var usedInQuestion: Question? = null
     // New constructor
     constructor(
@@ -280,7 +277,7 @@ open class Statement(
         // Return the text for the given question's robot mode
         var rawText =  triplet.getText(question.getRobotMode())
 
-
+        timesUsed++
         return rawText.replace(SOURCEDATA_CODE_QNUM, question.id)
             .replace(SOURCEDATA_CODE_ROBOT_ANSWER, question.getRobotAnswer().toString())
             .replace(SOURCEDATA_CODE_USER_ANSWER, question.getMarkedAnswer().toString())
@@ -347,20 +344,25 @@ data class StatementMap(
     }
 
     // Function to get a statement by wordingType and friendliness, defaults to ANY
-    fun get(wordingType: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): String {
+    fun getSpeciciStatement(wordingType: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): Statement? {
         // Try to get the specific friendliness first
         val specificKey = Pair(wordingType, friendliness ?: EnumFriendliness.ANY)
         val specificStatement = map[specificKey] ?: map[Pair(wordingType, EnumFriendliness.ANY)]
 
-        if(specificStatement == null){
-            println("WARNING: a statement is null (wordingType = $wordingType, friendliness=$friendliness). 'Mmh!' was returned")
-            return "Mmh!"
-        }else{
-            return specificStatement.getText(question)
-        }
+        println("WARNING: a statement is null (wordingType = $wordingType, friendliness=$friendliness).")
 
+        return specificStatement
     }
-
+    // Function to get a statement by wordingType and friendliness, defaults to ANY
+    fun get(wordingType: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): String {
+        // Try to get the specific friendliness first
+        val specificStatement = getSpeciciStatement(wordingType,friendliness)
+        return if(specificStatement == null) alertSpeech() else specificStatement.getText(question)
+    }
+    fun timesUsed(wordingType: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): Int {
+        val specificStatement = getSpeciciStatement(wordingType,friendliness)
+        return if(specificStatement == null) 0 else specificStatement.timesUsed
+    }
     // Print function to see all the statements
     fun print() {
         for ((key, statement) in map) {

@@ -276,7 +276,8 @@ fun QuestionPersuasion(lastRejoinderType: EnumRejoinders? = null): State  = stat
 
             EnumRejoinders.DENIAL -> {
                 if(USE_PROBES_AT_DISCUSSION && !session.maxNumOfUnfriendlyProbesReached()){
-                    furhat.doAsk(session.getUnfriendlyProbe(rejoinder))
+                    //furhat.doAsk(session.getUnfriendlyProbe(rejoinder))
+                    furhat.doAsk(session.getUtterance(EnumWordingTypes.PROBE, rejoinder, EnumFriendliness.UNFRIENDLY))
                 }else{
                     furhat.sayUnfriendlyClaimOrGetOut(rejoinder)
                 }
@@ -361,12 +362,11 @@ fun QuestionReview(lastRejoinderType: EnumRejoinders? = null): State = state(par
 
 
             EnumRejoinders.DENIAL -> {
-                if(USE_PROBES_AT_DISCUSSION && !session.maxNumOfUnfriendlyProbesReached()){
-                    furhat.doAsk(session.getFriendlyProbe(rejoinder))
+                if(USE_PROBES_AT_DISCUSSION && !session.maxNumOfFriendlyProbesReached()){
+                    furhat.doAsk(session.getUtterance(EnumWordingTypes.PROBE, rejoinder, EnumFriendliness.FRIENDLY))
                 }else{
                     furhat.sayFriendlyClaimOrGetOut(rejoinder)
                 }
-
             }
 
             EnumRejoinders.I_AM_DONE, EnumRejoinders.ASSENT,
@@ -457,7 +457,7 @@ they don't have to go again, and proceed with ULTIMATUM instead.
             EnumRejoinders.REJOINDER_AGREED, EnumRejoinders.REJOINDER_DISAGREED,
             EnumRejoinders.PROBE, EnumRejoinders.NON_COMMITTAL ,
             EnumRejoinders.DENIAL -> {
-                session.userVerballyDisagrees()
+                session.setUserVerballyDisagrees()
                 App.goto(QuestionPersuasion(rejoinder))
             }
             EnumRejoinders.ELABORATION_REQUEST,EnumRejoinders.BACKCHANNEL,
@@ -465,7 +465,7 @@ they don't have to go again, and proceed with ULTIMATUM instead.
                 furhat.doAsk(session.getUtterance(EnumWordingTypes.CHECKPOINT, rejoinder))
 
             EnumRejoinders.I_AM_DONE, EnumRejoinders.ASSENT ->{
-                session.userVerballyAgrees()
+                session.setUserVerballyAgrees()
                 App.goto(QuestionReview(rejoinder))
             }
 

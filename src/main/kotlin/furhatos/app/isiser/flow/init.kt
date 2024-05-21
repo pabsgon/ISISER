@@ -3,9 +3,7 @@ package furhatos.app.isiser.flow
 import furhatos.app.isiser.App
 import furhatos.app.isiser.flow.main.Sleep
 import furhatos.app.isiser.flow.main.Testing
-import furhatos.app.isiser.setting.ENGAGMENT_DISTANCE
-import furhatos.app.isiser.setting.MAX_NUM_USERS
-import furhatos.app.isiser.setting.TESTING_LEVEL
+import furhatos.app.isiser.setting.*
 import furhatos.flow.kotlin.*
 import furhatos.flow.kotlin.voice.PollyVoice
 import furhatos.flow.kotlin.voice.Voice
@@ -37,9 +35,12 @@ val Init : State = state() {
         users.setSimpleEngagementPolicy(ENGAGMENT_DISTANCE, MAX_NUM_USERS)
         furhat.voice = Voice("Matthew")
         /** start the interaction */
-        when (TESTING_LEVEL) {
-            0 -> App.goto(Sleep)
-            1 -> App.goto(Testing)
+        when (APP_EXECUTION_MODE) {
+            PRO,DEV -> App.goto(Sleep)
+            TEST_INTENTS -> App.goto(Testing)
+            TEST_UTTERANCES -> {
+                TODO()
+            }
         }
     }
 }

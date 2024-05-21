@@ -12,3 +12,7 @@ fun seemsLikeBackchannel(text: String, len: Int, maxWords: Int, maxLen: Int):Boo
 fun seemsLikeBackchannel(text: String, len: Int):Boolean{
     return seemsLikeBackchannel(text, len, MAX_NUM_BACKCHANNEL_WORDS, MAX_BACKCHANNEL_LENGTH)
 }
+fun alertSpeech():String{
+    return if(APP_EXECUTION_MODE > PRO) SAFE_SPEECH_DEV else SAFE_SPEECH_PRO
+
+}

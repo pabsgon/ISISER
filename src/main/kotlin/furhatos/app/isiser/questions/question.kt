@@ -3,7 +3,6 @@ package furhatos.app.isiser.questions
 import furhatos.app.isiser.App
 import furhatos.app.isiser.setting.*
 import furhatos.flow.kotlin.State
-import java.awt.Stroke
 
 data class Question(
     val id: String,  // immutable ID, no need for setter
@@ -170,9 +169,14 @@ data class Question(
         return getProbe(EnumFriendliness.UNFRIENDLY)
     }
 
-    fun maxNumOfFriendlyProbesReached():Boolean = friendlyProbesCount>= MAX_NUM_PROBES_AT_REVIEW
-
-    fun maxNumOfUnfriendlyProbesReached():Boolean = unfriendlyProbesCount>= MAX_NUM_PROBES_AT_PERSUASION
+    fun maxNumOfFriendlyProbesReached():Boolean {
+        return statements.timesUsed(EnumWordingTypes.PROBE,EnumFriendliness.FRIENDLY)>= MAX_NUM_PROBES_AT_REVIEW
+        //friendlyProbesCount>= MAX_NUM_PROBES_AT_REVIEW
+    }
+    fun maxNumOfUnfriendlyProbesReached():Boolean {
+        return statements.timesUsed(EnumWordingTypes.PROBE,EnumFriendliness.FRIENDLY)>= MAX_NUM_PROBES_AT_PERSUASION
+        //unfriendlyProbesCount>= MAX_NUM_PROBES_AT_PERSUASION
+    }
 
     private fun setNextUnfriendlyClaimAsCurrent() {
         currentUnfriendlyClaim?.let {
@@ -260,10 +264,10 @@ data class Question(
             return thereAreUnfriendlyClaims()
         }
     }
-    fun userVerballyAgrees(){
+    fun setUserVerballyAgrees(){
         userVerbalAnswer = robotAnswer
     }
-    fun userVerballyDisagrees(){
+    fun setUserVerballyDisagrees(){
         userVerbalAnswer = robotAnswer.getOpposite()
     }
     fun isUserVerballyAgreeing(): Boolean = userVerbalAnswer.agreesWith(robotAnswer)

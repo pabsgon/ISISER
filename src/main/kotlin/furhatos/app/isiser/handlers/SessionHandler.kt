@@ -55,11 +55,6 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
 
         }
     }
-    fun buildUtterance(text: String, aside: String? = ""): String{
-        //THIS NEEDS TO BE COMPLETED
-
-        return text
-    }
 
     fun confirmAnswer(){ currentQuestion!!.confirm() }
 /*
@@ -85,14 +80,17 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
     }
 */
 
+/*
     fun getFriendlyProbe(rejoinder: EnumRejoinders?):String{
         return buildUtterance(currentQuestion!!.getFriendlyProbe())
     }
     fun getFriendlyClaim(rejoinder: EnumRejoinders?):String{
         return buildUtterance(currentQuestion!!.getFriendlyClaim())
     }
+*/
 
     fun getQuestions():  MutableList<Question> { return questions }
+/*
 
     fun getUnfriendlyClaim(rejoinder: EnumRejoinders?):String{
         return buildUtterance(currentQuestion!!.getUnfriendlyClaim())
@@ -100,6 +98,7 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
     fun getUnfriendlyProbe(rejoinder: EnumRejoinders?):String{
         return buildUtterance(currentQuestion!!.getUnfriendlyProbe())
     }
+*/
 /*
     fun getUltimatum(rejoinder: EnumRejoinders?):ExtendedUtterance{
         return getUtterance(EnumWordingTypes.ULTIMATUM, rejoinder,
@@ -148,7 +147,6 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
     }
     fun neverAskedInCheckpoint(): Boolean = currentQuestion!!.isUserVerballyUndecided()
     fun inVerbalAgreement(): Boolean =  currentQuestion!!.isUserVerballyAgreeing()
-
     fun inCompleteAgreement(): Boolean =  (inVerbalAgreement() && inOfficialAgreement())
 
     fun isActive(): Boolean = active
@@ -190,11 +188,11 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
         //This will set return true if the answer given coincides with the robot's
         return currentQuestion!!.getRobotAnswer() == answer
     }
-    fun userVerballyAgrees(){
-        currentQuestion!!.userVerballyAgrees()
+    fun setUserVerballyAgrees(){
+        currentQuestion!!.setUserVerballyAgrees()
     }
-    fun userVerballyDisagrees(){
-        currentQuestion!!.userVerballyDisagrees()
+    fun setUserVerballyDisagrees(){
+        currentQuestion!!.setUserVerballyDisagrees()
     }
     fun getQuestionNumber():String{
         return currentQuestion!!.id
@@ -223,7 +221,8 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
     }
 
     fun getRepeat(): ExtendedUtterance{
-        return deprecated_createUtterance(lastRobotText,dataHandler.getAside(EnumWordingTypes.REPEAT, EnumRejoinders.REPEAT_REQUEST))
+        //return deprecated_createUtterance(lastRobotText,dataHandler.getAside(EnumWordingTypes.REPEAT, EnumRejoinders.REPEAT_REQUEST))
+        return getUtterance(EnumWordingTypes.REPEAT)
     }
 
     fun getUtterance(wordingId: EnumWordingTypes,
@@ -235,11 +234,14 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
             else -> { friendly!!}
         }
 
-
         val aside: String = dataHandler.getAside(wordingId, rejoinder, statePhase)
 
         val utterance: ExtendedUtterance = if(wordingId.isWording){
-            ExtendedUtterance(dataHandler.getWording(wordingId), aside)
+            if(wordingId==EnumWordingTypes.REPEAT){
+                ExtendedUtterance(lastRobotText, aside)
+            }else {
+                ExtendedUtterance(dataHandler.getWording(wordingId), aside)
+            }
         }else{
             ExtendedUtterance(
                 currentQuestion!!.getStatement(wordingId, friendliness),

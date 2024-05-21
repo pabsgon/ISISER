@@ -21,7 +21,11 @@ const val USE_PROBES_AT_DISCUSSION = true /* If this is true, in Persuasion and 
 posed (either MAX_NUM_PROBES_AT_PERSUASION or MAX_NUM_PROBES_AT_REVIEW); once reached, it will continue with claims.
 If false, it will always proceed with claims.*/
 
-const val TESTING_LEVEL = 0 // 0 means no testing. 1 means testing the intents.
+const val PRO = 0
+const val DEV = 1
+const val TEST_INTENTS = 2
+const val TEST_UTTERANCES = 3
+const val APP_EXECUTION_MODE = DEV
 
 
 

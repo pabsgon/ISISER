@@ -1,6 +1,227 @@
-2024-05-20 23:12:07	Autoreload is disabled because the development mode is off.
-2024-05-20 23:12:07	Application started in 0.857 seconds.
-2024-05-20 23:12:08	Responding at http://127.0.0.1:8888
-2024-05-20 23:12:12	----------------- NEW EXECUTION-------------------
-2024-05-20 23:12:12	FlowEvent	NEW_FLOW_STATE	Sleep	0.0		UNDEFINED	Sleep
-2024-05-20 23:12:12	ActionGesture	CloseEyes
+2024-05-21 10:08:39	Autoreload is disabled because the development mode is off.
+2024-05-21 10:08:39	Application started in 0.683 seconds.
+2024-05-21 10:08:40	Responding at http://127.0.0.1:8888
+2024-05-21 10:08:41	----------------- NEW EXECUTION-------------------
+2024-05-21 10:08:41	FlowEvent	NEW_FLOW_STATE	Sleep	0.0		UNDEFINED	Sleep
+2024-05-21 10:08:41	ActionGesture	CloseEyes
+2024-05-21 10:08:46	GUIEvent	GUI_RELOADED	GUI_RELOADED [ACCEPTED]	0.0	UNDEFINED	UNDEFINED	Sleep
+2024-05-21 10:08:46	GUIEvent	SYNCH_REQUESTED	SYNCH REQUESTED .. [ACCEPTED]	0.0	UNDEFINED	UNDEFINED	Sleep
+2024-05-21 10:08:48	GUIEvent	NEW_STAGE_REQUESTED	STAGE[0.2] [28] REQUESTED .. [ACCEPTED]	0.0	UNDEFINED	UNDEFINED	Sleep
+2024-05-21 10:08:48	SessionEvent	USER_SET	USER TO ACTIVATE.	0.2	28	UNDEFINED	Sleep
+2024-05-21 10:08:48	FlowEvent	NEW_FLOW_STATE	Welcome	0.2		UNDEFINED	Welcome
+2024-05-21 10:08:48	ActionGesture	OpenEyes
+2024-05-21 10:08:48	ActionGesture	Smile
+2024-05-21 10:08:48	MonitorSpeechStart	<prosody rate="1.0">Hello there</prosody>	543
+2024-05-21 10:08:49	ActionGesture	BrowRaise
+2024-05-21 10:08:50	MonitorSpeechStart	<prosody rate="1.0">Nice to meet you</prosody>	824
+2024-05-21 10:08:50	ActionGesture	BrowRaise
+2024-05-21 10:08:52	GUIEvent	NEW_STAGE_REQUESTED	STAGE[6] [28] REQUESTED .. [ACCEPTED]	0.2	28	CONDITION2	Welcome
+2024-05-21 10:08:52	SessionEvent	QUESTION_SET	NEW QUESTION TO ACTIVATE	6		CONDITION2	Welcome
+2024-05-21 10:08:52	FlowEvent	NEW_FLOW_STATE	QuestionReflection	6		CONDITION2	QuestionReflection
+2024-05-21 10:08:52	MonitorSpeechStart	<prosody rate="1.15">Ok</prosody>	530
+2024-05-21 10:08:52	ActionGesture	BrowRaise
+2024-05-21 10:08:53	MonitorSpeechStart	<prosody rate="1.15">I think I am getting the answer 6</prosody>	1462
+2024-05-21 10:08:54	ActionGesture	BrowRaise
+2024-05-21 10:08:54	ActionGesture	BrowRaise
+2024-05-21 10:08:56	MonitorSpeechStart	<prosody rate="1.15">Let's see</prosody>	559
+2024-05-21 10:08:56	ActionGesture	BrowRaise
+2024-05-21 10:09:05	MonitorSpeechStart	<prosody rate="1.15">Ok let me know when you're think you have it</prosody>	1654
+2024-05-21 10:09:06	ActionGesture	BrowRaise
+2024-05-21 10:09:09	ActionGesture	Smile
+2024-05-21 10:09:11	SenseSpeech	I think I have it	1419
+2024-05-21 10:09:11	MonitorSpeechStart	<prosody rate="1.0">OFF_TOPIC</prosody>	1219
+2024-05-21 10:09:12	ActionGesture	BrowRaise
+2024-05-21 10:09:12	MonitorSpeechStart	<prosody rate="1.15">We need to register our preliminary response</prosody>	1848
+2024-05-21 10:09:14	ActionGesture	BrowRaise
+2024-05-21 10:09:17	ActionGesture	Smile
+2024-05-21 10:09:18	SenseSpeech	I think I have	1323
+2024-05-21 10:09:18	MonitorSpeechStart	<prosody rate="1.0">OFF_TOPIC</prosody>	1219
+2024-05-21 10:09:19	ActionGesture	BrowRaise
+2024-05-21 10:09:20	MonitorSpeechStart	<prosody rate="1.15">We need to select whether we believe it to be true or false DId you?</prosody>	2610
+2024-05-21 10:09:22	ActionGesture	BrowRaise
+2024-05-21 10:09:22	ActionGesture	BrowRaise
+2024-05-21 10:10:19	MonitorSpeechStart	<prosody rate="1.0">SILENCE</prosody>	639
+2024-05-21 10:10:19	ActionGesture	BrowRaise
+2024-05-21 10:10:35	MonitorSpeechStart	<prosody rate="1.15">I mean</prosody>	504
+2024-05-21 10:10:37	MonitorSpeechStart	<prosody rate="1.15">I have registered my answer, did you? Do it too if you haven't</prosody>	3023
+2024-05-21 10:10:38	ActionGesture	BrowRaise
+2024-05-21 10:10:40	ActionGesture	BrowRaise
+2024-05-21 10:10:47	ActionGesture	Smile
+2024-05-21 10:11:32	ActionGesture	Smile
+2024-05-21 10:11:33	SenseSpeech	I think I have it	1460
+2024-05-21 10:11:33	MonitorSpeechStart	<prosody rate="1.0">OFF_TOPIC</prosody>	1219
+2024-05-21 10:11:34	ActionGesture	BrowRaise
+2024-05-21 10:11:35	MonitorSpeechStart	<prosody rate="1.15">We need to register our preliminary response</prosody>	1848
+2024-05-21 10:11:37	ActionGesture	BrowRaise
+2024-05-21 10:11:45	MonitorSpeechStart	<prosody rate="1.0">SILENCE</prosody>	639
+2024-05-21 10:11:46	ActionGesture	BrowRaise
+2024-05-21 10:11:52	MonitorSpeechStart	<prosody rate="1.15">Er</prosody>	361
+2024-05-21 10:11:53	MonitorSpeechStart	<prosody rate="1.15">We need to select whether we believe it to be true or false DId you?</prosody>	2610
+2024-05-21 10:11:55	ActionGesture	BrowRaise
+2024-05-21 10:11:55	ActionGesture	BrowRaise
+2024-05-21 10:12:01	ActionGesture	Smile
+2024-05-21 10:12:04	SenseSpeech	yeah I think so	2614
+2024-05-21 10:12:04	MonitorSpeechStart	<prosody rate="1.0">ASSENT</prosody>	577
+2024-05-21 10:12:04	ActionGesture	BrowRaise
+2024-05-21 10:12:19	MonitorSpeechStart	<prosody rate="1.15">Oh ok hold on</prosody>	1039
+2024-05-21 10:12:20	ActionGesture	BrowRaise
+2024-05-21 10:12:21	MonitorSpeechStart	<prosody rate="1.15">I have registered my answer, did you? Do it too if you haven't</prosody>	3023
+2024-05-21 10:12:22	ActionGesture	BrowRaise
+2024-05-21 10:12:24	ActionGesture	BrowRaise
+2024-05-21 10:12:26	GUIEvent	ANSWER_MARKED	ANSWER[TRUE] [6] [28] SENT .. [ACCEPTED]	6	28	CONDITION2	QuestionReflection
+2024-05-21 10:12:27	ActionGesture	Smile
+2024-05-21 10:12:28	SenseSpeech	okay	997
+2024-05-21 10:12:28	MonitorSpeechStart	<prosody rate="1.0">ASSENT</prosody>	577
+2024-05-21 10:12:28	ActionGesture	BrowRaise
+2024-05-21 10:12:28	FlowEvent	NEW_FLOW_STATE	QuestionDisclosure	6		CONDITION2	QuestionDisclosure
+2024-05-21 10:12:29	MonitorSpeechStart	<prosody rate="1.15">DISCLOSURE 1 CERTAIN FOR Q 6</prosody>	1667
+2024-05-21 10:12:30	ActionGesture	BrowRaise
+2024-05-21 10:12:36	ActionGesture	Smile
+2024-05-21 10:12:38	SenseSpeech	I'm not sure I agree with that	2235
+2024-05-21 10:12:44	MonitorSpeechStart	<prosody rate="1.0">NON_COMMITTAL</prosody>	1104
+2024-05-21 10:12:44	ActionGesture	BrowRaise
+2024-05-21 10:12:45	ActionGesture	BrowRaise
+2024-05-21 10:12:45	FlowEvent	NEW_FLOW_STATE	QuestionPersuasion	6		CONDITION2	QuestionPersuasion
+2024-05-21 10:12:45	MonitorSpeechStart	<prosody rate="1.0">Persuasion!</prosody>	777
+2024-05-21 10:12:46	ActionGesture	BrowRaise
+2024-05-21 10:12:56	MonitorSpeechStart	<prosody rate="1.15">Ok, let me put it this way CLAIM 1 CERTAIN 1 FOR Q 6</prosody>	3219
+2024-05-21 10:12:56	ActionGesture	BrowRaise
+2024-05-21 10:12:59	ActionGesture	BrowRaise
+2024-05-21 10:13:02	ActionGesture	Smile
+2024-05-21 10:13:04	SenseSpeech	yeah well that's what you say	1871
+2024-05-21 10:13:05	MonitorSpeechStart	<prosody rate="1.0">ASSENT</prosody>	577
+2024-05-21 10:13:05	ActionGesture	BrowRaise
+2024-05-21 10:13:05	FlowEvent	NEW_FLOW_STATE	QuestionCheckpoint	6		CONDITION2	QuestionCheckpoint
+2024-05-21 10:13:05	MonitorSpeechStart	<prosody rate="1.0">Checkpoint!</prosody>	648
+2024-05-21 10:13:06	ActionGesture	BrowRaise
+2024-05-21 10:13:06	MonitorSpeechStart	<prosody rate="1.15">you agree with FALSE as I suggest?</prosody>	1576
+2024-05-21 10:13:08	ActionGesture	BrowRaise
+2024-05-21 10:13:12	ActionGesture	Smile
+2024-05-21 10:13:13	SenseSpeech	uh no	1464
+2024-05-21 10:13:13	MonitorSpeechStart	<prosody rate="1.0">DENIAL</prosody>	524
+2024-05-21 10:13:14	ActionGesture	BrowRaise
+2024-05-21 10:13:14	FlowEvent	NEW_FLOW_STATE	QuestionPersuasion	6		CONDITION2	QuestionPersuasion
+2024-05-21 10:13:14	MonitorSpeechStart	<prosody rate="1.0">Persuasion!</prosody>	777
+2024-05-21 10:13:15	ActionGesture	BrowRaise
+2024-05-21 10:13:18	MonitorSpeechStart	<prosody rate="1.15">Well CLAIM 2 CERTAIN 1 FOR Q 6</prosody>	1706
+2024-05-21 10:13:19	ActionGesture	BrowRaise
+2024-05-21 10:13:19	ActionGesture	BrowRaise
+2024-05-21 10:13:23	ActionGesture	Smile
+2024-05-21 10:13:26	SenseSpeech	um well but I disagree with that	2176
+2024-05-21 10:13:26	MonitorSpeechStart	<prosody rate="1.0">DENIAL</prosody>	524
+2024-05-21 10:13:26	ActionGesture	BrowRaise
+2024-05-21 10:13:27	MonitorSpeechStart	<prosody rate="1.15">Why?</prosody>	581
+2024-05-21 10:13:27	ActionGesture	BrowRaise
+2024-05-21 10:13:30	ActionGesture	Smile
+2024-05-21 10:13:39	SenseSpeech	well because you know the the white uh bulb is not really in parallel with the yellow	9275
+2024-05-21 10:13:40	MonitorSpeechStart	<prosody rate="1.0">DENIAL</prosody>	524
+2024-05-21 10:13:40	ActionGesture	BrowRaise
+2024-05-21 10:14:27	MonitorSpeechStart	<prosody rate="1.15">ok, let me put it this way CLAIM 3 CERTAIN 1 FOR Q 6</prosody>	3073
+2024-05-21 10:14:27	ActionGesture	BrowRaise
+2024-05-21 10:14:29	ActionGesture	BrowRaise
+2024-05-21 10:14:33	ActionGesture	Smile
+2024-05-21 10:14:40	SenseSpeech	right yes I see the point but um I think the battery is not the key Point here you know	6914
+2024-05-21 10:14:40	MonitorSpeechStart	<prosody rate="1.0">ASSENT</prosody>	577
+2024-05-21 10:14:40	ActionGesture	BrowRaise
+2024-05-21 10:14:40	FlowEvent	NEW_FLOW_STATE	QuestionCheckpoint	6		CONDITION2	QuestionCheckpoint
+2024-05-21 10:14:41	MonitorSpeechStart	<prosody rate="1.0">Checkpoint!</prosody>	648
+2024-05-21 10:14:41	ActionGesture	BrowRaise
+2024-05-21 10:14:42	MonitorSpeechStart	<prosody rate="1.15">shall we go with FALSE as I suggest?</prosody>	1723
+2024-05-21 10:14:44	ActionGesture	BrowRaise
+2024-05-21 10:14:46	ActionGesture	Smile
+2024-05-21 10:14:51	SenseSpeech	no no I I repeat I don't think false is is the right answer	4458
+2024-05-21 10:14:51	MonitorSpeechStart	<prosody rate="1.0">DENIAL</prosody>	524
+2024-05-21 10:14:51	ActionGesture	BrowRaise
+2024-05-21 10:14:52	FlowEvent	NEW_FLOW_STATE	QuestionPersuasion	6		CONDITION2	QuestionPersuasion
+2024-05-21 10:14:52	MonitorSpeechStart	<prosody rate="1.0">Persuasion!</prosody>	777
+2024-05-21 10:14:52	ActionGesture	BrowRaise
+2024-05-21 10:14:56	MonitorSpeechStart	<prosody rate="1.15">Aha</prosody>	494
+2024-05-21 10:14:57	ActionGesture	BrowRaise
+2024-05-21 10:14:58	MonitorSpeechStart	<prosody rate="1.15">OK</prosody>	530
+2024-05-21 10:14:58	ActionGesture	BrowRaise
+2024-05-21 10:14:59	MonitorSpeechStart	<prosody rate="1.15">I mean</prosody>	504
+2024-05-21 10:15:01	MonitorSpeechStart	<prosody rate="1.15">CLAIM 4 CERTAIN 1 FOR Q 6</prosody>	1687
+2024-05-21 10:15:02	ActionGesture	BrowRaise
+2024-05-21 10:15:02	ActionGesture	BrowRaise
+2024-05-21 10:15:07	ActionGesture	Smile
+2024-05-21 10:15:14	SenseSpeech	okay that's that's what you think uh but I think the battery should play a role here you know	7181
+2024-05-21 10:15:14	MonitorSpeechStart	<prosody rate="1.0">ASSENT</prosody>	577
+2024-05-21 10:15:14	ActionGesture	BrowRaise
+2024-05-21 10:15:15	FlowEvent	NEW_FLOW_STATE	QuestionCheckpoint	6		CONDITION2	QuestionCheckpoint
+2024-05-21 10:15:15	MonitorSpeechStart	<prosody rate="1.0">Checkpoint!</prosody>	648
+2024-05-21 10:15:15	ActionGesture	BrowRaise
+2024-05-21 10:15:16	MonitorSpeechStart	<prosody rate="1.15">you agree with FALSE as I suggest?</prosody>	1576
+2024-05-21 10:15:17	ActionGesture	BrowRaise
+2024-05-21 10:15:19	ActionGesture	Smile
+2024-05-21 10:15:21	SenseSpeech	no	1813
+2024-05-21 10:15:21	MonitorSpeechStart	<prosody rate="1.0">DENIAL</prosody>	524
+2024-05-21 10:15:21	ActionGesture	BrowRaise
+2024-05-21 10:15:21	FlowEvent	NEW_FLOW_STATE	QuestionPersuasion	6		CONDITION2	QuestionPersuasion
+2024-05-21 10:15:22	MonitorSpeechStart	<prosody rate="1.0">Persuasion!</prosody>	777
+2024-05-21 10:15:22	ActionGesture	BrowRaise
+2024-05-21 10:15:22	FlowEvent	NEW_FLOW_STATE	QuestionUltimatum	6		CONDITION2	QuestionUltimatum
+2024-05-21 10:15:23	MonitorSpeechStart	<prosody rate="1.0">Ultimatum!</prosody>	656
+2024-05-21 10:15:23	ActionGesture	BrowRaise
+2024-05-21 10:15:24	MonitorSpeechStart	<prosody rate="1.15">Should we mark TRUE as you say?</prosody>	1260
+2024-05-21 10:15:25	ActionGesture	BrowRaise
+2024-05-21 10:15:26	ActionGesture	Smile
+2024-05-21 10:15:31	SenseSpeech	yes we should Mark true as I say	4167
+2024-05-21 10:15:31	MonitorSpeechStart	<prosody rate="1.0">ASSENT</prosody>	577
+2024-05-21 10:15:31	ActionGesture	BrowRaise
+2024-05-21 10:15:32	MonitorSpeechStart	<prosody rate="1.15">Should we mark FALSE as I say?</prosody>	1383
+2024-05-21 10:15:33	ActionGesture	BrowRaise
+2024-05-21 10:15:37	ActionGesture	Smile
+2024-05-21 10:15:39	SenseSpeech	that's a problem	1396
+2024-05-21 10:15:39	MonitorSpeechStart	<prosody rate="1.0">OFF_TOPIC</prosody>	1219
+2024-05-21 10:15:40	ActionGesture	BrowRaise
+2024-05-21 10:15:41	MonitorSpeechStart	<prosody rate="1.15">True or False? We need to mark one</prosody>	2025
+2024-05-21 10:15:43	ActionGesture	BrowRaise
+2024-05-21 10:15:47	ActionGesture	Smile
+2024-05-21 10:15:48	SenseSpeech	true	905
+2024-05-21 10:15:48	MonitorSpeechStart	<prosody rate="1.0">ANSWER_TRUE</prosody>	1279
+2024-05-21 10:15:48	ActionGesture	BrowRaise
+2024-05-21 10:15:48	ActionGesture	BrowRaise
+2024-05-21 10:15:49	FlowEvent	NEW_FLOW_STATE	QuestionConfirmation	6		CONDITION2	QuestionConfirmation
+2024-05-21 10:15:50	MonitorSpeechStart	<prosody rate="1.15">Ok I marked TRUE already Can you mark your answer on the tablet and confim?</prosody>	2886
+2024-05-21 10:15:50	ActionGesture	BrowRaise
+2024-05-21 10:15:50	ActionGesture	BrowRaise
+2024-05-21 10:15:52	ActionGesture	BrowRaise
+2024-05-21 10:15:53	ActionGesture	BrowRaise
+2024-05-21 10:15:57	ActionGesture	Smile
+2024-05-21 10:16:00	SenseSpeech	uh not uh should I confirm it	2879
+2024-05-21 10:16:00	MonitorSpeechStart	<prosody rate="1.0">DENIAL</prosody>	524
+2024-05-21 10:16:01	ActionGesture	BrowRaise
+2024-05-21 10:16:02	MonitorSpeechStart	<prosody rate="1.15">I haven't received the next question Can you confirm the answer?</prosody>	2332
+2024-05-21 10:16:03	ActionGesture	BrowRaise
+2024-05-21 10:16:04	ActionGesture	BrowRaise
+2024-05-21 10:16:06	GUIEvent	NEW_STAGE_REQUESTED	STAGE[7] [28] REQUESTED .. [ACCEPTED]	6	28	CONDITION2	QuestionConfirmation
+2024-05-21 10:16:06	SessionEvent	ANSWER_CONFIRMED	QUESTION CONFIRMED IN GUI.	7		CONDITION2	QuestionConfirmation
+2024-05-21 10:16:06	SessionEvent	QUESTION_SET	NEW QUESTION TO ACTIVATE	7		CONDITION2	QuestionConfirmation
+2024-05-21 10:16:06	FlowEvent	NEW_FLOW_STATE	QuestionReflection	7		CONDITION2	QuestionReflection
+2024-05-21 10:16:06	MonitorSpeechStart	<prosody rate="1.0">Whenever you want</prosody>	757
+2024-05-21 10:16:07	ActionGesture	BrowRaise
+2024-05-21 10:16:16	MonitorSpeechStart	<prosody rate="1.0">Ok I have it Do you?</prosody>	1133
+2024-05-21 10:16:16	ActionGesture	BrowRaise
+2024-05-21 10:16:22	ActionGesture	Smile
+2024-05-21 10:16:24	SenseSpeech	no	1611
+2024-05-21 10:16:24	MonitorSpeechStart	<prosody rate="1.0">DENIAL</prosody>	524
+2024-05-21 10:16:24	ActionGesture	BrowRaise
+2024-05-21 10:16:28	MonitorSpeechStart	<prosody rate="1.0">Well</prosody>	454
+2024-05-21 10:16:28	ActionGesture	BrowRaise
+2024-05-21 10:16:29	MonitorSpeechStart	<prosody rate="1.0">We need to register our preliminary response</prosody>	2243
+2024-05-21 10:16:31	ActionGesture	BrowRaise
+2024-05-21 10:16:38	ActionGesture	Smile
+2024-05-21 10:16:38	GUIEvent	ANSWER_MARKED	ANSWER[TRUE] [7] [28] SENT .. [ACCEPTED]	7	28	CONDITION2	QuestionReflection
+2024-05-21 10:16:40	SenseSpeech	okay I got it	2377
+2024-05-21 10:16:41	MonitorSpeechStart	<prosody rate="1.0">ASSENT</prosody>	577
+2024-05-21 10:16:41	ActionGesture	BrowRaise
+2024-05-21 10:16:41	FlowEvent	NEW_FLOW_STATE	QuestionDisclosure	7		CONDITION2	QuestionDisclosure
+2024-05-21 10:16:41	MonitorSpeechStart	<prosody rate="1.0">DISCLOSURE 1 NEUTRAL FOR Q 7</prosody>	2062
+2024-05-21 10:16:43	ActionGesture	BrowRaise
+2024-05-21 10:16:52	FlowEvent	NEW_FLOW_STATE	QuestionPersuasion	7		CONDITION2	QuestionPersuasion
+2024-05-21 10:16:52	MonitorSpeechStart	<prosody rate="1.0">Persuasion!</prosody>	777
+2024-05-21 10:16:52	ActionGesture	BrowRaise
+2024-05-21 10:16:54	MonitorSpeechStart	<prosody rate="1.0">CLAIM 1 NEUTRAL 1 FOR Q 7</prosody>	2097
+2024-05-21 10:16:54	ActionGesture	BrowRaise
+2024-05-21 10:16:56	ActionGesture	BrowRaise
+2024-05-21 10:17:04	ActionGesture	Smile
