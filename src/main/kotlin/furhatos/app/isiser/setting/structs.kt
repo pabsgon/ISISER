@@ -104,13 +104,14 @@ data class Asides(
                     if (list != null && list.isNotEmpty()) {
                         val t1 = list.removeAt(0)
                         list.add(t1)
+                        println("REQUESTED ASIDE(type=$type, rejoinder=$rejoinder, phase=$phase, friendliness=$friendliness). SERVED: (type=${key.first}, phase=${key.second}, rejoinder=${key.third}, friendliness=$actualFriendliness) = \"$t1\"")
                         return t1
                     }
                 }
             }
         }
 
-        println("Warning: ASIDE for type=$actualType, phase=$actualPhase, rejoinder=$actualRejoinder, friendliness=$actualFriendliness")
+        println("REQUESTED ASIDE FOUND (EMPTY) for type=$actualType, phase=$actualPhase, rejoinder=$actualRejoinder, friendliness=$actualFriendliness")
         return ""
     }
 
@@ -182,6 +183,12 @@ data class ExtendedUtterance(
         this.rate = robotMode.speechRate
     }
     private fun createUtterance(text: String, aside: String): Utterance {
+        /*This function will convert every dot in a delay of SILENT_MILLISECS_PER_DOT
+        So, for example "Hello...Nice to meet you" will be converted to
+        {+"Hello" + delay(SILENT_MILLISECS_PER_DOT*3) + "Nice to meet you"}
+        This is only the case that there are more than 1 consecutive dots.
+
+        */
         val processedString = (if(aside.isNotEmpty()) "$aside " else "") + text
 
         return utterance {
@@ -201,6 +208,8 @@ data class ExtendedUtterance(
                                 currentText = StringBuilder()
                             }
                             +delay(SILENT_MILLISECS_PER_DOT * dotCount)
+                        }else {
+                            currentText.append('.')
                         }
                     }
                     else -> {
@@ -244,7 +253,9 @@ val s1 = Statement(id + UNFRIENDLY_SUFFIX, EnumStatementTypes.CLAIM, textTriplet
 open class Statement(
     val id: String,
     val type: EnumWordingTypes, // CLAIM, ASSERTION, PROBE, ASIDE, CHECKPOINT, CLARIFICATION_REQUEST, DISCLOSURE, ULTIMATUM
-    private val texts: MutableList<TextTriplet>,  // List to easily manipulate elements
+    private val texts: MutableList<TextTriplet>,  // List to easily manipulate elements,
+    val isTriMode: Boolean, //If this is true, the statement does have three versions for the statement in each triplet.
+    // Otherwise, the triplet has only one version for the three items (NEUTRAL).
     val friendliness: EnumFriendliness = EnumFriendliness.ANY, //If assertion, it means Indexical.
     val indexical: Boolean = false
 ) {
@@ -255,11 +266,13 @@ open class Statement(
         id: String,
         type: EnumWordingTypes,
         texts: MutableList<TextTriplet>,
+        isTriMode:Boolean,
         subType: String
     ) : this(
         id = id,
         type = type,
         texts = texts,
+        isTriMode = isTriMode,
         indexical = if (type == EnumWordingTypes.ASSERTION) subType == SOURCEDATA_TRUE else false,
         friendliness = if (type != EnumWordingTypes.ASSERTION) EnumFriendliness.fromString(subType) else EnumFriendliness.ANY
     )
@@ -275,11 +288,13 @@ open class Statement(
         usedInQuestion = question
 
         // Return the text for the given question's robot mode
-        var rawText =  triplet.getText(question.getRobotMode())
+
+        var rawText =  triplet.getText(if(isTriMode) question.getRobotMode() else EnumRobotMode.NEUTRAL)
 
         timesUsed++
         return rawText.replace(SOURCEDATA_CODE_QNUM, question.id)
             .replace(SOURCEDATA_CODE_ROBOT_ANSWER, question.getRobotAnswer().toString())
+            .replace(SOURCEDATA_CODE_NOT_ROBOT_ANSWER, question.getRobotAnswer().getOpposite().toString())
             .replace(SOURCEDATA_CODE_USER_ANSWER, question.getMarkedAnswer().toString())
 
     }
@@ -297,12 +312,14 @@ class Claim(
     val unfriendlyStatement: Statement,
     val friendlyStatementList: MutableList<Statement> = mutableListOf(),
     val assertions: MutableList<Statement> = mutableListOf(),
-    var pendingAssertions: Int = ASSERTIONS_PER_CLAIM
+    var pendingAssertions: Int = ASSERTIONS_PER_CLAIM,
+    var isAssentSensitive: Boolean = true
 ) {
-    constructor(id: String, statements: List<Statement>) : this(
+    constructor(id: String, statements: List<Statement>, subType: String) : this(
         id = id,
         unfriendlyStatement = statements.first(),
-        friendlyStatementList = statements.drop(1).toMutableList()
+        friendlyStatementList = statements.drop(1).toMutableList(),
+        isAssentSensitive = subType == SOURCEDATA_TRUE
     )
 
     fun setAssertion(st: Statement){
@@ -353,6 +370,16 @@ data class StatementMap(
         val specificKey = Pair(wordingType, friendliness ?: EnumFriendliness.ANY)
 
         return map[specificKey] ?: map[Pair(wordingType, EnumFriendliness.ANY)]
+    }
+
+    // Function to get a statement by wordingType and friendliness, defaults to ANY
+    fun isTrimode(wordingType: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): Boolean {
+        val specificStatement = getSpeciciStatement(wordingType,friendliness)
+        return if(specificStatement == null){
+            println("WARNING: a statement is null (wordingType = $wordingType, friendliness=$friendliness). Returned isTrimode=false")
+            false
+        } else
+            specificStatement.isTriMode
     }
 
     // Function to get a statement by wordingType and friendliness, defaults to ANY

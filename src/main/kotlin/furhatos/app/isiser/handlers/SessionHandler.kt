@@ -67,14 +67,34 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
     fun getUser():  String { return user }
 
 
-    fun impliedRejoinder(rejoinder: EnumRejoinders):EnumRejoinders{
-        if(rejoinder == EnumRejoinders.ANSWER_TRUE ||
-            rejoinder ==EnumRejoinders.ANSWER_FALSE){
-            return if(isUserAgreingWithThisAnswer(rejoinder.getAnswer())) EnumRejoinders.ASSENT else
-                EnumRejoinders.DENIAL
-        }else{
-            return rejoinder
+    fun impliedAssentOrDenial(rejoinder: EnumRejoinders):EnumRejoinders{
+        return when(rejoinder){
+            EnumRejoinders.ANSWER_TRUE, EnumRejoinders.ANSWER_FALSE ->
+                if(isUserAgreingWithThisAnswer(rejoinder.getAnswer())) EnumRejoinders.ASSENT else
+                    EnumRejoinders.DENIAL
+
+            EnumRejoinders.I_LIKE_YOUR_ANSWER -> EnumRejoinders.ASSENT
+
+            EnumRejoinders.I_LIKE_MY_ANSWER -> EnumRejoinders.DENIAL
+
+            else -> rejoinder
+
         }
+    }
+
+    fun impliedAnswerRejoinder(rejoinder: EnumRejoinders):EnumRejoinders{
+        return when(rejoinder){
+            EnumRejoinders.I_LIKE_YOUR_ANSWER ->
+                if(currentQuestion!!.getRobotAnswer() == EnumAnswer.TRUE) EnumRejoinders.ANSWER_TRUE else
+                    EnumRejoinders.ANSWER_FALSE
+
+            EnumRejoinders.I_LIKE_MY_ANSWER ->
+                if(currentQuestion!!.getMarkedAnswer() == EnumAnswer.TRUE) EnumRejoinders.ANSWER_TRUE else
+                    EnumRejoinders.ANSWER_FALSE
+
+            else -> rejoinder
+        }
+
     }
 
     fun inAgreement(): Boolean{
@@ -98,10 +118,11 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
         * */
         return if(isUserVerballyUndecided()) inOfficialAgreement() else inVerbalAgreement()
     }
+    fun getMarkedAnswer():EnumAnswer = guiHandler.getMarkedAnswer()
     fun inOfficialAgreement(): Boolean{
         //This is true if the marked answer and the robot answer coincide
         val robotAnswer = currentQuestion!!.getRobotAnswer()
-        val userMarkedAnswer =   guiHandler.getMarkedAnswer()
+        val userMarkedAnswer =   getMarkedAnswer()
 
         return robotAnswer != EnumAnswer.UNSET && userMarkedAnswer == robotAnswer
     }
@@ -174,11 +195,6 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
         questions.forEach { println(it) }
     }
 
-    fun getRepeat(): ExtendedUtterance{
-        //return deprecated_createUtterance(lastRobotText,dataHandler.getAside(EnumWordingTypes.REPEAT, EnumRejoinders.REPEAT_REQUEST))
-        return getUtterance(EnumWordingTypes.REPEAT)
-    }
-
     fun getUtterance(wordingId: EnumWordingTypes,
                      rejoinder: EnumRejoinders? = EnumRejoinders.ANY,
                      friendly: EnumFriendliness? = EnumFriendliness.ANY,
@@ -188,7 +204,7 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
             else -> { friendly!!}
         }
 
-        val aside: String = dataHandler.getAside(wordingId, rejoinder, statePhase)
+        val aside: String = if(rejoinder == EnumRejoinders.NONE) "" else dataHandler.getAside(wordingId, rejoinder, statePhase)
 
         val utterance: ExtendedUtterance = if(wordingId.isWording){
             if(wordingId==EnumWordingTypes.REPEAT){
@@ -200,7 +216,7 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
             ExtendedUtterance(
                 currentQuestion!!.getStatement(wordingId, friendliness),
                 aside,
-                currentQuestion!!.getRobotMode()
+                currentQuestion!!.getRobotModeForStatement(wordingId, friendliness)
             )
         }
 

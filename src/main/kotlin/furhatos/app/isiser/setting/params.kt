@@ -25,7 +25,7 @@ const val PRO = 0
 const val DEV = 1
 const val TEST_INTENTS = 2
 const val TEST_UTTERANCES = 3
-const val APP_EXECUTION_MODE = DEV
+const val APP_EXECUTION_MODE = TEST_INTENTS
 
 
 

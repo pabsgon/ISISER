@@ -170,7 +170,7 @@ data class DataHandler(val evFactory: EventFactory,
         if(type.equals(EnumWordingTypes.CLAIM)){
             addClaim(questions, qIndex, id, subType, textTriplets)
         }else{
-            val s = Statement(id, type, textTriplets, subType) // subType=true means "Indexical" if Assertion, and Friendly if Ultimatum or Checkpoint.
+            val s = Statement(id, type, textTriplets, perTriplet, subType) // subType=true means "Indexical" if Assertion, and Friendly if Ultimatum or Checkpoint.
             statements.add(s)
             if (qIndex < 0) { //This means that the source said "ANY" question.
                 // Call addStatement on all items in the list
@@ -196,6 +196,7 @@ data class DataHandler(val evFactory: EventFactory,
             val s1 = Statement(id + UNFRIENDLY_SUFFIX,
                                     EnumWordingTypes.CLAIM,
                                     textTriplets.subList(0, 1).toMutableList(),
+                                    STATEMENT_IS_TRIMODE,
                                     EnumFriendliness.UNFRIENDLY)
             tempStatements.add(s1)
 
@@ -204,12 +205,13 @@ data class DataHandler(val evFactory: EventFactory,
                 val s = Statement(id + FRIENDLY_SUFFIX + i,
                                     EnumWordingTypes.CLAIM,
                                     mutableListOf(textTriplets[i]),
+                                    STATEMENT_IS_TRIMODE,
                                     EnumFriendliness.FRIENDLY)
                 tempStatements.add(s)
             }
 
             // Call addClaim on the item at qIndex if it's within the bounds of the list
-            questions.getOrNull(qIndex)?.addClaim(Claim(id, tempStatements)) ?: println("Error loading data: Question Index is out of bounds")
+            questions.getOrNull(qIndex)?.addClaim(Claim(id, tempStatements, subType)) ?: println("Error loading data: Question Index is out of bounds")
         }
     }
     fun processWording(c: Int, settings: List<Any>, texts: List<Any>) {

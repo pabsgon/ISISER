@@ -1,9 +1,11 @@
 const DEV_MOD1 = 0 // This does not go to the server
 const DEV_MOD2 = 1 // THis will run only q 7 and 8 
-const ADM_MODE = 2 // This wil show the questions on the right hand side
-const PRO_MODE = 9
+const DEV_MOD_CHOOSING = 9 // THis will run from state (1 to 8)
 
-const APP_MODE = DEV_MOD2
+const ADM_MODE = 10 // This wil show the questions on the right hand side
+const PRO_MODE = 99
+
+const APP_MODE = DEV_MOD_CHOOSING
 const LANG_EN = "EN"
 const LANG_SE = "SE"
 const NUMBER_STUDENTS = 62
@@ -16,7 +18,8 @@ const readyButton = document.getElementById('readyBut')
 const falseButton = document.getElementById('falseBut')
 const trueButton = document.getElementById('trueBut')
 const STAGES = [0,0.2,1,2,3,4,5,6,7,8,0.3]
-const LAST2_STAGES = [0,0.2,6,7,8,0.3]
+const FROM_N_STAGES = [0,0.2,2,3,4,5,6,7,8,0.3]
+const LAST2_STAGES = [0,0.2,7,8,0.3]
 const STAGE_1ST_QUESTION = 1
 const EVTYPE_SYNCH_REQUESTED = "SYNCH_REQUESTED"
 const EVTYPE_NEW_STAGE_REQUESTED = "NEW_STAGE_REQUESTED"
@@ -27,7 +30,7 @@ const QUESTION_CHANGE_TIME = 3000 //millisecs until the new problem is shown.
 // The server will return the stage and user. The webpage will set these two params, showing the correct stage.
 
 /* ............... STAGES .......................*/ 
-var stages = APP_MODE==DEV_MOD2?LAST2_STAGES:STAGES
+var stages = APP_MODE==DEV_MOD2?LAST2_STAGES:(APP_MODE==DEV_MOD_CHOOSING?FROM_N_STAGES:STAGES)
 stages.curPos = -1
 stages.next = function(){return this[this.curPos+1]}
 stages.set = function(st){

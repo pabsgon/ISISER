@@ -67,13 +67,13 @@ val Testing = state(parent = Parent) {
         furhat.doAsk("You want me to repeat")
     }
     onResponse<RejoinderAgreed> {
-        furhat.doAsk("That's a rejoinder I agree with")
+        furhat.doAsk("That's a rejoinder I <emphasis>agree<emphasis> with")
     }
     onResponse<RejoinderDisagreed> {
         furhat.doAsk("That's a rejoinder I don't agree with")
     }
     onResponse<Greeting> {
-        furhat.doAsk("Hello to you too.")
+        furhat.ask("Hello to you too. That's a rejoinder I  agree<emphasis> with")
     }
     onResponse<ElaborationRequest> {
         furhat.doAsk("You want me to elaborate.")

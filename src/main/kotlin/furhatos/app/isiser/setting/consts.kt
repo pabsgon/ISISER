@@ -5,8 +5,8 @@ const val UNDEFINED = "UNDEFINED"
 const val NO_MESSAGE = "NO MESSAGE"
 const val SAFE_SPEECH_PRO = "Mmh!"
 const val SAFE_SPEECH_DEV = "ALERT"
-const val UNFRIENDLY = false
-const val FRIENDLY = true
+const val STATEMENT_IS_TRIMODE = true
+const val STATEMENT_IS_MONOMODE = false
 const val UNFRIENDLY_SUFFIX = "_U"
 const val FRIENDLY_SUFFIX = "_F"
 const val ASSERTIONS_PER_CLAIM = 2
@@ -20,7 +20,7 @@ const val SOURCEDATA_FOR_REJOINDER = 3 // Linked to EnumRejoinders
 const val SOURCEDATA_WORDING_TYPE = 4
 const val SOURCEDATA_STATEMENT_INDEX = 5
 const val SOURCEDATA_PERTRIPLET = 6
-const val SOURCEDATA_SUBTYPE = 7 // Linked to EnumFriendliness
+const val SOURCEDATA_SUBTYPE = 7 // Linked to EnumFriendliness and TRUE/FALSE (in the spreadsheet)
 const val SOURCEDATA_ID = 8
 const val SOURCEDATA_WORDING="WORDING"
 const val SOURCEDATA_STATEMENT = "STATEMENT"
@@ -28,6 +28,7 @@ const val SOURCEDATA_WORD_QUESTION = "QUESTION"
 const val SOURCEDATA_CORRECT_ANSWER = "CORRECT_ANSWER"
 const val SOURCEDATA_ROBOT_ANSEWR = "ROBOT_ANSWER"
 const val SOURCEDATA_CODE_QNUM ="#QNUM#"
+const val SOURCEDATA_CODE_NOT_ROBOT_ANSWER = "#NOT_ROBOT_ANSWER#"
 const val SOURCEDATA_CODE_ROBOT_ANSWER = "#ROBOT_ANSWER#"
 const val SOURCEDATA_CODE_USER_ANSWER = "#USER_ANSWER#"
 
@@ -174,25 +175,27 @@ enum class EventType(val defMsg: String, val cat: EventCategory) {
 }
 
 enum class EnumRejoinders {// CONNECTED TO THE DATA SPREADSHEET
-    I_AM_DONE,
+    REPEAT_REQUEST,
+    TIME_REQUEST,
+
     ME_READY,
-    ANSWER_MARKED,
-    ANSWER_TRUE,
+    I_LIKE_MY_ANSWER,
+    I_LIKE_YOUR_ANSWER,
     ANSWER_FALSE,
+    ANSWER_TRUE,
+    ANSWER_MARKED,
+    DENIAL,
     REJOINDER_AGREED,
     REJOINDER_DISAGREED,
     /* REJOINDER_NONCOMMITED, This was considered, but never used. */
     PROBE,
-    DENIAL,
     ELABORATION_REQUEST,
-    TIME_REQUEST,
     NON_COMMITTAL,
     BACKCHANNEL,
-    OFF_TOPIC,
     ASSENT,
-    I_UNDERSTAND,
-    REPEAT_REQUEST,
     SILENCE,
+    OFF_TOPIC,
+    NONE, //This is used for when an utterance needs to be created without an aside.
     ANY;
     fun getAnswer(): EnumAnswer {
         return when (this) {
@@ -225,6 +228,7 @@ enum class EnumWordingTypes(val isWording:Boolean, val robotModeApplies: Boolean
     ASIDE (false, false),
     CONFIRMATION_REQUEST( false, false),
     REPEAT(true, false),
+    GIVE_TIME(true, false),
     FAREWELL_START(true, false),
     FAREWELL_END(true, false),
     ANY(true, false);

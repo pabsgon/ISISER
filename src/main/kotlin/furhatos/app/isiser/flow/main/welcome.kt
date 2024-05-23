@@ -36,11 +36,11 @@ val Welcome : State = state(Parent) {
             + "How you doing?"})*/
     }
     onReentry {
-
+        furhat.doAsk("Tell me")
     }
 
     onResponse{
-        App.goto(Farewell)
+        App.goto(ReviewInstructions)
     }
 }
 val ReviewInstructions : State = state(Parent) {
@@ -79,21 +79,21 @@ val ReviewInstructions : State = state(Parent) {
                 if (!checkPointReached) {
                     checkPointReached = true
                     furhat.doSay(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_DETAILED, rejoinder))
-                    furhat.doAsk(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_CHECKPOINT, rejoinder))
+                    furhat.doAsk(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_CHECKPOINT, EnumRejoinders.NONE))
                 } else {
                     when (rejoinder) {
                         EnumRejoinders.SILENCE -> furhat.doAsk(
                             session.getUtterance(EnumWordingTypes.INSTRUCTIONS_CHECKPOINT,rejoinder)
                         )
 
-                        EnumRejoinders.I_AM_DONE, EnumRejoinders.ME_READY,
+                        EnumRejoinders.ME_READY, EnumRejoinders.ME_READY,
                         EnumRejoinders.ASSENT -> {
                             checkPointPassed = true
                             furhat.doAsk(session.getUtterance(EnumWordingTypes.PRESS_READY_REQUEST))
                         }
                         else -> {
                             furhat.doSay(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_DETAILED, rejoinder))
-                            furhat.doAsk(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_CHECKPOINT, rejoinder))
+                            furhat.doAsk(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_CHECKPOINT, EnumRejoinders.NONE))
                         }
                     }
                 }

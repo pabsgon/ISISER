@@ -1,6 +1,5 @@
 package furhatos.app.isiser.nlu
 
-import com.sun.tracing.Probe
 import furhat.libraries.standard.NluLib
 import furhatos.app.isiser.setting.EnumRejoinders
 import furhatos.nlu.Intent
@@ -9,25 +8,33 @@ import furhatos.nlu.common.*
 
 //Greetings and beyond are defined in resources/furhatos.app.isiser.nlu
 class Greetings: Intent()
-/*              ALL INTENTS USED                            */
-// NluLib.IAmDone is built-in
+/*  ALL INTENTS USED */
+
+//    RequestRepeat() is built-in //handled in Parent
+class SayItAgain: Intent() // handled in Parent
+class TimeRequest: Intent() // handled in Parent
+//    Wait() is built-in // handled in Parent
+//    NluLib.IAmDone is built-in
+class MeReady: Intent()
+class ILikeMyAnswer: Intent()
+class ILikeYourAnswer: Intent()
 class AnswerFalse: Intent()
 class AnswerTrue: Intent()
 class AnswerMarked: Intent()
+//    No() is built-in
+class Disagree: Intent()
 class RejoinderAgreed: Intent()
 class RejoinderDisagreed: Intent()
-// No() is built-in
-class Disagree: Intent()
 class Probe: Intent()
+class DontUnderstand: Intent()
 class ElaborationRequest: Intent()
-// RequestRepeat() is built-in
-// Wait() is built-in
-// Maybe() is built-in
-// DontKnow() is built-in
 class Backchannel: Intent()
+//    DontKnow() is built-in
+//    Maybe() is built-in
+class Understand: Intent()
 class Agree: Intent()
-class MeReady: Intent()
-// Yes() is built-in
+class OffTopic: Intent()
+//    Yes() is built-in
 
 // -------------------------------
 
@@ -38,33 +45,38 @@ class AllIntents : Intent {
     constructor() {
         rejoinder = EnumRejoinders.OFF_TOPIC
     }
+
     constructor(intent: Intent) : this() {
         rejoinder = when (intent) {
-            is NluLib.IAmDone -> EnumRejoinders.I_AM_DONE
+            // RequestRepeat ->  (Parent) -> REPEAT_REQUEST
+            // SayItAgain -> (Parent) -> REPEAT_REQUEST
+            // TimeRequest -> (Parent) -> (handled there)
+            // Wait ->  (Parent) -> (handled there)
+            // NluLib.IAmDone  ->  (Parent) -> ME_READY
             is MeReady -> EnumRejoinders.ME_READY
+            is ILikeMyAnswer -> EnumRejoinders.I_LIKE_MY_ANSWER
+            is ILikeYourAnswer -> EnumRejoinders.I_LIKE_YOUR_ANSWER
             is AnswerFalse -> EnumRejoinders.ANSWER_FALSE
             is AnswerTrue -> EnumRejoinders.ANSWER_TRUE
-
             is AnswerMarked -> EnumRejoinders.ANSWER_MARKED
-
-            is RejoinderAgreed -> EnumRejoinders.REJOINDER_AGREED
-            is RejoinderDisagreed -> EnumRejoinders.REJOINDER_DISAGREED
-
             is No -> EnumRejoinders.DENIAL
             is Disagree -> EnumRejoinders.DENIAL
-
+            is RejoinderAgreed -> EnumRejoinders.REJOINDER_AGREED //raised by Parent
+            is RejoinderDisagreed -> EnumRejoinders.REJOINDER_DISAGREED //raised by Parent
             is Probe -> EnumRejoinders.PROBE
+            is DontUnderstand,
             is ElaborationRequest -> EnumRejoinders.ELABORATION_REQUEST
-
-            is Maybe -> EnumRejoinders.NON_COMMITTAL
-            is DontKnow -> EnumRejoinders.NON_COMMITTAL
-            is Backchannel -> EnumRejoinders.BACKCHANNEL
-
-            is Agree -> EnumRejoinders.ASSENT
+            is Backchannel -> EnumRejoinders.BACKCHANNEL //raised by Parent
+            is DontKnow,
+            is Maybe  -> EnumRejoinders.NON_COMMITTAL
+            is Understand,
+            is Agree,
             is Yes -> EnumRejoinders.ASSENT
-            else -> EnumRejoinders.OFF_TOPIC
+            is OffTopic -> EnumRejoinders.OFF_TOPIC
+            else -> EnumRejoinders.OFF_TOPIC //raised by Parent
         }
     }
+
     // Secondary constructor accepting an EnumSubjectRejoinders and initializing rejoinder to it
     constructor(e: EnumRejoinders) : this() {
         rejoinder = e

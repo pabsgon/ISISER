@@ -128,6 +128,18 @@ data class Question(
     fun getRobotMode(): EnumRobotMode{
         return robotMode!!
     }
+    fun getRobotModeForStatement(wordingId: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): EnumRobotMode{
+        var statementIsTriMode =
+        if(wordingId == EnumWordingTypes.CLAIM){
+            true
+        }else {
+            statements.isTrimode(wordingId,friendliness)
+        }
+
+        return if(statementIsTriMode) robotMode!! else EnumRobotMode.NEUTRAL
+    }
+
+
     fun getStatement(wordingId: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): String{
         return if(wordingId == EnumWordingTypes.CLAIM){
             getClaim(friendliness!!)
