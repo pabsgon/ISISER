@@ -13,7 +13,7 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
     private val questions: MutableList<Question> = mutableListOf()
     private var condition: EnumConditions = EnumConditions.UNDEFINED
     private var user: String = UNDEFINED
-    private var _lastRobotText: String = ""
+    private var _lastWordingType: ExtendedUtterance? = null
     private var currentQuestionId: Int? = null
     private var currentQuestion: Question? = null
     private var active = false
@@ -32,10 +32,10 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
         printQuestions()
     }
     /* PUBLIC */
-    var lastRobotText: String
-        get() = _lastRobotText
+    var lastRepeatableUtterance: ExtendedUtterance?
+        get() = _lastWordingType
         set(value) {
-            _lastRobotText = value
+            _lastWordingType = value
         }
     fun handleEvent(event: SessionEvent) {
         when (event.type) {
@@ -195,6 +195,9 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
         questions.forEach { println(it) }
     }
 
+    fun wasLastClaimAssentSensitive():Boolean{
+        return lastRepeatableUtterance?.isAssentSensitive?:false
+    }
     fun getUtterance(wordingId: EnumWordingTypes,
                      rejoinder: EnumRejoinders? = EnumRejoinders.ANY,
                      friendly: EnumFriendliness? = EnumFriendliness.ANY,
@@ -203,24 +206,40 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
             EnumWordingTypes.ULTIMATUM,EnumWordingTypes.CHECKPOINT -> (if(inAgreement()) EnumFriendliness.FRIENDLY else EnumFriendliness.UNFRIENDLY)
             else -> { friendly!!}
         }
-
+    /** getUtterance is a crucial function in the whole system.
+     * It is the meeting point for all the possible types of wordings that the robot can say.
+     * After this call, the utterance is built and served with all the data required:
+     *  - the utterance itself with pauses
+     *  - the main text of the utterances in a full string.
+     *  - the speech rate required for the utterance.
+     *
+     *  Also, this function stores in SessionHandler:
+     *  - the text that will be ready for being repeated in case the user wants to a clarification.
+     *  - and the  that was uttered
+     * */
         val aside: String = if(rejoinder == EnumRejoinders.NONE) "" else dataHandler.getAside(wordingId, rejoinder, statePhase)
 
         val utterance: ExtendedUtterance = if(wordingId.isWording){
             if(wordingId==EnumWordingTypes.REPEAT){
-                ExtendedUtterance(lastRobotText, aside)
+                ExtendedUtterance(lastRepeatableUtterance?.mainText?:"", aside)
             }else {
                 ExtendedUtterance(dataHandler.getWording(wordingId), aside)
             }
         }else{
-            ExtendedUtterance(
-                currentQuestion!!.getStatement(wordingId, friendliness),
+
+                currentQuestion!!.getExtendedUtterance(wordingId, friendliness, aside)
+
+            /*ExtendedUtterance(
+                currentQuestion!!.getStatementText(wordingId, friendliness),
                 aside,
                 currentQuestion!!.getRobotModeForStatement(wordingId, friendliness)
-            )
+            )*/
         }
-
-        lastRobotText = utterance.mainText
+        if(wordingId!=EnumWordingTypes.REPEAT &&
+            wordingId!=EnumWordingTypes.GIVE_TIME &&
+            wordingId!=EnumWordingTypes.ELABORATION_REQUEST  ){
+            lastRepeatableUtterance =  utterance
+        }
         return utterance
     }
 

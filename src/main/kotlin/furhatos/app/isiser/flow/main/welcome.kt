@@ -31,12 +31,6 @@ val Welcome : State = state(Parent) {
         furhat.doAsk(session.getUtterance(EnumWordingTypes.WELCOME))
 
         furhat.gesture(Gestures.BigSmile(0.6, 2.5))
-        /*furhat.doAsk( {+"Nice to meet you."
-            + delay(700)
-            + "How you doing?"})*/
-    }
-    onReentry {
-        furhat.doAsk("Tell me")
     }
 
     onResponse{
@@ -55,19 +49,6 @@ val ReviewInstructions : State = state(Parent) {
         furhat.doAsk(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_GENERAL))
     }
 
-    onResponse({listOf(
-        MeReady(),
-        NluLib.IAmDone(),
-        Disagree(), No(),
-        Probe(),
-        ElaborationRequest(),
-        DontKnow(),
-        Backchannel(),
-        Agree(),Yes()
-    )}){
-        //furhat.doAsk(it.intent.toString())
-        raise(AllIntents(it.intent as Intent))
-    }
     onResponse<AllIntents> {
         val rejoinder: EnumRejoinders = it.intent.rejoinder
         furhat.doSay(rejoinder.toString())
@@ -102,20 +83,4 @@ val ReviewInstructions : State = state(Parent) {
             }
         }
     }
-
-/*    onResponse<Yes> {
-        furhat.doSay {
-            +"Right, as far as I know, once you press the button there on the tablet, "
-            +"we will both get a question to resolve together.  "
-            +delay(1000)
-        }
-        furhat.doAsk({ +"So"
-            + delay(700)
-            + "Whenever you want, press the button, go ahead"})
-    }*/
-/*    onResponse<No> {
-        furhat.doAsk("I would ask you now if you have any questions. But now press the button.")
-    }*/
-
-
 }

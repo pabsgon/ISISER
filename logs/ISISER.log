@@ -1,60 +1,273 @@
-2024-05-23 19:02:18	Autoreload is disabled because the development mode is off.
-2024-05-23 19:02:19	Application started in 0.61 seconds.
-2024-05-23 19:02:19	Responding at http://127.0.0.1:8888
-2024-05-23 19:02:20	----------------- NEW EXECUTION-------------------
-2024-05-23 19:02:20	FlowEvent	NEW_FLOW_STATE	Testing	0.0		UNDEFINED	Testing
-2024-05-23 19:02:22	MonitorSpeechStart	<prosody rate="1.0">Ok, let's test. Say whatever you want.</prosody>	2873
-2024-05-23 19:02:22	ActionGesture	BrowRaise
-2024-05-23 19:02:24	ActionGesture	BrowRaise
-2024-05-23 19:02:26	ActionGesture	Smile
-2024-05-23 19:02:27	SenseSpeech	hello	1017
-2024-05-23 19:02:29	MonitorSpeechStart	<prosody rate="1.0">Hello to you too. That's a rejoinder I <emphasis>agree<emphasis> with</prosody>	6900
-2024-05-23 19:02:30	ActionGesture	BrowRaise
-2024-05-23 19:02:33	ActionGesture	BrowRaise
-2024-05-23 19:02:33	ActionGesture	BrowRaise
-2024-05-23 19:02:34	ActionGesture	BrowRaise
-2024-05-23 19:02:36	ActionGesture	BrowRaise
-2024-05-23 19:02:38	ActionGesture	Smile
-2024-05-23 19:02:40	SenseSpeech	didn't work	2147
-2024-05-23 19:02:41	MonitorSpeechStart	<prosody rate="1.0">You denied</prosody>	734
-2024-05-23 19:02:41	ActionGesture	BrowRaise
-2024-05-23 19:02:43	ActionGesture	Smile
-2024-05-23 19:02:48	SenseSpeech	is reading this why is reading this because I'm sending I think I'm sending the	4645
-2024-05-23 19:02:48	MonitorSpeechStart	<prosody rate="1.0">You want me to elaborate.</prosody>	1182
-2024-05-23 19:02:49	ActionGesture	BrowRaise
-2024-05-23 19:03:21	Autoreload is disabled because the development mode is off.
-2024-05-23 19:03:22	Application started in 0.617 seconds.
-2024-05-23 19:03:22	Responding at http://127.0.0.1:8888
-2024-05-23 19:03:23	----------------- NEW EXECUTION-------------------
-2024-05-23 19:03:23	FlowEvent	NEW_FLOW_STATE	Testing	0.0		UNDEFINED	Testing
-2024-05-23 19:03:25	MonitorSpeechStart	<prosody rate="1.0">Ok, let's test. Say whatever you want.</prosody>	2873
-2024-05-23 19:03:25	ActionGesture	BrowRaise
-2024-05-23 19:03:27	ActionGesture	BrowRaise
-2024-05-23 19:03:29	ActionGesture	Smile
-2024-05-23 19:03:30	SenseSpeech	hello	1005
-2024-05-23 19:03:30	MonitorSpeechStart	<prosody rate="1.0">Hello to you too. That's a rejoinder I <emphasis>agree<emphasis> with</prosody>	6900
-2024-05-23 19:03:31	ActionGesture	BrowRaise
-2024-05-23 19:03:34	ActionGesture	BrowRaise
-2024-05-23 19:03:34	ActionGesture	BrowRaise
-2024-05-23 19:03:34	ActionGesture	BrowRaise
-2024-05-23 19:03:37	ActionGesture	BrowRaise
-2024-05-23 19:03:43	MonitorSpeechStart	<prosody rate="1.0">I'm listening.</prosody>	676
-2024-05-23 19:03:50	ActionGesture	Smile
-2024-05-23 19:03:51	SenseSpeech	why okay	1513
-2024-05-23 19:03:52	MonitorSpeechStart	<prosody rate="1.0">You assented</prosody>	663
-2024-05-23 19:03:52	ActionGesture	BrowRaise
-2024-05-23 19:03:54	ActionGesture	Smile
-2024-05-23 19:03:55	SenseSpeech	as greeting	1109
-2024-05-23 19:03:55	MonitorSpeechStart	<prosody rate="1.0">You just backchanneled.</prosody>	1149
-2024-05-23 19:03:56	ActionGesture	BrowRaise
-2024-05-23 19:04:01	ActionGesture	Smile
-2024-05-23 19:04:03	SenseSpeech	but the others work well	1626
-2024-05-23 19:04:04	MonitorSpeechStart	<prosody rate="1.0">You said something in about 1626 milliseconds.</prosody>	3713
-2024-05-23 19:04:05	ActionGesture	BrowRaise
-2024-05-23 19:04:05	ActionGesture	BrowRaise
-2024-05-23 19:04:07	ActionGesture	BrowRaise
-2024-05-23 19:04:10	ActionGesture	Smile
-2024-05-23 19:04:11	SenseSpeech	okay	919
-2024-05-23 19:04:11	MonitorSpeechStart	<prosody rate="1.0">You assented</prosody>	663
-2024-05-23 19:04:11	ActionGesture	BrowRaise
-2024-05-23 19:04:13	ActionGesture	Smile
+2024-05-24 21:38:15	Autoreload is disabled because the development mode is off.
+2024-05-24 21:38:16	Application started in 0.592 seconds.
+2024-05-24 21:38:16	Responding at http://127.0.0.1:8888
+2024-05-24 21:38:18	----------------- NEW EXECUTION-------------------
+2024-05-24 21:38:18	FlowEvent	NEW_FLOW_STATE	Testing	0.0		UNDEFINED	Testing
+2024-05-24 21:38:19	MonitorSpeechStart	Ok, let's test. Say whatever you want.	2873
+2024-05-24 21:38:19	ActionGesture	BrowRaise
+2024-05-24 21:38:22	ActionGesture	BrowRaise
+2024-05-24 21:38:24	ActionGesture	Smile
+2024-05-24 21:38:24	SenseSpeech	yes	940
+2024-05-24 21:38:24	ActionGesture	doubleNod
+2024-05-24 21:38:26	MonitorSpeechStart	Gesture	526
+2024-05-24 21:38:26	ActionGesture	BrowRaise
+2024-05-24 21:38:32	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:38:35	ActionGesture	Smile
+2024-05-24 21:38:35	SenseSpeech	yes	767
+2024-05-24 21:38:35	ActionGesture	ExpressConfusion1
+2024-05-24 21:38:36	MonitorSpeechStart	Gesture	526
+2024-05-24 21:38:36	ActionGesture	BrowRaise
+2024-05-24 21:39:29	Autoreload is disabled because the development mode is off.
+2024-05-24 21:39:30	Application started in 0.595 seconds.
+2024-05-24 21:39:30	Responding at http://127.0.0.1:8888
+2024-05-24 21:39:32	----------------- NEW EXECUTION-------------------
+2024-05-24 21:39:32	FlowEvent	NEW_FLOW_STATE	Testing	0.0		UNDEFINED	Testing
+2024-05-24 21:39:33	MonitorSpeechStart	Ok, let's test. Say whatever you want.	2873
+2024-05-24 21:39:33	ActionGesture	BrowRaise
+2024-05-24 21:39:36	ActionGesture	BrowRaise
+2024-05-24 21:39:37	ActionGesture	Smile
+2024-05-24 21:39:38	SenseSpeech	yes	969
+2024-05-24 21:39:56	ActionGesture	doubleNod
+2024-05-24 21:39:57	MonitorSpeechStart	Gesture	526
+2024-05-24 21:39:57	ActionGesture	BrowRaise
+2024-05-24 21:39:58	ActionGesture	Smile
+2024-05-24 21:40:01	SenseSpeech	yes	2962
+2024-05-24 21:40:03	ActionGesture	ExpressConfusion1
+2024-05-24 21:40:03	MonitorSpeechStart	Gesture	526
+2024-05-24 21:40:04	ActionGesture	BrowRaise
+2024-05-24 21:43:50	Autoreload is disabled because the development mode is off.
+2024-05-24 21:43:51	Application started in 0.566 seconds.
+2024-05-24 21:43:51	Responding at http://127.0.0.1:8888
+2024-05-24 21:43:53	----------------- NEW EXECUTION-------------------
+2024-05-24 21:43:53	FlowEvent	NEW_FLOW_STATE	Testing	0.0		UNDEFINED	Testing
+2024-05-24 21:43:54	MonitorSpeechStart	Ok, let's test. Say whatever you want.	2873
+2024-05-24 21:43:54	ActionGesture	BrowRaise
+2024-05-24 21:43:57	ActionGesture	BrowRaise
+2024-05-24 21:43:58	ActionGesture	Smile
+2024-05-24 21:43:59	SenseSpeech	yes	957
+2024-05-24 21:44:02	ActionGesture	doubleNod
+2024-05-24 21:44:04	MonitorSpeechStart	doubleNod	634
+2024-05-24 21:44:04	ActionGesture	BrowRaise
+2024-05-24 21:44:08	ActionGesture	Smile
+2024-05-24 21:44:09	SenseSpeech	no	1182
+2024-05-24 21:44:09	ActionGesture	ExpressConfusion1
+2024-05-24 21:44:09	MonitorSpeechStart	ExpressConfusion1	1426
+2024-05-24 21:44:10	ActionGesture	BrowRaise
+2024-05-24 21:44:36	Autoreload is disabled because the development mode is off.
+2024-05-24 21:44:37	Application started in 0.582 seconds.
+2024-05-24 21:44:37	Responding at http://127.0.0.1:8888
+2024-05-24 21:44:39	----------------- NEW EXECUTION-------------------
+2024-05-24 21:44:39	FlowEvent	NEW_FLOW_STATE	Testing	0.0		UNDEFINED	Testing
+2024-05-24 21:44:40	MonitorSpeechStart	Ok, let's test. Say whatever you want.	2873
+2024-05-24 21:44:40	ActionGesture	BrowRaise
+2024-05-24 21:44:42	ActionGesture	BrowRaise
+2024-05-24 21:44:44	ActionGesture	Smile
+2024-05-24 21:44:45	SenseSpeech	yes	832
+2024-05-24 21:44:45	ActionGesture	doubleNod
+2024-05-24 21:44:45	MonitorSpeechStart	doubleNod	634
+2024-05-24 21:44:45	ActionGesture	BrowRaise
+2024-05-24 21:44:51	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:44:54	ActionGesture	Smile
+2024-05-24 21:44:55	SenseSpeech	no	1075
+2024-05-24 21:44:55	ActionGesture	doubleNod
+2024-05-24 21:44:55	MonitorSpeechStart	doubleNod	634
+2024-05-24 21:44:55	ActionGesture	BrowRaise
+2024-05-24 21:44:59	ActionGesture	Smile
+2024-05-24 21:45:00	SenseSpeech	yes	1147
+2024-05-24 21:45:00	ActionGesture	doubleNod
+2024-05-24 21:45:00	MonitorSpeechStart	doubleNod	634
+2024-05-24 21:45:01	ActionGesture	BrowRaise
+2024-05-24 21:45:03	ActionGesture	Smile
+2024-05-24 21:45:04	SenseSpeech	yes	1192
+2024-05-24 21:45:04	ActionGesture	ExpressConfusion1
+2024-05-24 21:45:04	MonitorSpeechStart	ExpressConfusion1	1426
+2024-05-24 21:45:05	ActionGesture	BrowRaise
+2024-05-24 21:45:08	ActionGesture	Smile
+2024-05-24 21:45:09	SenseSpeech	yes	1025
+2024-05-24 21:45:09	ActionGesture	ohYeah1
+2024-05-24 21:45:10	MonitorSpeechStart	ohYeah1	879
+2024-05-24 21:45:10	ActionGesture	BrowRaise
+2024-05-24 21:45:16	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:45:18	ActionGesture	Smile
+2024-05-24 21:45:20	SenseSpeech	no	1123
+2024-05-24 21:45:20	ActionGesture	ohYeah1
+2024-05-24 21:45:20	MonitorSpeechStart	ohYeah1	879
+2024-05-24 21:45:20	ActionGesture	BrowRaise
+2024-05-24 21:45:26	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:45:30	ActionGesture	Smile
+2024-05-24 21:45:31	SenseSpeech	yes	1029
+2024-05-24 21:45:31	ActionGesture	ohYeah1
+2024-05-24 21:45:31	MonitorSpeechStart	ohYeah1	879
+2024-05-24 21:45:31	ActionGesture	BrowRaise
+2024-05-24 21:45:35	ActionGesture	Smile
+2024-05-24 21:45:37	SenseSpeech	yes	1301
+2024-05-24 21:45:37	ActionGesture	PerformIntenseShake
+2024-05-24 21:45:37	MonitorSpeechStart	PerformIntenseShake	1335
+2024-05-24 21:45:38	ActionGesture	BrowRaise
+2024-05-24 21:45:44	ActionGesture	Smile
+2024-05-24 21:45:45	SenseSpeech	yes	982
+2024-05-24 21:45:45	ActionGesture	mouthSide1
+2024-05-24 21:45:45	MonitorSpeechStart	mouthSide1	1183
+2024-05-24 21:45:46	ActionGesture	BrowRaise
+2024-05-24 21:45:52	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:45:58	ActionGesture	Smile
+2024-05-24 21:45:59	SenseSpeech	uh yes	1356
+2024-05-24 21:45:59	ActionGesture	PerformReadWordInAir
+2024-05-24 21:46:00	MonitorSpeechStart	PerformReadWordInAir	1298
+2024-05-24 21:46:01	ActionGesture	BrowRaise
+2024-05-24 21:46:06	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:46:12	ActionGesture	Smile
+2024-05-24 21:46:13	SenseSpeech	um	816
+2024-05-24 21:46:13	MonitorSpeechStart	You just backchanneled.	1149
+2024-05-24 21:46:14	ActionGesture	BrowRaise
+2024-05-24 21:46:16	ActionGesture	Smile
+2024-05-24 21:46:18	SenseSpeech	yes	1207
+2024-05-24 21:46:18	ActionGesture	PerformHeadDown
+2024-05-24 21:46:18	MonitorSpeechStart	PerformHeadDown	1002
+2024-05-24 21:46:19	ActionGesture	BrowRaise
+2024-05-24 21:46:25	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:46:30	ActionGesture	Smile
+2024-05-24 21:46:32	SenseSpeech	oh shit	1948
+2024-05-24 21:46:33	MonitorSpeechStart	You just backchanneled.	1149
+2024-05-24 21:46:33	ActionGesture	BrowRaise
+2024-05-24 21:46:35	ActionGesture	Smile
+2024-05-24 21:46:37	SenseSpeech	all right yes	1496
+2024-05-24 21:46:37	ActionGesture	sceptical1
+2024-05-24 21:46:37	MonitorSpeechStart	sceptical1	1066
+2024-05-24 21:46:38	ActionGesture	BrowRaise
+2024-05-24 21:46:44	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:46:46	ActionGesture	Smile
+2024-05-24 21:46:47	SenseSpeech	yes	980
+2024-05-24 21:46:47	ActionGesture	sad1
+2024-05-24 21:46:48	MonitorSpeechStart	sad1	733
+2024-05-24 21:46:48	ActionGesture	BrowRaise
+2024-05-24 21:46:54	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:46:56	ActionGesture	Smile
+2024-05-24 21:46:57	SenseSpeech	yes	1048
+2024-05-24 21:46:57	ActionGesture	thinking1
+2024-05-24 21:46:58	MonitorSpeechStart	thinking1	781
+2024-05-24 21:46:58	ActionGesture	BrowRaise
+2024-05-24 21:47:04	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:47:10	ActionGesture	Smile
+2024-05-24 21:47:11	SenseSpeech	yes	1070
+2024-05-24 21:47:11	ActionGesture	what1
+2024-05-24 21:47:12	MonitorSpeechStart	what1	472
+2024-05-24 21:47:12	ActionGesture	BrowRaise
+2024-05-24 21:47:18	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:47:20	ActionGesture	Smile
+2024-05-24 21:47:21	SenseSpeech	yes	981
+2024-05-24 21:47:21	ActionGesture	idling one
+2024-05-24 21:47:22	MonitorSpeechStart	idling one	734
+2024-05-24 21:47:22	ActionGesture	BrowRaise
+2024-05-24 21:47:28	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:47:31	ActionGesture	Smile
+2024-05-24 21:47:32	SenseSpeech	yes	1031
+2024-05-24 21:47:32	ActionGesture	determination
+2024-05-24 21:47:32	MonitorSpeechStart	determination	873
+2024-05-24 21:47:33	ActionGesture	BrowRaise
+2024-05-24 21:47:38	ActionGesture	Smile
+2024-05-24 21:47:39	SenseSpeech	no	986
+2024-05-24 21:47:39	ActionGesture	determination
+2024-05-24 21:47:40	MonitorSpeechStart	determination	873
+2024-05-24 21:47:40	ActionGesture	BrowRaise
+2024-05-24 21:47:46	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:47:48	ActionGesture	Smile
+2024-05-24 21:47:48	SenseSpeech	yes	733
+2024-05-24 21:47:48	ActionGesture	determination
+2024-05-24 21:47:48	MonitorSpeechStart	determination	873
+2024-05-24 21:47:49	ActionGesture	BrowRaise
+2024-05-24 21:47:51	ActionGesture	Smile
+2024-05-24 21:47:52	SenseSpeech	yes	840
+2024-05-24 21:47:52	ActionGesture	idling three
+2024-05-24 21:47:53	MonitorSpeechStart	idling three	765
+2024-05-24 21:47:59	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:48:01	ActionGesture	Smile
+2024-05-24 21:48:01	SenseSpeech	yes	768
+2024-05-24 21:48:01	ActionGesture	idling for
+2024-05-24 21:48:03	MonitorSpeechStart	idling for	749
+2024-05-24 21:48:03	ActionGesture	BrowRaise
+2024-05-24 21:48:08	ActionGesture	Smile
+2024-05-24 21:48:09	SenseSpeech	yes	1045
+2024-05-24 21:48:09	ActionGesture	guilt
+2024-05-24 21:48:10	MonitorSpeechStart	guilt	499
+2024-05-24 21:48:15	ActionGesture	Smile
+2024-05-24 21:48:16	SenseSpeech	yes	1095
+2024-05-24 21:48:16	ActionGesture	interest
+2024-05-24 21:48:17	MonitorSpeechStart	interest	558
+2024-05-24 21:48:17	ActionGesture	BrowRaise
+2024-05-24 21:48:21	ActionGesture	Smile
+2024-05-24 21:48:22	SenseSpeech	no	859
+2024-05-24 21:48:22	ActionGesture	interest
+2024-05-24 21:48:22	MonitorSpeechStart	interest	558
+2024-05-24 21:48:23	ActionGesture	BrowRaise
+2024-05-24 21:48:28	ActionGesture	Smile
+2024-05-24 21:48:29	SenseSpeech	yes	984
+2024-05-24 21:48:29	ActionGesture	interest
+2024-05-24 21:48:29	MonitorSpeechStart	interest	558
+2024-05-24 21:48:29	ActionGesture	BrowRaise
+2024-05-24 21:48:31	ActionGesture	Smile
+2024-05-24 21:48:32	SenseSpeech	yes	798
+2024-05-24 21:48:32	ActionGesture	ExpressRecall
+2024-05-24 21:48:33	MonitorSpeechStart	ExpressRecall	992
+2024-05-24 21:48:34	ActionGesture	BrowRaise
+2024-05-24 21:48:39	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:48:41	ActionGesture	Smile
+2024-05-24 21:48:43	SenseSpeech	yes	1426
+2024-05-24 21:48:43	ActionGesture	ExpressRecallDown
+2024-05-24 21:48:43	MonitorSpeechStart	ExpressRecallDown	1161
+2024-05-24 21:48:44	ActionGesture	BrowRaise
+2024-05-24 21:48:49	ActionGesture	Smile
+2024-05-24 21:48:51	SenseSpeech	yes um	1698
+2024-05-24 21:48:51	ActionGesture	unsure smile
+2024-05-24 21:48:51	MonitorSpeechStart	unsure smile	915
+2024-05-24 21:48:52	ActionGesture	BrowRaise
+2024-05-24 21:48:54	ActionGesture	Smile
+2024-05-24 21:48:55	SenseSpeech	no	758
+2024-05-24 21:48:55	ActionGesture	unsure smile
+2024-05-24 21:48:55	MonitorSpeechStart	unsure smile	915
+2024-05-24 21:48:56	ActionGesture	BrowRaise
+2024-05-24 21:49:02	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:49:03	ActionGesture	Smile
+2024-05-24 21:49:04	SenseSpeech	yes	901
+2024-05-24 21:49:04	ActionGesture	unsure smile
+2024-05-24 21:49:04	MonitorSpeechStart	unsure smile	915
+2024-05-24 21:49:05	ActionGesture	BrowRaise
+2024-05-24 21:49:08	ActionGesture	Smile
+2024-05-24 21:49:09	SenseSpeech	yes	1012
+2024-05-24 21:49:09	ActionGesture	thinking
+2024-05-24 21:49:10	MonitorSpeechStart	thinking	570
+2024-05-24 21:49:15	ActionGesture	Smile
+2024-05-24 21:49:17	SenseSpeech	yes	1200
+2024-05-24 21:49:17	ActionGesture	uncertainty/discomfort
+2024-05-24 21:49:17	MonitorSpeechStart	uncertainty/discomfort	1658
+2024-05-24 21:49:19	ActionGesture	BrowRaise
+2024-05-24 21:49:24	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:49:28	ActionGesture	Smile
+2024-05-24 21:49:29	SenseSpeech	yes	1030
+2024-05-24 21:49:29	ActionGesture	unconvinced
+2024-05-24 21:49:30	MonitorSpeechStart	unconvinced	888
+2024-05-24 21:49:30	ActionGesture	BrowRaise
+2024-05-24 21:49:36	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:49:38	ActionGesture	Smile
+2024-05-24 21:49:39	SenseSpeech	yes	838
+2024-05-24 21:49:39	ActionGesture	ExpressWhatThe1
+2024-05-24 21:49:40	MonitorSpeechStart	ExpressWhatThe1	1070
+2024-05-24 21:49:40	ActionGesture	BrowRaise
+2024-05-24 21:49:46	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:49:48	ActionGesture	Smile
+2024-05-24 21:49:49	SenseSpeech	yes	1012
+2024-05-24 21:49:49	ActionGesture	doubleNod
+2024-05-24 21:49:49	MonitorSpeechStart	doubleNod	634
+2024-05-24 21:49:49	ActionGesture	BrowRaise
+2024-05-24 21:49:55	MonitorSpeechStart	I'm listening.	676
+2024-05-24 21:49:57	ActionGesture	Smile
+2024-05-24 21:49:58	SenseSpeech	uh yes	1005
+2024-05-24 21:49:58	ActionGesture	PerformHeadeUp
+2024-05-24 21:49:59	MonitorSpeechStart	PerformHeadeUp	944
+2024-05-24 21:50:00	ActionGesture	BrowRaise
+2024-05-24 21:50:03	ActionGesture	Smile
+2024-05-24 21:50:04	SenseSpeech	no	918
+2024-05-24 21:50:04	ActionGesture	PerformHeadeUp
+2024-05-24 21:50:05	MonitorSpeechStart	PerformHeadeUp	944
+2024-05-24 21:50:05	ActionGesture	BrowRaise
+2024-05-24 21:50:11	MonitorSpeechStart	I'm listening.	676

@@ -168,9 +168,11 @@ data class DataHandler(val evFactory: EventFactory,
             }
         }
         if(type.equals(EnumWordingTypes.CLAIM)){
-            addClaim(questions, qIndex, id, subType, textTriplets)
+            addClaim(questions, qIndex, id, subType, textTriplets) /* subType=TRUE/FALSE if CLAIM, meaning that the claim
+             (in particular the unfriendly claim) is assent-sensitive*/
         }else{
-            val s = Statement(id, type, textTriplets, perTriplet, subType) // subType=true means "Indexical" if Assertion, and Friendly if Ultimatum or Checkpoint.
+            val s = Statement(id, type, textTriplets, perTriplet, subType) /* subType=TRUE means "Indexical" if Assertion,
+            and FRIENDLY/UNFRIENDLY if Ultimatum or Checkpoint. */
             statements.add(s)
             if (qIndex < 0) { //This means that the source said "ANY" question.
                 // Call addStatement on all items in the list
@@ -186,6 +188,7 @@ data class DataHandler(val evFactory: EventFactory,
     private fun addClaim(questions: MutableList<Question>, qIndex: Int, id: String, subType: String, textTriplets:  MutableList<TextTriplet> ) {
     //Here the list of triplets will contain the 1) the UNFRIENDLY claim, and the rest of triplets must be used to create a statement, which
         //will be added to the list of friendly statements of the claim.
+    /* subType=TRUE/FALSE if CLAIM, meaning that the claim (in particular the unfriendly claim) is assent-sensitive*/
 
         if (qIndex < 0) {
             error("Error loading data: Question Index = [1.. $MAX_QUESTIONS]")
@@ -197,7 +200,8 @@ data class DataHandler(val evFactory: EventFactory,
                                     EnumWordingTypes.CLAIM,
                                     textTriplets.subList(0, 1).toMutableList(),
                                     STATEMENT_IS_TRIMODE,
-                                    EnumFriendliness.UNFRIENDLY)
+                                    EnumFriendliness.UNFRIENDLY,
+                                    subType == SOURCEDATA_TRUE)
             tempStatements.add(s1)
 
             // Add the remaining triplets as friendly statements
@@ -206,7 +210,8 @@ data class DataHandler(val evFactory: EventFactory,
                                     EnumWordingTypes.CLAIM,
                                     mutableListOf(textTriplets[i]),
                                     STATEMENT_IS_TRIMODE,
-                                    EnumFriendliness.FRIENDLY)
+                                    EnumFriendliness.FRIENDLY,
+                    subType == SOURCEDATA_TRUE)
                 tempStatements.add(s)
             }
 

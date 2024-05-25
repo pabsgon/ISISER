@@ -62,12 +62,12 @@ val Parent: State = state {
         DontKnow(), Maybe(), //  -> EnumRejoinders.NON_COMMITTAL
         Understand(), Agree(), Yes() //-> EnumRejoinders.ASSENT
     )}){
-        //furhat.doAsk(it.intent.toString())
         raise(AllIntents(it.intent as Intent))
     }
 
     onResponseFailed {
         furhat.doAsk("I think my connection broke. Did you say something?")
+        TODO()
     }
     onPartialResponse<DontKnow> {
         // Greet the user and proceed with the order in the same turn
@@ -106,42 +106,6 @@ val Parent: State = state {
     }
 
     onNoResponse{
-        furhat.say("Parent")
         raise(AllIntents(EnumRejoinders.SILENCE))
     }
-    /*
-    onEvent<GUIEvent> {
-        println("Parent:GUIEvent")
-        if(it.isAcceptable) {
-            println("Parent:GUIEvent [Acceptable]")
-            if (App.isQuestionStage()) {
-                println("Parent:GUIEvent [IsQuestionStage]:[${it.type.toString()}]")
-                when (it.type) {
-                    EventType.ANSWER_SENT -> {
-                        reentry()
-                    }
-                    // This should only happen when the stage is a question.
-                    EventType.SYNCH_REQUESTED -> {
-                        goto(QuestionReflection)
-                    }
-                    EventType.NEW_STAGE_REQUESTED -> {
-                        goto(QuestionReflection)
-                    }
-                    else -> {
-                        // This is equivalent to the 'default' case in a traditional switch statement.
-                        // Handle the case where none of the above conditions are met.
-                        println("No matching type found")
-                    }
-                }
-            } else {
-                if (App.getStage() == EnumStages.STAGE_0_2) {
-                    println("Parent:GUIEvent [Stage 0.2]")
-                    goto(Welcome)
-                }else
-                    println("Parent:GUIEvent [Stage ${App.getStageName()}]")
-            }
-        }
-    }
-
-     */
 }

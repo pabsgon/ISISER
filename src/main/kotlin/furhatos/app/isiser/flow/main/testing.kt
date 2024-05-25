@@ -1,5 +1,6 @@
 package furhatos.app.isiser.flow.main
 
+import furhat.libraries.standard.GesturesLib
 import furhat.libraries.standard.NluLib
 import furhatos.app.isiser.App
 import furhatos.app.isiser.flow.Parent
@@ -10,12 +11,66 @@ import furhatos.app.isiser.nlu.*
 import furhatos.app.isiser.setting.*
 import furhatos.event.senses.SenseSpeech
 import furhatos.flow.kotlin.*
+import furhatos.gestures.Gesture
+import furhatos.gestures.Gestures
 import furhatos.nlu.common.*
 
 val Testing = state(parent = Parent) {
     var session: SessionHandler = App.getSession()
     var speechDuration = 0
+    val lst: MutableList<Gesture> = mutableListOf(
+        GesturesLib.PerformDoubleNod,
+        GesturesLib.ExpressConfusion1(),
+        GesturesLib.PerformOhYeah1,
+        GesturesLib.PerformIntenseShake,
+        GesturesLib.PerformMouthSide1, // INTERESTINT
+        GesturesLib.PerformReadWordInAir,
+        GesturesLib.PerformHeadDown(), // INTERESTING
+        GesturesLib.PerformSceptical1, // Mm
+        GesturesLib.PerformThoughtful1, //
+        GesturesLib.PerformThoughtful2, // interesting
+        GesturesLib.PerformWhat1, // INTERESTING
+        GesturesLib.ExpressConsidering1(), // INTERESTINT
+        GesturesLib.ExpressDetermination(), // MAYBE
+        GesturesLib.ExpressGazeAversion1(), // INTER
+        GesturesLib.ExpressGazeAversion2(), //same
+        GesturesLib.ExpressGuilt1(), // maybe
+        GesturesLib.ExpressInterest1(), // maybe
+        GesturesLib.ExpressRecall(), // maybe
+        GesturesLib.ExpressRecallDown(), // maybe
+        GesturesLib.ExpressSmileUnsure1(), // could
+        GesturesLib.ExpressThinking(), // UNCERTAIN
+        GesturesLib.ExpressUncertaintyOrDiscomfort(), //UNCERT
+        GesturesLib.ExpressUnconvinced(), //UNC
+        GesturesLib.ExpressWhatThe1(), //NO
+        GesturesLib.PerformDoubleNod(), // COULD BE
+        GesturesLib.PerformHeadeUp() // CERTAIN (MAYBE)
+    )
+    fun Furhat.performAndCycleGesture(back:Boolean = false) {
 
+        if (lst.isNotEmpty()) {
+            // Get the first gesture
+            val gest = lst.removeAt(if(back)lst.size-1 else 0)
+
+            // Perform the gesture
+            this.gesture(gest)
+
+            // Add the gesture back to the end of the list
+            if(back){
+                lst.add(0,gest)
+            }else {
+                lst.add(gest)
+            }
+
+            // Get the gesture name
+            val gestureName = gest.name
+
+            // Ask with the gesture name
+            this.ask("$gestureName")
+        } else {
+            this.say("The list of gestures is empty.")
+        }
+    }
     fun getWording(i: Int):ExtendedUtterance{
         return session.getUtterance(EnumWordingTypes.WELCOME)
     }
@@ -33,20 +88,20 @@ val Testing = state(parent = Parent) {
         println("You said something I couldn't understand in $speechDuration milliseconds.")
     }
     onResponse<NluLib.IAmDone> {
-            furhat.doAsk("You said you finished")
+            furhat.doAsk("You said you finished", Gestures.Thoughtful)
     }
     onResponse<AnswerFalse> {
-        furhat.doAsk("You said it is false")
+        furhat.doAsk("You said it is false", Gestures.GazeAway)
     }
     onResponse<AnswerTrue> {
-        furhat.doAsk("You said it is true")
+        furhat.doAsk("You said it is true", GesturesLib.PerformDoubleNod)
     }
     onResponse<Yes> {
-        furhat.doAsk("You assented")
+        furhat.performAndCycleGesture()
     }
 
     onResponse<No> {
-        furhat.doAsk("You denied")
+        furhat.performAndCycleGesture(true)
     }
     onResponse<Agree> {
         furhat.doAsk("You agreed")

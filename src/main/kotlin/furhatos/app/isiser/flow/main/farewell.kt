@@ -13,9 +13,7 @@ import furhatos.gestures.Gestures
 val Farewell : State = state(Parent) {
     val session: SessionHandler = App.getSession()
     var goToSleep = false
-    fun getWording(i: Int): ExtendedUtterance {
-        return session.getUtterance(EnumWordingTypes.FAREWELL_START)
-    }
+
 
     onEntry {
         furhat.gesture(Gestures.Smile(duration = 4.0))

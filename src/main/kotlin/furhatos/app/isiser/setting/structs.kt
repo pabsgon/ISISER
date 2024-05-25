@@ -6,8 +6,13 @@ import furhatos.flow.kotlin.utterance
 data class Wordings(
     val map: MutableMap<EnumWordingTypes, MutableList<String>> = mutableMapOf()
 ) {
-    // Function to add a new item to the map
+
     fun add(s1: String, l2: List<Any>) {
+        // Check for empty values or empty strings in the list
+        if (l2.any { it.toString().isEmpty() }) {
+            throw IllegalArgumentException("ISISER Data Loading error: Wording List for label '$s1' contains empty values or empty strings")
+        }
+
         // Convert the string to EnumWordingTypes
         val state = EnumWordingTypes.valueOf(s1)
 
@@ -125,56 +130,11 @@ data class Asides(
         }
     }
 }
-
-/*
-data class Wordings(
-    val map: MutableMap<EnumWordingTypes, MutableList<MutableList<String>>> = mutableMapOf()
-) {
-    // Function to add a new item to the map
-    fun add(s1: String, l2: List<Any>) {
-        // Convert the string to EnumStates
-        val state = EnumWordingTypes.valueOf(s1)
-
-        // Initialize the list of lists of strings if not already present
-        val listOfLists = map.getOrPut(state) { mutableListOf() }
-
-        // Convert l2 to a list of strings
-        val strings = l2.map { it.toString() }.toMutableList()
-
-        // Add the list of strings to the list of lists
-        listOfLists.add(strings)
-    }
-
-    // Function to get and rotate the first element in the list at the specified index
-    fun get(e: EnumWordingTypes, index: Int): String {
-        val listOfLists = map[e] ?: throw IllegalArgumentException("State $e not found in the map")
-        if (index < 0 || index >= listOfLists.size) {
-            throw IndexOutOfBoundsException("Index $index is out of bounds for the list of lists")
-        }
-        val list = listOfLists[index]
-        if (list.isEmpty()) {
-            throw NoSuchElementException("The list at index $index is empty")
-        }
-        val t1 = list.removeAt(0)
-        list.add(t1)
-        return t1
-    }
-    // Print function
-    fun print() {
-        for ((state, listOfLists) in map) {
-            println("State: $state")
-            for ((index, list) in listOfLists.withIndex()) {
-                println("  List $index: $list")
-            }
-        }
-    }
-
-}*/
-
 data class ExtendedUtterance(
     var mainText: String,
     var aside: String = "",
     var robotMode: EnumRobotMode = EnumRobotMode.NEUTRAL,
+    var isAssentSensitive: Boolean = false,
     var rate: Double = 1.0
 ) {
     val utterance: Utterance = createUtterance(mainText, aside)
@@ -182,6 +142,14 @@ data class ExtendedUtterance(
     init {
         this.rate = robotMode.speechRate
     }
+    // New constructor
+    /*constructor(statement: Statement, aside: String, question: Question) : this(
+        mainText = statement.getText(question),
+        aside = aside,
+        robotMode = question.getRobotModeForStatement()
+    ){
+
+    }*/
     private fun createUtterance(text: String, aside: String): Utterance {
         /*This function will convert every dot in a delay of SILENT_MILLISECS_PER_DOT
         So, for example "Hello...Nice to meet you" will be converted to
@@ -231,51 +199,65 @@ data class TextTriplet(
     constructor(neutralText: String, uncertainText: String, certainText: String) :
             this(
                 mapOf(
-                    EnumRobotMode.NEUTRAL to neutralText,
-                    EnumRobotMode.UNCERTAIN to uncertainText,
-                    EnumRobotMode.CERTAIN to certainText
+                    EnumRobotMode.NEUTRAL to neutralText.trim(),
+                    EnumRobotMode.UNCERTAIN to uncertainText.trim(),
+                    EnumRobotMode.CERTAIN to certainText.trim()
                 )
-            )
+            ) {
+        // Check for empty strings
+        if (neutralText.trim().isEmpty() || uncertainText.trim().isEmpty() || certainText.trim().isEmpty()) {
+            error("Error at Data loading. At least one item of a triplet is empty: (neutralText='$neutralText', uncertainText='$uncertainText', certainText='$certainText'")
+        }
+    }
 
     constructor(neutralText: String) :
-            this(mapOf(EnumRobotMode.NEUTRAL to neutralText))
+            this(mapOf(EnumRobotMode.NEUTRAL to neutralText.trim())){
+        // Check for empty strings
+        if (neutralText.trim().isEmpty()) {
+            error("Error at Data loading. A NEUTRAL text for a triplet was empty.")
+        }
+    }
 
     fun getText(robotMode: EnumRobotMode): String {
         return triplet[robotMode] ?: triplet[EnumRobotMode.NEUTRAL]!!
     }
 }
-/*
-val s = Statement(id + FRIENDLY_SUFFIX + i, EnumStatementTypes.CLAIM, mutableListOf(textTriplets[i]), subType)
-                tempStatements.add(s)
-val s1 = Statement(id + UNFRIENDLY_SUFFIX, EnumStatementTypes.CLAIM, textTriplets.subList(0, 1).toMutableList(), subType)
-            tempStatements.add(s1)
-* */
+
 open class Statement(
     val id: String,
     val type: EnumWordingTypes, // CLAIM, ASSERTION, PROBE, ASIDE, CHECKPOINT, CLARIFICATION_REQUEST, DISCLOSURE, ULTIMATUM
     private val texts: MutableList<TextTriplet>,  // List to easily manipulate elements,
     val isTriMode: Boolean, //If this is true, the statement does have three versions for the statement in each triplet.
     // Otherwise, the triplet has only one version for the three items (NEUTRAL).
-    val friendliness: EnumFriendliness = EnumFriendliness.ANY, //If assertion, it means Indexical.
+    val friendliness: EnumFriendliness = EnumFriendliness.ANY,
+    var isAssentSensitive: Boolean = false, //This flag is a signal for the interaction logic to treat the statement differently in
+    // case of ASSENT. What to do or not to do in one or the other case, it's up to the design of the interaction. In this
+    // case, this will be used in case of unfriendly claims. When the claim used is assent-sensitive, the ASSENT rejoinder
+    // will not be deemed as an AGREEMENT to the claim, but rather a BACKCHANNEL, like "Ok, I'm listening".
     val indexical: Boolean = false
 ) {
     var timesUsed: Int = 0
     var usedInQuestion: Question? = null
+
     // New constructor
     constructor(
         id: String,
         type: EnumWordingTypes,
         texts: MutableList<TextTriplet>,
         isTriMode:Boolean,
-        subType: String
+        subType: String,
+        assentSensitiveness: Boolean = false
     ) : this(
         id = id,
         type = type,
         texts = texts,
         isTriMode = isTriMode,
         indexical = if (type == EnumWordingTypes.ASSERTION) subType == SOURCEDATA_TRUE else false,
-        friendliness = if (type != EnumWordingTypes.ASSERTION) EnumFriendliness.fromString(subType) else EnumFriendliness.ANY
+        friendliness = if (type != EnumWordingTypes.ASSERTION) EnumFriendliness.fromString(subType) else EnumFriendliness.ANY ,
+        isAssentSensitive = if (type == EnumWordingTypes.CLAIM && EnumFriendliness.fromString(subType) == EnumFriendliness.UNFRIENDLY) assentSensitiveness else false
     )
+
+
     fun getText(question: Question): String {
         // Ensure there is at least one text triplet
         if (texts.isEmpty()) throw IllegalStateException("No text triplets available.")
@@ -312,14 +294,12 @@ class Claim(
     val unfriendlyStatement: Statement,
     val friendlyStatementList: MutableList<Statement> = mutableListOf(),
     val assertions: MutableList<Statement> = mutableListOf(),
-    var pendingAssertions: Int = ASSERTIONS_PER_CLAIM,
-    var isAssentSensitive: Boolean = true
+    var pendingAssertions: Int = ASSERTIONS_PER_CLAIM
 ) {
     constructor(id: String, statements: List<Statement>, subType: String) : this(
         id = id,
         unfriendlyStatement = statements.first(),
-        friendlyStatementList = statements.drop(1).toMutableList(),
-        isAssentSensitive = subType == SOURCEDATA_TRUE
+        friendlyStatementList = statements.drop(1).toMutableList()
     )
 
     fun setAssertion(st: Statement){
@@ -329,15 +309,16 @@ class Claim(
     fun getText(question: Question): String {
         return unfriendlyStatement.getText(question)
     }
-    fun getfriendlyStatements(question: Question): MutableList<Statement> {
-        return friendlyStatementList
+
+    fun getStatement(): Statement {
+        return unfriendlyStatement
     }
 
     fun getAssertion(question: Question): String? {
         if (pendingAssertions == 0) return null
 
         // Get the first assertion and move it to the end of the list
-        val assertion = assertions!!.removeAt(0)
+        val assertion = assertions.removeAt(0)
         assertions.add(assertion)
 
         // Decrement the number of pending assertions
@@ -362,7 +343,7 @@ data class StatementMap(
     }
 
     // Function to get a statement by wordingType and friendliness, defaults to ANY
-    fun getSpeciciStatement(
+    fun getSpecificStatement(
         wordingType: EnumWordingTypes,
         friendliness: EnumFriendliness? = EnumFriendliness.ANY
     ): Statement? {
@@ -374,7 +355,7 @@ data class StatementMap(
 
     // Function to get a statement by wordingType and friendliness, defaults to ANY
     fun isTrimode(wordingType: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): Boolean {
-        val specificStatement = getSpeciciStatement(wordingType,friendliness)
+        val specificStatement = getSpecificStatement(wordingType,friendliness)
         return if(specificStatement == null){
             println("WARNING: a statement is null (wordingType = $wordingType, friendliness=$friendliness). Returned isTrimode=false")
             false
@@ -382,10 +363,10 @@ data class StatementMap(
             specificStatement.isTriMode
     }
 
-    // Function to get a statement by wordingType and friendliness, defaults to ANY
-    fun get(wordingType: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): String {
+    // Function to get a statement text by wordingType and friendliness, defaults to ANY
+    fun getText(wordingType: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): String {
         // Try to get the specific friendliness first
-        val specificStatement = getSpeciciStatement(wordingType,friendliness)
+        val specificStatement = getSpecificStatement(wordingType,friendliness)
         return if(specificStatement == null){
             println("WARNING: a statement is null (wordingType = $wordingType, friendliness=$friendliness).")
             alertSpeech()
@@ -394,7 +375,7 @@ data class StatementMap(
     }
 
     fun timesUsed(wordingType: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): Int {
-        val specificStatement = getSpeciciStatement(wordingType,friendliness)
+        val specificStatement = getSpecificStatement(wordingType,friendliness)
         return specificStatement?.timesUsed ?: 0
     }
 

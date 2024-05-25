@@ -2,7 +2,7 @@ package furhatos.app.isiser.questions
 
 import furhatos.app.isiser.App
 import furhatos.app.isiser.setting.*
-import furhatos.flow.kotlin.State
+import javax.swing.plaf.nimbus.State
 
 data class Question(
     val id: String,  // immutable ID, no need for setter
@@ -78,7 +78,7 @@ data class Question(
     }
     fun confirm() {confirmed=true}
 
-    fun getFriendlyClaim():String{
+    private fun getFriendlyClaimStatement():Statement?{
         /* Friendly claims (fClaim) are lists of claims linked to each unfriendly claim (uClaim). Each fClaim is
          a combination of the next 2 uclaims. So, for example, given a list of 4 uClaims, if the first fClaim is
         requested, the list of fClaims belonging to the first uClaim should be made the current list of fClaims.
@@ -108,8 +108,8 @@ data class Question(
             //Removing two unfriendly claims per friendly claim delivered.
             unfriendlyClaims.removeFirst()
             unfriendlyClaims.removeFirst()
-            return friendlyClaims.removeFirst().getText(this)
-        }else{return ""}
+            return friendlyClaims.removeFirst()
+        }else{return null}
         //return if (friendlyClaims.isNotEmpty() == true) friendlyClaims.removeFirst().getText(this) else ""
 
     }
@@ -138,23 +138,46 @@ data class Question(
 
         return if(statementIsTriMode) robotMode!! else EnumRobotMode.NEUTRAL
     }
+    fun getExtendedUtterance(wordingId: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY, aside:String):ExtendedUtterance{
+        val st: Statement? = getStatement(wordingId, friendliness)
 
+        return ExtendedUtterance(
+            st!!.getText(this),
+            aside,
+            getRobotModeForStatement(wordingId, friendliness),
+            st.isAssentSensitive
+        )
+    }
 
-    fun getStatement(wordingId: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): String{
+    fun getStatement(wordingId: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): Statement?{
+
         return if(wordingId == EnumWordingTypes.CLAIM){
-            getClaim(friendliness!!)
+            getClaimStatement(friendliness)
         }else {
-            statements.get(wordingId, friendliness)
+            statements.getSpecificStatement(wordingId, friendliness)
+        }
+
+    }
+
+    fun getStatementText(wordingId: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): String{
+        return if(wordingId == EnumWordingTypes.CLAIM){
+            getClaimText(friendliness!!)
+        }else {
+            statements.getText(wordingId, friendliness)
         }
     }
-    fun getClaim(friendliness: EnumFriendliness): String{
-        return if(friendliness == EnumFriendliness.UNFRIENDLY) getUnfriendlyClaim() else getFriendlyClaim()
+    fun getClaimStatement(friendliness: EnumFriendliness?): Statement? {
+        return if(friendliness == EnumFriendliness.UNFRIENDLY) getUnfriendlyClaimStatement() else getFriendlyClaimStatement()
     }
-    fun getUnfriendlyClaim(): String {
+
+    fun getClaimText(friendliness: EnumFriendliness): String{
+        return if(friendliness == EnumFriendliness.UNFRIENDLY) getUnfriendlyClaimStatement()?.getText(this)?:"" else getFriendlyClaimStatement()?.getText(this) ?: ""
+    }
+    private fun getUnfriendlyClaimStatement(): Statement? {
         friendlyClaimsWereUsed = false // This is in case friendly claims were used, and then
         //again, unfriendly claim is requested. In that case, the current list of friendly claims should be discarded.
         setNextUnfriendlyClaimAsCurrent()
-        return currentUnfriendlyClaim?.getText(this) ?: ""
+        return currentUnfriendlyClaim?.getStatement()
     }
     fun maxNumOfFriendlyProbesReached():Boolean {
         return statements.timesUsed(EnumWordingTypes.PROBE,EnumFriendliness.FRIENDLY)>= MAX_NUM_PROBES_AT_REVIEW
