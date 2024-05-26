@@ -1,5 +1,8 @@
 <html><head>
     <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" type="text/css" href="resources/styles.css?0">
     <title>ISISER</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -21,16 +24,16 @@
         <div class="leftBorder"></div>
 		
 		<div class="slideWrapper">
-				<div class="loadingQwrapper">
-					<img src="resources/loading.gif" class="width100">
-					<div class="loadingQtitle" style="padding-left:20px">
-						<span data-id="sendingToFurhat"></span>
-						<span id="loadingQnum"></span>
-					</div>
+			<div class="loadingQwrapper">
+				<img src="resources/loading.gif" class="width100">
+				<div class="loadingQtitle" style="padding-left:20px">
+					<span data-id="sendingToFurhat"></span>
+					<span id="loadingQnum"></span>
 				</div>
+			</div>
 		<!-- ------------------------------ INITIAL PAGE ---------------------------------------- -->
 		
-<div class="slide" id="slide_0" style="display: flex;">
+			<div class="slide" id="slide_0" style="display: flex;">
 				<div class="headerWrapper">
 					<div class="header" data-id="project">ISISER-SOLNA Project [SE]</div>
 					<div class="headerImage"><img src="resources/presentation.png" class="width200"></div>
@@ -48,7 +51,7 @@
 						<div class="instruction" data-id="instruction0" style="font-weight: 600;margin-top: 0px;"></div>
 					</div>
 					<div class="numberButtonsWrapper"></div>
-					<button id="subject" class="button subjectButton" data-num=""></button>
+					<button id="subject" class="button enabled" data-num=""></button>
 					
 					<div style="background: black;width: 100%;"></div>
 				</div>
@@ -71,7 +74,7 @@
 							<li class="instruction" data-id="instruction5"></li>
 						</ul>
 					</div>
-					<div id="readyBut" class="but" onClick="tryNextStage()"" style="visibility:hidden">
+					<div id="readyBut" class="but enabled" onClick="tryNextStage()"" style="visibility:hidden">
 						<div data-id="weAreReady"></div>
 					</div>
 					<div style="background: black;width: 100%;"></div>
@@ -97,14 +100,14 @@
 						<div class="statementWrapper"  id="qStatement"></div>
 						<div class="questionButtonsWrapper">
 							<div><!-- SPACER --></div>
-							<button id="trueBut" class="button" data-id="termTrue" onclick="setAnswer('TRUE')"></button>
-							<button id="falseBut" class="button" data-id="termFalse" onclick="setAnswer('FALSE')"></button>
+							<button id="trueBut" class="button enabled" data-id="termTrue" onclick="clickAnswerButton(this,'TRUE')"></button>
+							<button id="falseBut" class="button enabled" data-id="termFalse" onclick="clickAnswerButton(this, 'FALSE')"></button>
 							<div><!-- SPACER --></div>
 						</div>
 					</div>
-					
+					<!-- <div class="instruction" id="instruction" data-id="termTrue">Set preliminary answer</div> -->
 					<div class="confirmWrapper">
-						<div id="questionConfirm" class="but"  onClick="tryNextStage()">
+						<div id="confirmButton" class="but enabled"  onClick="requestNextStage(this)">
 							<div data-id="termConfirm"></div>
 						</div>
 					</div>

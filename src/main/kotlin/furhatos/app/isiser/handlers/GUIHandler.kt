@@ -24,6 +24,7 @@ import java.time.Duration
 class GUIHandler(evFactory: EventFactory) {
     private val EvFactory: EventFactory = evFactory
     private var stage: EnumStages = EnumStages.STAGE_0
+    private var previousStage: EnumStages? = null
     private var markedAnswer = EnumAnswer.UNSET
     private var firstQuestionPassed = false
     private var guiLoaded = false
@@ -41,7 +42,11 @@ class GUIHandler(evFactory: EventFactory) {
 
     fun setGUILoaded(){ guiLoaded = true}
     fun setStage(value: String) {
-        stage = EnumStages.fromString(value)
+        val newStage = EnumStages.fromString(value)
+        if(stage!=newStage){
+            previousStage = stage
+            stage = newStage
+        }
     }
     fun setAnswer(value: String) {
         // If the web sends an empty string in the request, it means
@@ -67,18 +72,17 @@ class GUIHandler(evFactory: EventFactory) {
                     setStage(event.getResponseValue("stage"))
                     resetAnswer()
                     if(stage.isStartingStage() ){
+                        //THIS ASSUMES THAT THE STARTING PAGE CANNOT BE A QUESTION STAGE
                         EvFactory.triggerSessionEvent(EventType.USER_SET, event.getResponseValue("subject"))
                     }else {
                         //THIS ASSUMES THAT THE STARTING PAGE CANNOT BE A QUESTION STAGE
+                        if(previousStage!!.isQuestionStage()){
+                            EvFactory.triggerSessionEvent(EventType.ANSWER_CONFIRMED, getStage())
+                        }
                         if (isQuestionStage()) {
-                            if (isFirstQuestion()) {
-                                firstQuestionPassed = true
-                            } else {
-                                EvFactory.triggerSessionEvent(EventType.ANSWER_CONFIRMED, getStage())
-                            }
                             EvFactory.triggerSessionEvent(EventType.QUESTION_SET, getStage())
                         }else{
-                            // THis is the farewell stage
+                            EvFactory.triggerSessionEvent(EventType.SESSION_END, getStage())
                         }
                     }
                 }

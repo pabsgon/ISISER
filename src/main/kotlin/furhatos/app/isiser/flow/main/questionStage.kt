@@ -371,7 +371,7 @@ fun QuestionReview(lastRejoinderType: EnumRejoinders? = null): State = state(par
     }
 }
 fun QuestionCheckpoint(lastRejoinderType: EnumRejoinders? = null, beFriendly: Boolean? = null): State  = state(parent = Parent) {
-/*    STATE ENTRY: This state is called at several moments. The checkpoints statement should be added in order of clarity.
+/**    STATE ENTRY: This state is called at several moments. The checkpoints statement should be added in order of clarity.
 This is so because the state will call itself, and will repeat exactly the same logic. The only difference should be the
 utterance. Since texts are designed to be extracted from a list and moved to the end, utterances should be different every
  time, if several texts were added. In all cases, the expected answer must be true/false, with TRUE meaning that the user

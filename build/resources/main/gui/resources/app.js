@@ -20,7 +20,7 @@ const trueButton = document.getElementById('trueBut')
 const confirmButton = document.getElementById('confirmButton');
 
 const STAGES = [0,0.2,1,2,3,4,5,6,7,8,0.3]
-const FROM_N_STAGES = [0,0.2,2,3,4,5,6,7,8,0.3]
+const FROM_N_STAGES = [0,0.2,8,0.3]
 const LAST2_STAGES = [0,0.2,7,8,0.3]
 const STAGE_1ST_QUESTION = 1
 const EVTYPE_SYNCH_REQUESTED = "SYNCH_REQUESTED"

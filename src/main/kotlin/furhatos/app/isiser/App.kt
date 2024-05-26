@@ -75,13 +75,6 @@ object App {
     fun getStageName(): String  {return guiHandler.getStageName()}
     // Method to set the stage
 
-    fun setStage(value: String) {
-        guiHandler.setStage(value)}
-/*
-    fun isQuestionStage(): Boolean {return guiHandler.isQuestionStage()}
-
-    fun isAnswerMarked(): Boolean  {return guiHandler.isAnswerMarked()}
-*/
 
     fun getSubject(): String  {return sessionHandler.getUser()}
 

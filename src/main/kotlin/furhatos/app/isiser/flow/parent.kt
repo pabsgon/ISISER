@@ -1,5 +1,6 @@
 package furhatos.app.isiser.flow
 
+import Farewell
 import furhat.libraries.standard.NluLib
 import furhatos.app.isiser.App
 import furhatos.app.isiser.flow.main.QuestionReflection
@@ -19,7 +20,7 @@ val Parent: State = state {
     val session = App.getSession()
     onUserLeave(instant = true) {
         if(users.count == 0){
-            furhat.doSay("Bye bye!. Sorry, I cannot work alone. I am leaving too.")
+            furhat.doSay("Bye bye!")
             System.exit(0) // Terminate the JVM
         }
     }
@@ -66,8 +67,7 @@ val Parent: State = state {
         raise(AllIntents(it.intent as Intent))
     }
     onResponseFailed {
-        furhat.doAsk("I think my connection broke. Did you say something?")
-        TODO()
+        furhat.doAsk(session.getUtterance(EnumWordingTypes.BAD_CONNECTION))
     }
     onPartialResponse<DontKnow> {
         // Greet the user and proceed with the order in the same turn
@@ -99,11 +99,9 @@ val Parent: State = state {
     }
     onEvent<SessionEvent> {
         when(it.type){
-            EventType.USER_SET ->
-                if(users.count>0){
-                    App.goto(Welcome)
-                }
+            EventType.USER_SET -> if(users.count>0){App.goto(Welcome)}
             EventType.QUESTION_SET -> App.goto(QuestionReflection())
+            EventType.SESSION_END -> App.goto(Farewell)
             else -> {}
         }
     }

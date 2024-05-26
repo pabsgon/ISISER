@@ -14,12 +14,6 @@ import furhatos.app.isiser.setting.EnumWordingTypes
 import furhatos.app.isiser.setting.ExtendedUtterance
 import furhatos.flow.kotlin.*
 import furhatos.gestures.Gestures
-import furhatos.nlu.Intent
-import furhatos.nlu.common.DontKnow
-import furhatos.nlu.common.Maybe
-import furhatos.nlu.common.No
-import furhatos.nlu.common.Yes
-import furhatos.records.User
 
 
 val Welcome : State = state(Parent) {
@@ -28,7 +22,6 @@ val Welcome : State = state(Parent) {
     onEntry {
         furhat.gesture(OpenEyes, priority = 10)
         furhat.gesture(Gestures.Smile(duration = 2.0))
-
         furhat.attend(users.all.first())
 
         furhat.doAsk(session.getUtterance(EnumWordingTypes.WELCOME))
@@ -75,7 +68,7 @@ val ReviewInstructions : State = state(Parent) {
                             furhat.doAsk(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_CHECKPOINT,rejoinder)
                         )
 
-                        EnumRejoinders.ME_READY, EnumRejoinders.ME_READY,
+                        EnumRejoinders.ME_READY,
                         EnumRejoinders.ASSENT -> {
                             checkPointPassed = true
                             furhat.doAsk(session.getUtterance(EnumWordingTypes.PRESS_READY_REQUEST))

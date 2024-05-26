@@ -16,6 +16,7 @@ val Farewell : State = state(Parent) {
 
 
     onEntry {
+        furhat.attend(users.all.first())
         furhat.gesture(Gestures.Smile(duration = 4.0))
 
         /*furhat.doAsk(getWording(0))*/
@@ -35,6 +36,8 @@ val Farewell : State = state(Parent) {
         if(!goToSleep){
             goToSleep=true
             furhat.doAsk(session.getUtterance(EnumWordingTypes.FAREWELL_END), null, 2000)
+        }else{
+            App.goto(Sleep)
         }
     }
 }

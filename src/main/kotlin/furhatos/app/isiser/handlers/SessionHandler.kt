@@ -14,7 +14,6 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
     private val questions: MutableList<Question> = mutableListOf()
     private var condition: EnumConditions = EnumConditions.UNDEFINED
     private var user: String = UNDEFINED
-    private var isUserPresent: Boolean=false
     private var _lastWordingType: ExtendedUtterance? = null
     private var currentQuestionId: Int? = null
     private var currentQuestion: Question? = null
@@ -34,11 +33,6 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
         printQuestions()
     }
     /* PUBLIC */
-    var lastRepeatableUtterance: ExtendedUtterance?
-        get() = _lastWordingType
-        set(value) {
-            _lastWordingType = value
-        }
     fun handleEvent(event: SessionEvent) {
         when (event.type) {
             EventType.USER_SET -> {
@@ -53,12 +47,20 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
                 setQuestion(event.data["stage"] as? EnumStages)
             }
 
+            EventType.SESSION_END -> {
+                end()
+            }
+
             else -> {} // Nothing to do
 
         }
     }
-    fun setUserIsPresent() {isUserPresent=true}
-    fun isUserPresent() = isUserPresent
+    var lastRepeatableUtterance: ExtendedUtterance?
+        get() = _lastWordingType
+        set(value) {
+            _lastWordingType = value
+        }
+    fun isEnded() = (active && currentQuestion == null)
 
     fun confirmAnswer(){ currentQuestion!!.confirm() }
 
@@ -161,6 +163,9 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
                 active = true
             }
         }
+    }
+    fun end(){
+        currentQuestion = null
     }
     fun thereAreFriendlyClaims():Boolean{
         return currentQuestion!!.thereAreFriendlyClaims()

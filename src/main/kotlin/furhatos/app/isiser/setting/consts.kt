@@ -3,7 +3,7 @@ package furhatos.app.isiser.setting
 const val GUI = "GUI"
 const val UNDEFINED = "UNDEFINED"
 const val NO_MESSAGE = "NO MESSAGE"
-const val SAFE_SPEECH_PRO = "Mmh!"
+const val SAFE_SPEECH_PRO = "Mm!"
 const val SAFE_SPEECH_DEV = "ALERT"
 const val STATEMENT_IS_TRIMODE = true
 const val STATEMENT_IS_MONOMODE = false
@@ -153,8 +153,11 @@ enum class EventType(val defMsg: String, val cat: EventCategory) {
     // so it connect the flow  the button on the bottom to advance to the next stage, or when presses "Confirm" after answering. But it is also thought
     // to be used in case of emergency, after a fatal error occurred for some reason, and things need to be restarted at a particular stage. In that case, this
     // can be used to force the server to move to a particular stage. **/
-    ANSWER_MARKED(NO_MESSAGE, EventCategory.GUI), USER_SET("USER TO ACTIVATE.", EventCategory.SESS),
-    QUESTION_SET("NEW QUESTION TO ACTIVATE", EventCategory.SESS), ANSWER_CONFIRMED("QUESTION CONFIRMED IN GUI.", EventCategory.SESS),
+    ANSWER_MARKED(NO_MESSAGE, EventCategory.GUI),
+    USER_SET("USER TO ACTIVATE.", EventCategory.SESS),
+    QUESTION_SET("NEW QUESTION TO ACTIVATE", EventCategory.SESS),
+    ANSWER_CONFIRMED("QUESTION CONFIRMED IN GUI.", EventCategory.SESS),
+    SESSION_END("NO MORE QUESTIONS.", EventCategory.SESS),
     FLOW_START("SYS_START. INIT STATE", EventCategory.FLOW), NEW_FLOW_STATE("NEW FLOW STATE", EventCategory.FLOW),
     GENERIC("", EventCategory.ANY);
     /*companion object {
@@ -246,6 +249,7 @@ enum class EnumWordingTypes(val isWording:Boolean, val robotModeApplies: Boolean
     GIVE_TIME(true, false),
     FAREWELL_START(true, false),
     FAREWELL_END(true, false),
+    BAD_CONNECTION(true, false),
     ANY(true, false);
 
     companion object {
