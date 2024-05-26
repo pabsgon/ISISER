@@ -1,13 +1,10 @@
 package furhatos.app.isiser.handlers
-import furhatos.app.isiser.App
 import furhatos.app.isiser.flow.Init
 import furhatos.app.isiser.setting.EventType
 import furhatos.app.isiser.setting.ExtendedUtterance
-import furhatos.app.isiser.setting.WAITING_TIME_MILLISECS
+import furhatos.app.isiser.setting.WAITING_ANSWER_TIMEOUT
 import furhatos.flow.kotlin.*
 import furhatos.gestures.Gesture
-import furhatos.gestures.Gestures
-import furhatos.gestures.Gestures.GazeAway
 
 class FlowHandler(evFactory: EventFactory ) {
     private val EvFactory: EventFactory = evFactory
@@ -41,12 +38,12 @@ class FlowHandler(evFactory: EventFactory ) {
 }
 fun Furhat.doAsk(s: String){
     //this.voice.rate = 1.0
-    this.ask(s,  timeout = WAITING_TIME_MILLISECS)
+    this.ask(s,  timeout = WAITING_ANSWER_TIMEOUT)
 }
 fun Furhat.doAsk(s: String, g: Gesture){
     //this.voice.rate = 1.0
-    this.gesture(g)
-    this.ask(s,  timeout = WAITING_TIME_MILLISECS)
+    this.gesture(g, )
+    this.ask(s,  timeout = WAITING_ANSWER_TIMEOUT)
 }
 fun Furhat.doAsk(u: Utterance){
     this.voice.rate = 1.0
@@ -58,7 +55,7 @@ fun Furhat.doAsk(u: UtteranceDefinition){
 }
 fun Furhat.doAsk(u: ExtendedUtterance, rate: Double? = null, timeout:Int? = null){
     this.voice.rate = rate ?: u.rate
-    this.ask(u.utterance, timeout = timeout?: WAITING_TIME_MILLISECS)
+    this.ask(u.utterance, timeout = timeout?: WAITING_ANSWER_TIMEOUT)
 }
 
 fun Furhat.doSay(s: String){

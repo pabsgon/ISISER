@@ -19,14 +19,17 @@ import furhatos.nlu.common.DontKnow
 import furhatos.nlu.common.Maybe
 import furhatos.nlu.common.No
 import furhatos.nlu.common.Yes
+import furhatos.records.User
+
 
 val Welcome : State = state(Parent) {
     val session: SessionHandler = App.getSession()
 
     onEntry {
-        App.printState(thisState)
         furhat.gesture(OpenEyes, priority = 10)
         furhat.gesture(Gestures.Smile(duration = 2.0))
+
+        furhat.attend(users.all.first())
 
         furhat.doAsk(session.getUtterance(EnumWordingTypes.WELCOME))
 
@@ -36,12 +39,17 @@ val Welcome : State = state(Parent) {
     onResponse{
         App.goto(ReviewInstructions)
     }
+    onNoResponse{
+        App.goto(ReviewInstructions)
+    }
+
 }
 val ReviewInstructions : State = state(Parent) {
     val session: SessionHandler = App.getSession()
     var userDidntEverTalk = true
     var checkPointReached = false
     var checkPointPassed = false
+
     onEntry {
         furhat.doAsk(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_GENERAL))
     }
@@ -51,7 +59,7 @@ val ReviewInstructions : State = state(Parent) {
 
     onResponse<AllIntents> {
         val rejoinder: EnumRejoinders = it.intent.rejoinder
-        furhat.doSay(rejoinder.toString())
+        //furhat.doSay(rejoinder.toString())
         userDidntEverTalk = if(rejoinder==EnumRejoinders.SILENCE) userDidntEverTalk else false
         if(userDidntEverTalk){
             reentry()
@@ -63,8 +71,8 @@ val ReviewInstructions : State = state(Parent) {
                     furhat.doAsk(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_CHECKPOINT, EnumRejoinders.NONE))
                 } else {
                     when (rejoinder) {
-                        EnumRejoinders.SILENCE -> furhat.doAsk(
-                            session.getUtterance(EnumWordingTypes.INSTRUCTIONS_CHECKPOINT,rejoinder)
+                        EnumRejoinders.SILENCE ->
+                            furhat.doAsk(session.getUtterance(EnumWordingTypes.INSTRUCTIONS_CHECKPOINT,rejoinder)
                         )
 
                         EnumRejoinders.ME_READY, EnumRejoinders.ME_READY,

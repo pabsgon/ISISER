@@ -52,7 +52,7 @@ class AllIntents : Intent {
             // SayItAgain -> (Parent) -> REPEAT_REQUEST
             // TimeRequest -> (Parent) -> (handled there)
             // Wait ->  (Parent) -> (handled there)
-            // NluLib.IAmDone  ->  (Parent) -> ME_READY
+            is NluLib.IAmDone,
             is MeReady -> EnumRejoinders.ME_READY
             is ILikeMyAnswer -> EnumRejoinders.I_LIKE_MY_ANSWER
             is ILikeYourAnswer -> EnumRejoinders.I_LIKE_YOUR_ANSWER

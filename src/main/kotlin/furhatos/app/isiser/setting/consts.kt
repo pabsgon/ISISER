@@ -104,8 +104,8 @@ enum class EnumStages(val num: Double, val isQuestion: Boolean, val isSartingSta
     STAGE_8(8.0, true, false), STAGE_0_3(0.3, false, false);
     companion object {
         fun fromString(input: String): EnumStages {
-            val normalizedInput = input.toDoubleOrNull() ?: -1.0  // Convert string to double, defaulting to -1 if conversion fails
-            return values().firstOrNull { it.num == normalizedInput } ?: STAGE_0  // Match the double against num, default to STAGE_0 if no match
+            val normalisedInput = input.toDoubleOrNull() ?: -1.0  // Convert string to double, defaulting to -1 if conversion fails
+            return values().firstOrNull { it.num == normalisedInput } ?: STAGE_0  // Match the double against num, default to STAGE_0 if no match
         }
     }
     fun isQuestionStage(): Boolean {
@@ -129,34 +129,49 @@ enum class EnumStages(val num: Double, val isQuestion: Boolean, val isSartingSta
         }
     }
 }
+enum class EnumStageModes(val code: String){
+    REFLECTION("0"),
+    DISCLOSURE("1"),
+    DISCUSSION("2"),
+    DECISION("3");
+}
 enum class EventCategory(){GUI, FLOW, SESS, ANY}
 enum class EventType(val defMsg: String, val cat: EventCategory) {
-    GUI_STARTED(NO_MESSAGE, EventCategory.GUI), GUI_RELOADED(NO_MESSAGE, EventCategory.GUI), SYNCH_REQUESTED(NO_MESSAGE, EventCategory.GUI),
-    NEW_STAGE_REQUESTED(NO_MESSAGE, EventCategory.GUI), ANSWER_MARKED(NO_MESSAGE, EventCategory.GUI), USER_SET("USER TO ACTIVATE.", EventCategory.SESS),
+    GUI_STARTED(NO_MESSAGE, EventCategory.GUI), GUI_RELOADED(NO_MESSAGE, EventCategory.GUI),
+    SYNCH_REQUESTED(NO_MESSAGE, EventCategory.GUI),
+    /** This happens when the GUI is instantiated. The system is built on the principle that it's the server
+    // that serves, and the client that requests. Therefore, at the very beginning, the client requests what state it should go to.
+    // This would not only work the first time, but any time: if the first thing the client asks is to know where it should go, it will
+    // re-synch wherever the server it's at.
+    // So SYNCH is a signal with no parameters */
+    NEW_STAGE_REQUESTED(NO_MESSAGE, EventCategory.GUI),
+    /** This happens when the GUI requests a stage different from the one it's in, which in theory
+    // should match the server's at this point.
+    // This occurs in three occasions: 1) when the user selects their number at the very start, asking for state "0.2". The server knows that
+    // "0.2" is the starting state, so apart from accepting the request, it activates the system. 2) Then in state 0.2, the GUI will show a
+    // button to signal that they're ready, sending this request for state 1. The server will accept, but it knows that it's a question state
+    // so it connect the flow  the button on the bottom to advance to the next stage, or when presses "Confirm" after answering. But it is also thought
+    // to be used in case of emergency, after a fatal error occurred for some reason, and things need to be restarted at a particular stage. In that case, this
+    // can be used to force the server to move to a particular stage. **/
+    ANSWER_MARKED(NO_MESSAGE, EventCategory.GUI), USER_SET("USER TO ACTIVATE.", EventCategory.SESS),
     QUESTION_SET("NEW QUESTION TO ACTIVATE", EventCategory.SESS), ANSWER_CONFIRMED("QUESTION CONFIRMED IN GUI.", EventCategory.SESS),
     FLOW_START("SYS_START. INIT STATE", EventCategory.FLOW), NEW_FLOW_STATE("NEW FLOW STATE", EventCategory.FLOW),
     GENERIC("", EventCategory.ANY);
-    companion object {
+    /*companion object {
         fun fromString(typeStr: String): EventType {
             return when (typeStr.toUpperCase()) {
                 "GUI_STARTED" -> GUI_STARTED
                 "GUI_RELOADED" -> GUI_RELOADED
-                "SYNCH_REQUESTED" -> SYNCH_REQUESTED //This happens when the GUI is instantiated. The system is built on the principle that it's the server
-                // that serves, and the client that requests. Therefore, at the very beginning, the client requests what state it should go to.
-                // This would not only work the first time, but any time: if the first thing the client asks is to know where it should go, it will
-                // re-synch wherever the server it's at.
-                // So SYNCH is a signal with no parameters.
-                "NEW_STAGE_REQUESTED" -> NEW_STAGE_REQUESTED //This happens when the GUI requests a stage different from the one it's in, which in theory
-                // should match the server's at this point.
-                // This occurs in three occasions: 1) when the user selects their number at the very start, asking for state "0.2". The server knows that
-                // "0.2" is the starting state, so apart from accepting the request, it activates the system. 2) Then in state 0.2, the GUI will show a
-                // button to signal that they're ready, sending this request for state 1. The server will accept, but it knows that it's a question state
-                // so it connect the flow  the button on the bottom to advance to the next stage, or when presses "Confirm" after answering. But it is also thought
-                // to be used in case of emergency, after a fatal error occurred for some reason, and things need to be restarted at a particular stage. In that case, this
-                // can be used to force the server to move to a particular stage.
+                "SYNCH_REQUESTED" -> SYNCH_REQUESTED
+                "NEW_STAGE_REQUESTED" -> NEW_STAGE_REQUESTED
                 "ANSWER_MARKED" -> ANSWER_MARKED
                 else -> GENERIC
             }
+        }
+    }*/
+    companion object {
+        fun fromString(typeStr: String): EventType {
+            return values().find { it.name.equals(typeStr, ignoreCase = true) } ?: GENERIC
         }
     }
     fun isGUIEvent(): Boolean = (this.cat == EventCategory.GUI || this == GENERIC)
@@ -174,7 +189,7 @@ enum class EventType(val defMsg: String, val cat: EventCategory) {
     }
 }
 
-enum class EnumRejoinders {// CONNECTED TO THE DATA SPREADSHEET
+enum class EnumRejoinders() {// CONNECTED TO THE DATA SPREADSHEET
     REPEAT_REQUEST,
     TIME_REQUEST,
 

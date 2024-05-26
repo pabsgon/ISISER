@@ -13,27 +13,27 @@ import furhatos.app.isiser.setting.*
 import furhatos.flow.kotlin.*
 import furhatos.nlu.Intent
 import furhatos.nlu.common.*
+import furhatos.records.Location
 
 val Parent: State = state {
     val session = App.getSession()
-
     onUserLeave(instant = true) {
-        println("Parent>onUserLeave")
-        when {
-            users.count == 0 -> goto(Sleep)
-            it == users.current -> furhat.attend(users.other)
+        if(users.count == 0){
+            furhat.doSay("Bye bye!. Sorry, I cannot work alone. I am leaving too.")
+            System.exit(0) // Terminate the JVM
         }
     }
     onUserEnter(instant = true) {
-        println("Parent>onUserEnter")
-        furhat.glance(it)
+        furhat.attend(it)
+        if(session.isSessionActive() && users.count>0){
+            //This is an assumption: there
+            App.goto(Welcome)
+        }
     }
     onResponse<RequestRepeat>{raise(SayItAgain())}
     onResponse<SayItAgain>{
         furhat.doAsk(session.getUtterance(EnumWordingTypes.REPEAT))
     }
-
-
     onResponse<Wait>{raise(TimeRequest())}
     onResponse<TimeRequest>{
         furhat.doAsk(session.getUtterance(EnumWordingTypes.GIVE_TIME))
@@ -62,9 +62,9 @@ val Parent: State = state {
         DontKnow(), Maybe(), //  -> EnumRejoinders.NON_COMMITTAL
         Understand(), Agree(), Yes() //-> EnumRejoinders.ASSENT
     )}){
+
         raise(AllIntents(it.intent as Intent))
     }
-
     onResponseFailed {
         furhat.doAsk("I think my connection broke. Did you say something?")
         TODO()
@@ -86,7 +86,7 @@ val Parent: State = state {
         if(seemsLikeBackchannel(it.text, it.speech.length)){
             raise(AllIntents(EnumRejoinders.BACKCHANNEL))
         }else{
-            if(session.isActive()){
+            if(session.isSessionActive()){
                 if(session.inAgreement()){
                     raise(AllIntents(EnumRejoinders.REJOINDER_AGREED))
                 }else {
@@ -99,12 +99,14 @@ val Parent: State = state {
     }
     onEvent<SessionEvent> {
         when(it.type){
-            EventType.USER_SET -> App.goto(Welcome)
+            EventType.USER_SET ->
+                if(users.count>0){
+                    App.goto(Welcome)
+                }
             EventType.QUESTION_SET -> App.goto(QuestionReflection())
             else -> {}
         }
     }
-
     onNoResponse{
         raise(AllIntents(EnumRejoinders.SILENCE))
     }

@@ -164,7 +164,7 @@ fun Application.module() {
 
             val event = GUIEvent(data, guiLoaded)
 
-            println("XXXGUIEvent ${event.responseStatusCode.toString()}")
+            println("GUIEvent ${event.responseStatusCode.toString()}")
             call.respond(event.responseStatusCode, event.responseData)  // Ensure this is a proper JSON response
 
             // Create and send the event

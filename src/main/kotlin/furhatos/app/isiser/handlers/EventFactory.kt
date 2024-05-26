@@ -30,7 +30,8 @@ open class ISISEREvent (
     open val stage: EnumStages = App.getStage(),
     open val subject: String = App.getSubject(),
     open val condition: EnumConditions = App.getCondition(),
-    open val stateId: String =  App.getStateId()
+    open val stateId: String =  App.getStateId(),
+    open val mode: String =  App.getStageMode()
 ) : Event() {
     // Initialization code or common methods here
 }
@@ -53,6 +54,7 @@ class GUIEvent(
     override var message: String = super.message + (if (isAcceptable) " [ACCEPTED]" else " [REJECTED]")
     val responseData: Map<String, String> = mapOf(
         "status" to (if (isAcceptable) "0" else "1"),
+        "mode" to mode,
         "received" to message,
         "answer" to (requestData["answer"] ?: ""),
         "subject" to (if (isAcceptable) guiSubject else subject),

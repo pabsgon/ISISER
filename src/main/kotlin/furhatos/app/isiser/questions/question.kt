@@ -2,7 +2,6 @@ package furhatos.app.isiser.questions
 
 import furhatos.app.isiser.App
 import furhatos.app.isiser.setting.*
-import javax.swing.plaf.nimbus.State
 
 data class Question(
     val id: String,  // immutable ID, no need for setter
@@ -36,11 +35,13 @@ data class Question(
     private var friendlyClaimsWereUsed: Boolean = false,
 ) {
     private var userVerbalAnswer: EnumAnswer = EnumAnswer.UNSET
+    private var isRobotAnswerDisclosed: Boolean = false
+    private var isUserAnswerReadyForConfirmation: Boolean = false
 /*
     private var unfriendlyProbesCount:Int = 0
     private var friendlyProbesCount:Int = 0
 */
-    private var checkpointReached: Boolean = false
+    private var wasCheckpointReached: Boolean = false
     private var statements: StatementMap = StatementMap(mutableMapOf(), this)
     // Secondary constructor
     constructor(id: String, cAns: EnumAnswer, rAns: EnumAnswer ) : this(
@@ -72,6 +73,11 @@ data class Question(
 */
 
     )
+    fun setUserAnswerReadyForConfirmation(){isUserAnswerReadyForConfirmation=true}
+    fun isUserAnswerReadyForConfirmation():Boolean{return isUserAnswerReadyForConfirmation}
+    fun setRobotAnswerAsDisclosed(){isRobotAnswerDisclosed=true}
+    fun isRobotAnswerDisclosed():Boolean{return isRobotAnswerDisclosed}
+
     fun addClaim(claim: Claim) {
         if(currentUnfriendlyClaim ==null)currentUnfriendlyClaim = claim //Just adding the first one.
         unfriendlyClaims.add(claim)
@@ -106,12 +112,10 @@ data class Question(
         // After the above, the friendlyClaims are set.
         if(friendlyClaims.isNotEmpty()){
             //Removing two unfriendly claims per friendly claim delivered.
-            unfriendlyClaims.removeFirst()
-            unfriendlyClaims.removeFirst()
+            if(unfriendlyClaims.isNotEmpty())unfriendlyClaims.removeFirst()
+            if(unfriendlyClaims.isNotEmpty())unfriendlyClaims.removeFirst()
             return friendlyClaims.removeFirst()
-        }else{return null}
-        //return if (friendlyClaims.isNotEmpty() == true) friendlyClaims.removeFirst().getText(this) else ""
-
+        }else{return null} // This should not happen at all.
     }
 
     fun getMarkedAnswer():EnumAnswer = App.getGUI().getMarkedAnswer()
@@ -138,16 +142,19 @@ data class Question(
 
         return if(statementIsTriMode) robotMode!! else EnumRobotMode.NEUTRAL
     }
-    fun getExtendedUtterance(wordingId: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY, aside:String):ExtendedUtterance{
+    fun getExtendedUtterance(wordingId: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY, aside:String, asideFriendliness: EnumFriendliness):ExtendedUtterance{
         val st: Statement? = getStatement(wordingId, friendliness)
 
         return ExtendedUtterance(
             st!!.getText(this),
             aside,
             getRobotModeForStatement(wordingId, friendliness),
-            st.isAssentSensitive
+            st.isAssentSensitive,
+            asideFriendliness
         )
     }
+
+
 
     fun getStatement(wordingId: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): Statement?{
 
@@ -159,13 +166,13 @@ data class Question(
 
     }
 
-    fun getStatementText(wordingId: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): String{
+    /*fun getStatementText(wordingId: EnumWordingTypes, friendliness: EnumFriendliness? = EnumFriendliness.ANY): String{
         return if(wordingId == EnumWordingTypes.CLAIM){
             getClaimText(friendliness!!)
         }else {
             statements.getText(wordingId, friendliness)
         }
-    }
+    }*/
     fun getClaimStatement(friendliness: EnumFriendliness?): Statement? {
         return if(friendliness == EnumFriendliness.UNFRIENDLY) getUnfriendlyClaimStatement() else getFriendlyClaimStatement()
     }
@@ -282,8 +289,8 @@ data class Question(
     }
     fun isUserVerballyAgreeing(): Boolean = userVerbalAnswer.agreesWith(robotAnswer)
     fun isUserVerballyUndecided(): Boolean = userVerbalAnswer == EnumAnswer.UNSET
-    fun isCheckpointReached(): Boolean{ return checkpointReached}
-    fun checkpointReached(){checkpointReached = true}
+    fun isCheckpointReached(): Boolean{ return wasCheckpointReached}
+    fun checkpointReached(){wasCheckpointReached = true}
 
 
     /*

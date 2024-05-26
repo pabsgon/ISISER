@@ -6,15 +6,19 @@ const val GUI_HOSTNAME = "http://localhost:"
 const val GUI_PORT = 8888
 const val MAX_NUM_USERS = 1
 const val ENGAGMENT_DISTANCE = 1.5
-const val CERTAIN_ROBOT_SPEECH_RATE = 1.15
-const val UNCERTAIN_ROBOT_SPEECH_RATE = 0.85
+const val CERTAIN_ROBOT_SPEECH_RATE = 1.1
+const val UNCERTAIN_ROBOT_SPEECH_RATE = 0.9
 const val SILENT_MILLISECS_PER_DOT = 250
 const val LOG_ALL_EVENTS = false // If true, all events will be logged. Otherwise, only the GUI, dialog and gesture events will be logged.
 const val MAX_NUM_BACKCHANNEL_WORDS = 2
 const val MAX_BACKCHANNEL_LENGTH = 4000 //Milliseconds.
 const val MAX_NUM_PROBES_AT_PERSUASION = 1
 const val MAX_NUM_PROBES_AT_REVIEW = 1
-const val WAITING_TIME_MILLISECS = 8000
+const val WAITING_ANSWER_TIMEOUT = 8000
+const val EXTRA_WAITING_TIMEOUT = 12000
+const val REFLECTION_TIMEOUT = 16000
+const val WAITING_ANSWER_AFTER_ANSWER_MARKED_TIMEOUT = 4000
+
 
 
 const val USE_PROBES_AT_DISCUSSION = true /* If this is true, in Persuasion and Review, when the user denies, a number of probes will be
@@ -25,7 +29,7 @@ const val PRO = 0
 const val DEV = 1
 const val TEST_INTENTS = 2
 const val TEST_UTTERANCES = 3
-const val APP_EXECUTION_MODE = TEST_INTENTS
+const val APP_EXECUTION_MODE = DEV
 
 
 

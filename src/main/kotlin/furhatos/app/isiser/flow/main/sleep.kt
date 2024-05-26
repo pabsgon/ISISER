@@ -14,27 +14,12 @@ val Sleep: State = state(Parent) {
     }
     onEntry {
         furhat.gesture(CloseEyes, priority=10)
-        App.printState(thisState)
-        furhat.attendNobody()
-    }
-    onReentry {
-        App.printState(thisState,"R")
         furhat.attendNobody()
     }
     onTime(delay = 60000) { // Wait for 60 seconds before terminating
         furhat.doSay("No start signal received, terminating the program.")
         System.exit(0) // Terminate the JVM
     }
-    /*
-    onEvent<GUIEvent> {
-        println("Sleep GUIEvent [${App.getStage()}]")
-        if(App.getStage() == EnumStages.STAGE_0_2){
-            println("Sleep GUIEvent 0.2")
-            App.goto(Welcome)
-        }else
-            println("Sleep NOT GUIEvent 0.2")
-    }
-     */
 }
 
 

@@ -77,46 +77,138 @@ val Testing = state(parent = Parent) {
     val w0 = getWording(0)
 
     onEntry {
-        furhat.doAsk("Ok, let's test. Say whatever you want.")
+        furhat.say {
+            +"Now I will pause"
+            +SubtleWobble
+            +delay(1000) // Pausing for 2000 ms
+            +"before continuing"
+        }
+        furhat.doAsk("Ok, let's test.")
         //furhat.listen(endSil = 1000, timeout = 8000, maxSpeech = 30000)
     }
     onReentry {
-        furhat.doAsk("I'm listening.")
+        furhat.say {
+            +"Now I will pause"
+            +SubtleWobble
+            +delay(1000) // Pausing for 2000 ms
+            +"before continuing"
+        }
+
+        furhat.ask({
+                +"I'm listening"
+                +delay(1000) // Pausing for 2000 ms
+                +SubtleWobble
+                +"wobbling"
+                /*random {
+                    +{
+                        +SubtleNod
+                        +"nodding"
+                    }
+                    +{
+                        +SubtleShake
+                        +"shaking"
+                    }
+                }*/
+        })
     }
     onEvent<SenseSpeech> {
-        speechDuration = it.length
-        println("You said something I couldn't understand in $speechDuration milliseconds.")
+        if(it.length != null){
+            speechDuration = it.length
+            println("You said something I couldn't understand in $speechDuration milliseconds.")
+        }
+        reentry()
+    }
+    onResponse<MeReady> {
+        furhat.doAsk("You said you finished", Gestures.Thoughtful)
     }
     onResponse<NluLib.IAmDone> {
-            furhat.doAsk("You said you finished", Gestures.Thoughtful)
+        furhat.gesture(SubtleNod, priority = 11)
+        furhat.doAsk("You said you finished", Gestures.Thoughtful)
     }
     onResponse<AnswerFalse> {
+        furhat.gesture(SubtleShake, priority = 11)
         furhat.doAsk("You said it is false", Gestures.GazeAway)
+    }
+    onResponse<Disagree> {
+        furhat.doAsk("You said it is false", Gestures.GazeAway)
+        //furhat.doAsk("You disagreed")
     }
     onResponse<AnswerTrue> {
         furhat.doAsk("You said it is true", GesturesLib.PerformDoubleNod)
     }
     onResponse<Yes> {
-        furhat.performAndCycleGesture()
+        furhat.doAsk {
+        +"I am quite certain"
+            +PauseCertain
+            +delay(500) // Pausing for 2000 ms
+            +"Look at me"
+            +PauseCertain
+            +delay(500) // Pausing for 2000 ms
+            +"I'm determined"
+        }
+
+
+        /*furhat.performAndCycleGesture()*/
     }
 
     onResponse<No> {
-        furhat.performAndCycleGesture(true)
+        furhat.doAsk {
+            +"I am bit"
+            +PauseUncertain
+            +delay(700) // Pausing for 2000 ms
+            +"uncertain. You see?"
+            +PauseUncertain
+            +delay(700) // Pausing for 2000 ms
+            +"Not much I can do"
+        }
+
+        /*furhat.ask({
+            +"I'm listening"
+            +delay(500) // Pausing for 2000 ms
+            +SubtleShake
+            +"shaking"
+            *//*random {
+                +{
+                    +SubtleNod
+                    +"nodding"
+                }
+                +{
+                    +SubtleShake
+                    +"shaking"
+                }
+            }*//*
+        })*/
+        /*furhat.performAndCycleGesture(true)*/
     }
     onResponse<Agree> {
-        furhat.doAsk("You agreed")
+        //furhat.doAsk("You agreed")
+
+        furhat.doAsk {
+            +"You"
+            +SubtleWobbleYes
+            +delay(500) // Pausing for 2000 ms
+            +"agreed."
+        }
+
+
     }
     onResponse<Wait> {
-        furhat.doAsk("More time?")
+        furhat.doAsk {
+        +"You"
+        +delay(500) // Pausing for 2000 ms
+            +SubtleWobbleYes
+        +"want time."
     }
-    onResponse<Disagree> {
-        if (it.intent.intentName != "Disagree")
-            furhat.doSay("Oh...")
-        println("XXXDisagree [$it.intent.intentName ]")
-        furhat.doAsk("You disagreed")
     }
     onResponse<DontKnow> {
-        furhat.doAsk("That was non-committal")
+        //furhat.doAsk("That was non-committal")
+
+        furhat.doAsk {
+            +"You"
+            +delay(500) // Pausing for 2000 ms
+            +SubtleWobbleNo
+            +"are not sure."
+        }
     }
     onResponse<RequestRepeat> {
         furhat.doAsk("You want me to repeat")

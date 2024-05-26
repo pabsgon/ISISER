@@ -1,5 +1,6 @@
 package furhatos.app.isiser.handlers
 
+import furhatos.app.isiser.App
 import furhatos.app.isiser.questions.Question
 import furhatos.app.isiser.setting.*
 
@@ -13,6 +14,7 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
     private val questions: MutableList<Question> = mutableListOf()
     private var condition: EnumConditions = EnumConditions.UNDEFINED
     private var user: String = UNDEFINED
+    private var isUserPresent: Boolean=false
     private var _lastWordingType: ExtendedUtterance? = null
     private var currentQuestionId: Int? = null
     private var currentQuestion: Question? = null
@@ -55,6 +57,8 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
 
         }
     }
+    fun setUserIsPresent() {isUserPresent=true}
+    fun isUserPresent() = isUserPresent
 
     fun confirmAnswer(){ currentQuestion!!.confirm() }
 
@@ -130,12 +134,10 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
     fun inVerbalAgreement(): Boolean =  currentQuestion!!.isUserVerballyAgreeing()
     fun inCompleteAgreement(): Boolean =  (inVerbalAgreement() && inOfficialAgreement())
 
-    fun isActive(): Boolean = active
+    fun isSessionActive(): Boolean = active
 
     fun maxNumOfFriendlyProbesReached():Boolean = currentQuestion!!.maxNumOfFriendlyProbesReached()
     fun maxNumOfUnfriendlyProbesReached():Boolean = currentQuestion!!.maxNumOfUnfriendlyProbesReached()
-
-
 
     fun setQuestion(ind: Int?){
         currentQuestionId = ind
@@ -194,7 +196,31 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
         println("Printing all questions (${questions.size}):")
         questions.forEach { println(it) }
     }
-
+    fun setRobotAnswerAsDisclosed(){
+        currentQuestion!!.setRobotAnswerAsDisclosed()
+    }
+    fun setUserAnswerToBeConfirmed(){
+        currentQuestion!!.setUserAnswerReadyForConfirmation()
+    }
+    fun getStageMode():String{
+        if(App.getStage().isQuestionStage()){
+            if(guiHandler.isAnswerMarked()){
+                if(currentQuestion!!.isRobotAnswerDisclosed()){
+                    if(currentQuestion!!.isUserAnswerReadyForConfirmation()){
+                        return EnumStageModes.DECISION.code
+                    }else {
+                        return EnumStageModes.DISCUSSION.code
+                    }
+                }else{
+                    return EnumStageModes.DISCLOSURE.code
+                }
+            }else{
+                return EnumStageModes.REFLECTION.code
+            }
+        }else{
+            return EnumStageModes.REFLECTION.code
+        }
+    }
     fun wasLastClaimAssentSensitive():Boolean{
         return lastRepeatableUtterance?.isAssentSensitive?:false
     }
@@ -227,7 +253,7 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
             }
         }else{
 
-                currentQuestion!!.getExtendedUtterance(wordingId, friendliness, aside)
+                currentQuestion!!.getExtendedUtterance(wordingId, friendliness, aside, getAsideFriendliness(rejoinder))
 
             /*ExtendedUtterance(
                 currentQuestion!!.getStatementText(wordingId, friendliness),
@@ -243,6 +269,37 @@ class SessionHandler(dh: DataHandler, fh:FlowHandler, gui:GUIHandler) {
         return utterance
     }
 
+    private fun getAsideFriendliness(rejoinder: EnumRejoinders? = EnumRejoinders.NONE): EnumFriendliness {
+
+        return when(rejoinder){
+            EnumRejoinders.ANSWER_FALSE,
+            EnumRejoinders.ANSWER_TRUE -> if(impliedAssentOrDenial(rejoinder) == EnumRejoinders.ASSENT) EnumFriendliness.FRIENDLY else EnumFriendliness.UNFRIENDLY
+
+                EnumRejoinders.I_LIKE_MY_ANSWER,
+            EnumRejoinders.DENIAL -> EnumFriendliness.UNFRIENDLY
+
+            EnumRejoinders.REJOINDER_AGREED,
+            EnumRejoinders.REJOINDER_DISAGREED,
+            EnumRejoinders.PROBE -> if(App.getSession().inAgreement()) EnumFriendliness.FRIENDLY else EnumFriendliness.UNFRIENDLY //This is inefficient, but I had no time.
+
+            EnumRejoinders.ASSENT -> EnumFriendliness.FRIENDLY
+
+            EnumRejoinders.REPEAT_REQUEST,
+            EnumRejoinders.TIME_REQUEST,
+            EnumRejoinders.ME_READY,
+            EnumRejoinders.ANSWER_MARKED,
+            EnumRejoinders.ELABORATION_REQUEST,
+            EnumRejoinders.NON_COMMITTAL,
+            EnumRejoinders.BACKCHANNEL,
+            EnumRejoinders.I_LIKE_YOUR_ANSWER,
+            EnumRejoinders.SILENCE,
+            EnumRejoinders.OFF_TOPIC,
+            EnumRejoinders.NONE,
+            EnumRejoinders.ANY -> EnumFriendliness.ANY
+
+            else -> EnumFriendliness.ANY // else is for null.
+        }
+    }
     fun checkpointReached() = currentQuestion!!.checkpointReached()
 
     fun wasCheckpointReached(): Boolean {return currentQuestion!!.isCheckpointReached() }

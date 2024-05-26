@@ -71,11 +71,11 @@ object App {
     fun isGUILoaded(): Boolean {return guiHandler.isGUILoaded()}
     fun setGUILoaded() {guiHandler.setGUILoaded()}
     fun getStage(): EnumStages  {return guiHandler.getStage()}
+    fun getStageMode(): String  {return sessionHandler.getStageMode()}
     fun getStageName(): String  {return guiHandler.getStageName()}
     // Method to set the stage
 
     fun setStage(value: String) {
-        println("XXX> setSubject ${value} ")
         guiHandler.setStage(value)}
 /*
     fun isQuestionStage(): Boolean {return guiHandler.isQuestionStage()}

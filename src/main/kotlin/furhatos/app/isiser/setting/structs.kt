@@ -1,5 +1,6 @@
 package furhatos.app.isiser.setting
 
+import furhatos.app.isiser.flow.main.*
 import furhatos.app.isiser.questions.Question
 import furhatos.flow.kotlin.Utterance
 import furhatos.flow.kotlin.utterance
@@ -130,11 +131,13 @@ data class Asides(
         }
     }
 }
+
 data class ExtendedUtterance(
     var mainText: String,
     var aside: String = "",
     var robotMode: EnumRobotMode = EnumRobotMode.NEUTRAL,
     var isAssentSensitive: Boolean = false,
+    var asideFriendliness: EnumFriendliness = EnumFriendliness.ANY,
     var rate: Double = 1.0
 ) {
     val utterance: Utterance = createUtterance(mainText, aside)
@@ -160,6 +163,27 @@ data class ExtendedUtterance(
         val processedString = (if(aside.isNotEmpty()) "$aside " else "") + text
 
         return utterance {
+            // Prepend gesture based on aside and asideFriendliness
+            if (aside.isNotEmpty() && asideFriendliness != EnumFriendliness.ANY) {
+                when (asideFriendliness) {
+                    EnumFriendliness.FRIENDLY -> {
+                        when (robotMode) {
+                            EnumRobotMode.CERTAIN -> +SubtleNod
+                            EnumRobotMode.UNCERTAIN -> +SubtleWobbleYes
+                            else -> {} // No gesture for NEUTRAL
+                        }
+                    }
+                    EnumFriendliness.UNFRIENDLY -> {
+                        when (robotMode) {
+                            EnumRobotMode.CERTAIN -> +SubtleShake
+                            EnumRobotMode.UNCERTAIN -> +SubtleWobbleNo
+                            else -> {} // No gesture for NEUTRAL
+                        }
+                    }
+
+                    EnumFriendliness.ANY -> {}
+                }
+            }
             var currentText = StringBuilder()
             var i = 0
             while (i < processedString.length) {
@@ -174,6 +198,12 @@ data class ExtendedUtterance(
                             if (currentText.isNotEmpty()) {
                                 +currentText.toString().trim()
                                 currentText = StringBuilder()
+                            }
+                            // Add gesture before the delay based on robotMode
+                            when (robotMode) {
+                                EnumRobotMode.UNCERTAIN -> +PauseUncertain
+                                EnumRobotMode.CERTAIN -> +PauseCertain
+                                EnumRobotMode.NEUTRAL -> {} // No gesture
                             }
                             +delay(SILENT_MILLISECS_PER_DOT * dotCount)
                         }else {
