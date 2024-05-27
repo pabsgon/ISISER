@@ -1,1 +1,7 @@
-2024-05-26 22:00:47	FlowEvent	NEW_FLOW_STATE	QuestionCheckpoint	2		CONDITION3	QuestionCheckpoint
+2024-05-27 11:58:55	Autoreload is disabled because the development mode is off.
+2024-05-27 11:58:56	Application started in 0.736 seconds.
+2024-05-27 11:58:56	Responding at http://127.0.0.1:8888
+2024-05-27 11:58:59	----------------- NEW EXECUTION-------------------
+2024-05-27 11:58:59	FlowEvent	NEW_FLOW_STATE	Sleep	0.0		UNDEFINED	Sleep
+2024-05-27 11:58:59	ActionGesture	CloseEyes
+2024-05-27 11:58:59	ActionGesture	CloseEyes

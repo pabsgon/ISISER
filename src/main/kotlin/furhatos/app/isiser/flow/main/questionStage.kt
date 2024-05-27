@@ -44,17 +44,8 @@ fun QuestionReflection( ) = state(parent = Parent) {
         }else{
             furhat.doAsk(session.getUtterance(EnumWordingTypes.ANSWERING_REQUEST, null, robotFriendliness))
         }
-        //furhat.doAsk(session.getUtterance(EnumWordingTypes.ANSWERING_REQUEST, null, robotFriendliness))
     }
 
-/*
-    onEvent<GUIEvent> {
-        if(it.type==EventType.ANSWER_MARKED){
-            furhat.listen(timeout = WAITING_ANSWER_AFTER_ANSWER_MARKED_TIMEOUT)
-        }
-        propagate()
-    }
-*/
     onResponse<AllIntents>{
         val rejoinder: EnumRejoinders = it.intent.rejoinder
         userDidntTalk = if(rejoinder==EnumRejoinders.SILENCE) userDidntTalk else false
@@ -285,7 +276,7 @@ fun QuestionPersuasion(lastRejoinderType: EnumRejoinders? = null): State  = stat
             EnumRejoinders.SILENCE -> furhat.sayUnfriendlyClaimOrGetOut(rejoinder)
 
             EnumRejoinders.DENIAL -> {
-                if(USE_PROBES_AT_DISCUSSION && !session.maxNumOfUnfriendlyProbesReached()){
+                if(!session.maxNumOfUnfriendlyProbesReached()){
                     furhat.doAsk(session.getUtterance(EnumWordingTypes.PROBE, rejoinder, EnumFriendliness.UNFRIENDLY))
                 }else{
                     furhat.sayUnfriendlyClaimOrGetOut(rejoinder)
@@ -348,7 +339,7 @@ fun QuestionReview(lastRejoinderType: EnumRejoinders? = null): State = state(par
         when(rejoinder){
 
             EnumRejoinders.DENIAL -> {
-                if(USE_PROBES_AT_DISCUSSION && !session.maxNumOfFriendlyProbesReached()){
+                if(!session.maxNumOfFriendlyProbesReached()){
                     furhat.doAsk(session.getUtterance(EnumWordingTypes.PROBE, rejoinder, EnumFriendliness.FRIENDLY))
                 }else{
                     furhat.sayFriendlyClaimOrGetOut(rejoinder)

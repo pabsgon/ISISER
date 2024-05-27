@@ -1,12 +1,15 @@
 package furhatos.app.isiser.setting
 
+const val PRO = 0
+const val DEV = 1
+const val TEST_INTENTS = 2
+const val TEST_UTTERANCES = 3
 const val GUI = "GUI"
 const val UNDEFINED = "UNDEFINED"
 const val NO_MESSAGE = "NO MESSAGE"
 const val SAFE_SPEECH_PRO = "Mm!"
 const val SAFE_SPEECH_DEV = "ALERT"
 const val STATEMENT_IS_TRIMODE = true
-const val STATEMENT_IS_MONOMODE = false
 const val UNFRIENDLY_SUFFIX = "_U"
 const val FRIENDLY_SUFFIX = "_F"
 const val ASSERTIONS_PER_CLAIM = 2
@@ -32,9 +35,6 @@ const val SOURCEDATA_CODE_NOT_ROBOT_ANSWER = "#NOT_ROBOT_ANSWER#"
 const val SOURCEDATA_CODE_ROBOT_ANSWER = "#ROBOT_ANSWER#"
 const val SOURCEDATA_CODE_USER_ANSWER = "#USER_ANSWER#"
 
-enum class EnumQuestionPhase {
-    WELCOME, REFLECTION, DISCLOSURE, PERSUASION, REVIEW, CHECKPOINT, ULTIMATUM, CONFIRMATION
-}
 
 enum class EnumFriendliness{
     FRIENDLY,
@@ -70,8 +70,8 @@ enum class EnumConditions {
 
 enum class EnumRobotMode(val speechRate: Double) {
     NEUTRAL(1.0),
-    CERTAIN(CERTAIN_ROBOT_SPEECH_RATE),
-    UNCERTAIN(UNCERTAIN_ROBOT_SPEECH_RATE)
+    CERTAIN(ROBOT_SPEECH_RATE_CERTAIN),
+    UNCERTAIN(ROBOT_SPEECH_RATE_UNCERTAIN)
 }
 enum class EnumAnswer {
     TRUE, FALSE, UNSET;
@@ -135,6 +135,13 @@ enum class EnumStageModes(val code: String){
     DISCUSSION("2"),
     DECISION("3");
 }
+enum class EnumLanguages(){EN,SV;
+    companion object {
+        fun fromString(typeStr: String): EnumLanguages {
+            return EnumLanguages.values().find { it.name.equals(typeStr, ignoreCase = true) } ?: EnumLanguages.EN
+        }
+    }
+}
 enum class EventCategory(){GUI, FLOW, SESS, ANY}
 enum class EventType(val defMsg: String, val cat: EventCategory) {
     GUI_STARTED(NO_MESSAGE, EventCategory.GUI), GUI_RELOADED(NO_MESSAGE, EventCategory.GUI),
@@ -160,18 +167,6 @@ enum class EventType(val defMsg: String, val cat: EventCategory) {
     SESSION_END("NO MORE QUESTIONS.", EventCategory.SESS),
     FLOW_START("SYS_START. INIT STATE", EventCategory.FLOW), NEW_FLOW_STATE("NEW FLOW STATE", EventCategory.FLOW),
     GENERIC("", EventCategory.ANY);
-    /*companion object {
-        fun fromString(typeStr: String): EventType {
-            return when (typeStr.toUpperCase()) {
-                "GUI_STARTED" -> GUI_STARTED
-                "GUI_RELOADED" -> GUI_RELOADED
-                "SYNCH_REQUESTED" -> SYNCH_REQUESTED
-                "NEW_STAGE_REQUESTED" -> NEW_STAGE_REQUESTED
-                "ANSWER_MARKED" -> ANSWER_MARKED
-                else -> GENERIC
-            }
-        }
-    }*/
     companion object {
         fun fromString(typeStr: String): EventType {
             return values().find { it.name.equals(typeStr, ignoreCase = true) } ?: GENERIC

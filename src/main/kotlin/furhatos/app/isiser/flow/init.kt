@@ -8,6 +8,7 @@ import furhatos.flow.kotlin.*
 import furhatos.flow.kotlin.voice.PollyVoice
 import furhatos.flow.kotlin.voice.Voice
 import furhatos.util.CommonUtils
+import furhatos.util.Language
 
 val consoLog = CommonUtils.getLogger("ISISER_CONSOLE")
 //val logger = Logger.getLogger("ISISER")
@@ -33,7 +34,12 @@ val Init : State = state() {
         //dialogLogger.startSession()
         /** Set our default interaction parameters */
         users.setSimpleEngagementPolicy(ENGAGMENT_DISTANCE, MAX_NUM_USERS)
-        furhat.voice = Voice("Matthew")
+        if(EnumLanguages.fromString(LANGUAGE) == EnumLanguages.EN){
+            furhat.voice = Voice("Matthew")
+        }else{
+            furhat.voice = PollyVoice(language = Language.SWEDISH) // Sets a Swedish Amazon Polly voice
+        }
+
         /** start the interaction */
         when (APP_EXECUTION_MODE) {
             PRO,DEV -> App.goto(Sleep)
