@@ -1,0 +1,3 @@
+ISISER contains several folders that include software implementing different aspects of the whole project:
+	- FURHAT_ISISER contains the Kotlin project implementing Furhat's functionality and the GUI that was used during the experimental sessions.
+	- IRT_ISISER contains Jupyter Notes files that implemented the Item Response Theory Analysis required for obtaining a metric of 1) the difficulty of the questions and the ability of the students, aiming to select the experimental questions and balance the experimental groups, respectively.

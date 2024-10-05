@@ -1,0 +1,1 @@
+IIRT_ISISER contains Jupyter Notes files that implemented the Item Response Theory Analysis required for obtaining a metric of 1) the difficulty of the questions and the ability of the students, aiming to select the experimental questions and balance the experimental groups, respectively.
