@@ -1,6 +1,6 @@
-[submodule "FURHAT_ISISER"]
-	path = FURHAT_ISISER
-	url = https://github.com/pabsgon/FURHAT_ISISER.git
+[submodule "ISISER_FURHAT"]
+	path = ISISER_FURHAT
+	url = https://github.com/pabsgon/ISISER_FURHAT.git
 [submodule "ISISER_ANALYSIS"]
 	path = ISISER_ANALYSIS
 	url = https://github.com/pabsgon/ISISER_ANALYSIS.git
